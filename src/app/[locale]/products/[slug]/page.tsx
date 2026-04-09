@@ -4,6 +4,19 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { CheckCircle, Download, ArrowLeft, Phone, Mail } from 'lucide-react'
 
+const categoryLabels: Record<string, { ko: string; en: string }> = {
+  adhesive: { ko: '우레탄 접착제', en: 'Urethane Adhesive' },
+  sealant: { ko: '지수제', en: 'Sealant' },
+  waterproof: { ko: '방수제', en: 'Waterproofing' },
+  grout: { ko: '그라우트', en: 'Grout' },
+}
+
+function getCategoryLabel(category: string, isKo: boolean): string {
+  const labels = categoryLabels[category]
+  if (!labels) return category
+  return isKo ? labels.ko : labels.en
+}
+
 const productData: Record<string, {
   image: string
   category: string
@@ -234,7 +247,7 @@ export default async function ProductDetailPage({
               {isKo ? '홈으로' : 'Back to Home'}
             </Link>
             <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">
-              {t(`categories.${product.category}` as any)}
+              {getCategoryLabel(product.category, isKo)}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-white">
               {t(nameKey)}
@@ -361,16 +374,7 @@ export default async function ProductDetailPage({
                       href={`/${locale}/products/${s}`}
                       className="text-sm text-gray-600 hover:text-navy hover:font-medium transition-all"
                     >
-                      {s.toUpperCase()} - {isKo
-                        ? productData[s].category === 'adhesive' ? '우레탄 접착제'
-                        : productData[s].category === 'sealant' ? '지수제'
-                        : productData[s].category === 'waterproof' ? '방수제'
-                        : '그라우트'
-                        : productData[s].category === 'adhesive' ? 'Urethane Adhesive'
-                        : productData[s].category === 'sealant' ? 'Sealant'
-                        : productData[s].category === 'waterproof' ? 'Waterproofing'
-                        : 'Grout'
-                      }
+                      {s.toUpperCase()} - {getCategoryLabel(productData[s].category, isKo)}
                     </Link>
                   </li>
                 ))}

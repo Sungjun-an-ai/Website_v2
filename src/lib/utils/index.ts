@@ -69,3 +69,16 @@ export function truncate(str: string, length: number): string {
   if (str.length <= length) return str
   return str.slice(0, length) + '...'
 }
+
+/** Returns true if Supabase is properly configured (not placeholder values) */
+export function isSupabaseConfigured(): boolean {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  return Boolean(url && key && !url.startsWith('your_'))
+}
+
+/** Returns true if Resend is properly configured (not placeholder values) */
+export function isResendConfigured(): boolean {
+  const key = process.env.RESEND_API_KEY
+  return Boolean(key && !key.startsWith('your_'))
+}

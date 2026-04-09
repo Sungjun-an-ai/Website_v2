@@ -15,7 +15,10 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {}
+          } catch (error) {
+            // Cookie setting fails in Server Components (read-only); safe to ignore
+            console.debug('[Supabase] Could not set cookies:', error)
+          }
         },
       },
     }
@@ -35,7 +38,10 @@ export async function createServiceClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {}
+          } catch (error) {
+            // Cookie setting fails in Server Components (read-only); safe to ignore
+            console.debug('[Supabase] Could not set cookies:', error)
+          }
         },
       },
     }

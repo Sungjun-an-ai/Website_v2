@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { isSupabaseConfigured, isResendConfigured } from '@/lib/utils'
 
 export async function POST(request: Request) {
   try {
@@ -10,12 +11,12 @@ export async function POST(request: Request) {
     }
 
     // Save to Supabase if configured
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-    if (supabaseUrl && supabaseKey && supabaseUrl !== 'your_supabase_project_url') {
+    if (isSupabaseConfigured()) {
       const { createClient } = await import('@supabase/supabase-js')
-      const supabase = createClient(supabaseUrl, supabaseKey)
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      )
       await supabase.from('catalog_downloads').insert({
         name,
         company: company || null,
@@ -27,8 +28,7 @@ export async function POST(request: Request) {
     }
 
     // Send notification email if configured
-    const resendKey = process.env.RESEND_API_KEY
-    if (resendKey && resendKey !== 'your_resend_api_key') {
+    if (isResendConfigured()) {
       const { sendCatalogEmail } = await import('@/lib/email')
       await sendCatalogEmail({ name, company, email, phone, resourceTitle }).catch(console.error)
     }

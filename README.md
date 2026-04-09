@@ -2,7 +2,7 @@
 
 > **BONDING TOMORROW TOGETHER** — 36년 우레탄 접착제·지수제 전문 제조기업
 
-Next.js 14 App Router 기반 완전한 기업 홈페이지 + 어드민 CMS 시스템입니다.
+Next.js 15 App Router 기반 완전한 기업 홈페이지 + 어드민 CMS 시스템입니다.
 
 ---
 

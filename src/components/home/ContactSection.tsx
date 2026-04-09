@@ -36,7 +36,8 @@ export default function ContactSection() {
       } else {
         setStatus('error')
       }
-    } catch {
+    } catch (error) {
+      console.error('Failed to submit inquiry:', error)
       setStatus('error')
     }
   }

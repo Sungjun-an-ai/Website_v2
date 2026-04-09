@@ -70,7 +70,7 @@ export default function StatsSection() {
                   started={started}
                 />
               </div>
-              <div className="text-gray-300 text-sm md:text-base">{t(stat.labelKey as any)}</div>
+              <div className="text-gray-300 text-sm md:text-base">{t(stat.labelKey as 'founded' | 'experience' | 'products' | 'clients')}</div>
             </div>
           ))}
         </div>
