@@ -128,7 +128,7 @@ export default function AdminResourcesPage() {
               ))}
               <div className="space-y-1">
                 <Label>파일 크기 (bytes)</Label>
-                <Input type="number" value={form.file_size} onChange={e => f('file_size', parseInt(e.target.value))} />
+                <Input type="number" value={form.file_size} onChange={e => f('file_size', parseInt(e.target.value) || 0)} />
               </div>
               <div className="space-y-1 flex items-center gap-2 pt-5">
                 <input type="checkbox" id="is_active_res" checked={form.is_active} onChange={e => f('is_active', e.target.checked)} className="h-4 w-4" />

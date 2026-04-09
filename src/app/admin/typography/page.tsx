@@ -23,6 +23,8 @@ export default function AdminTypographyPage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  const [saveError, setSaveError] = useState('')
+
   const fetchSettings = async () => {
     const supabase = createClient()
     const { data } = await supabase.from('site_settings').select('key, value').in('key', ['font_heading', 'font_body'])
@@ -40,14 +42,19 @@ export default function AdminTypographyPage() {
   const handleSave = async () => {
     setSaving(true)
     setSaved(false)
+    setSaveError('')
     const supabase = createClient()
-    await supabase.from('site_settings').upsert([
+    const { error } = await supabase.from('site_settings').upsert([
       { key: 'font_heading', value: headingFont },
       { key: 'font_body', value: bodyFont },
     ], { onConflict: 'key' })
     setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    if (error) {
+      setSaveError('저장에 실패했습니다: ' + error.message)
+    } else {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    }
   }
 
   const PreviewText = ({ font }: { font: string }) => (
@@ -110,6 +117,7 @@ export default function AdminTypographyPage() {
                 {saving ? '저장 중...' : '설정 저장'}
               </Button>
               {saved && <span className="text-sm text-green-600">✓ 저장되었습니다</span>}
+              {saveError && <span className="text-sm text-red-600">{saveError}</span>}
             </div>
           </div>
         )}
