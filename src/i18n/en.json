@@ -1,0 +1,214 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About",
+    "history": "History",
+    "trackRecord": "Track Record",
+    "resources": "Resources",
+    "notice": "Notice",
+    "contact": "Contact"
+  },
+  "hero": {
+    "slide1": {
+      "title": "A New Standard in Urethane Adhesives",
+      "subtitle": "Premium bonding solutions backed by 36 years of expertise"
+    },
+    "slide2": {
+      "title": "BONDING TOMORROW TOGETHER",
+      "subtitle": "Your trusted partner in construction, industrial, and automotive sectors"
+    },
+    "slide3": {
+      "title": "Innovative Waterproofing Technology",
+      "subtitle": "Connecting the future with perfect waterproofing performance"
+    },
+    "ctaContact": "Contact Us",
+    "ctaProducts": "View Products"
+  },
+  "stats": {
+    "title": "Hansung Urethane in Numbers",
+    "founded": "Established",
+    "foundedValue": "1988",
+    "experience": "Years of Experience",
+    "experienceValue": "36+",
+    "products": "Product Types",
+    "productsValue": "50+",
+    "clients": "Clients",
+    "clientsValue": "500+"
+  },
+  "products": {
+    "title": "Product Lineup",
+    "subtitle": "Urethane adhesive and sealing solutions optimized for diverse industries",
+    "viewDetail": "View Details",
+    "features": "Key Features",
+    "applications": "Applications",
+    "specifications": "Specifications",
+    "downloadCatalog": "Download Catalog",
+    "inquiry": "Product Inquiry",
+    "categories": {
+      "adhesive": "Adhesive",
+      "sealant": "Sealant",
+      "waterproof": "Waterproofing",
+      "grout": "Grout"
+    },
+    "items": {
+      "hs-100": {
+        "name": "HS-100 Urethane Adhesive",
+        "description": "High-strength structural urethane adhesive optimized for construction and industrial applications."
+      },
+      "hs-200": {
+        "name": "HS-200 Waterproof Sealant",
+        "description": "Urethane sealant with excellent waterproofing performance, ideal for underground structures."
+      },
+      "hs-300": {
+        "name": "HS-300 Waterproofing Agent",
+        "description": "Elastic urethane membrane waterproofing for roofs, floors, and various surfaces."
+      },
+      "hs-400": {
+        "name": "HS-400 Urethane Grout",
+        "description": "High-pressure injection urethane grout for crack repair and ground reinforcement."
+      }
+    }
+  },
+  "values": {
+    "title": "Core Values",
+    "subtitle": "The corporate philosophy Hansung Urethane has upheld for 36 years",
+    "items": {
+      "quality": {
+        "title": "Quality First",
+        "description": "Through strict quality management systems, we ensure all products meet the highest quality standards. We maintain customer trust by adhering to KS certification and international quality standards."
+      },
+      "innovation": {
+        "title": "Technological Innovation",
+        "description": "Through continuous R&D investment, we develop new urethane technologies and stay ahead of changing market demands. We secure competitiveness with patented technologies and proprietary manufacturing methods."
+      },
+      "partnership": {
+        "title": "Customer Partnership",
+        "description": "Beyond being a simple supplier, we provide optimal solutions as our customers' technology partners. We offer total service from pre-sales technical consulting to construction support."
+      }
+    }
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Growing as a urethane specialist company for 36 years since our founding in 1988",
+    "overview": "Since its founding in 1988, Hansung Urethane has grown into a specialized manufacturer of urethane adhesives and sealants. From our own factory in Paju, Gyeonggi Province, we produce high-quality urethane products that comply with KS standards, supplying to hundreds of companies in the construction, civil engineering, and industrial sectors.",
+    "missionTitle": "Mission",
+    "mission": "We contribute to creating a safer and more sustainable construction environment through urethane technology innovation.",
+    "visionTitle": "Vision",
+    "vision": "To become Asia's leading specialist in urethane adhesive and sealing solutions.",
+    "history": "History",
+    "trackRecord": "Track Record",
+    "certification": "Certifications",
+    "certItems": [
+      "ISO 9001 Quality Management System Certification",
+      "KS F 4910 Building Sealant Certification",
+      "KS F 4923 Urethane Rubber Waterproofing Certification",
+      "Venture Company Certification",
+      "Innobiz Company Certification"
+    ]
+  },
+  "history": {
+    "title": "Company History",
+    "subtitle": "The 36-year growth story of Hansung Urethane",
+    "events": [
+      {"year": 1988, "event": "Founded Hansung Urethane"},
+      {"year": 1992, "event": "KS Certification (Urethane Adhesive)"},
+      {"year": 1996, "event": "Relocated to Paju factory, expanded production facilities"},
+      {"year": 2000, "event": "ISO 9001 Quality Management System Certification"},
+      {"year": 2003, "event": "Launched new urethane sealant product line"},
+      {"year": 2006, "event": "Venture Company Certification"},
+      {"year": 2010, "event": "Innobiz Certification / Annual revenue of 5 billion KRW"},
+      {"year": 2013, "event": "Urethane Waterproofing Patent (No. 10-1234567)"},
+      {"year": 2016, "event": "Started exports (Southeast Asia)"},
+      {"year": 2018, "event": "30th Anniversary / Production line automation completed"},
+      {"year": 2020, "event": "Developed eco-friendly low-VOC product line"},
+      {"year": 2022, "event": "Established R&D Center / Corporate research institute registration"},
+      {"year": 2024, "event": "36th Anniversary / Second factory expansion plan"}
+    ]
+  },
+  "resources": {
+    "title": "Resources",
+    "subtitle": "Download product catalogs, technical data sheets, and installation guides",
+    "download": "Download",
+    "downloadCount": "Downloads",
+    "fileSize": "File Size",
+    "requestForm": {
+      "title": "Download Resource",
+      "desc": "Please enter your information to download the resource.",
+      "name": "Name",
+      "company": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "submit": "Download",
+      "cancel": "Cancel"
+    }
+  },
+  "notice": {
+    "title": "Notice",
+    "subtitle": "Check the latest news and announcements from Hansung Urethane",
+    "pinned": "Notice",
+    "viewCount": "Views",
+    "backToList": "Back to List",
+    "noNotices": "No notices found."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Contact us for product inquiries, quotes, and technical support",
+    "form": {
+      "name": "Name *",
+      "company": "Company",
+      "email": "Email *",
+      "phone": "Phone",
+      "product": "Product Interest",
+      "message": "Message *",
+      "submit": "Send Inquiry",
+      "sending": "Sending...",
+      "success": "Your inquiry has been received. We will respond as soon as possible.",
+      "error": "An error occurred during transmission. Please try again.",
+      "namePlaceholder": "Your Name",
+      "companyPlaceholder": "Company Name (Optional)",
+      "emailPlaceholder": "example@company.com",
+      "phonePlaceholder": "+82-10-0000-0000",
+      "messagePlaceholder": "Enter your message here..."
+    },
+    "info": {
+      "address": "184-12, Jangjisan-ro, Gwangtan-myeon, Paju-si, Gyeonggi-do, Korea",
+      "phone": "+82-31-943-8732",
+      "fax": "+82-31-943-9756",
+      "email": "info@hsurethane.co.kr",
+      "hours": "Mon-Fri 09:00 - 18:00 KST"
+    }
+  },
+  "footer": {
+    "company": "Hansung Urethane Co., Ltd.",
+    "address": "184-12, Jangjisan-ro, Gwangtan-myeon, Paju-si, Gyeonggi-do, Korea",
+    "phone": "+82-31-943-8732",
+    "fax": "+82-31-943-9756",
+    "email": "info@hsurethane.co.kr",
+    "copyright": "© 2024 Hansung Urethane. All rights reserved.",
+    "links": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    },
+    "quickLinks": "Quick Links",
+    "contactInfo": "Contact Info"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "notFound": "Page not found",
+    "backHome": "Back to Home",
+    "readMore": "Read More",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No",
+    "language": "Language"
+  }
+}

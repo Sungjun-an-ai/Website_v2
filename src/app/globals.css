@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  body {
+    @apply bg-white text-gray-900;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .section-padding {
+    @apply py-16 md:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply bg-navy text-white px-6 py-3 rounded-lg font-medium hover:bg-navy-700 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-gold text-white px-6 py-3 rounded-lg font-medium hover:bg-gold-dark transition-colors;
+  }
+
+  .btn-outline {
+    @apply border-2 border-navy text-navy px-6 py-3 rounded-lg font-medium hover:bg-navy hover:text-white transition-colors;
+  }
+}

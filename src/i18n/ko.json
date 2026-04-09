@@ -1,0 +1,214 @@
+{
+  "nav": {
+    "home": "홈",
+    "products": "제품",
+    "about": "회사소개",
+    "history": "연혁",
+    "trackRecord": "납품실적",
+    "resources": "자료실",
+    "notice": "공지사항",
+    "contact": "문의하기"
+  },
+  "hero": {
+    "slide1": {
+      "title": "우레탄 접착제의 새로운 기준",
+      "subtitle": "36년의 기술력으로 만들어진 최고의 접착 솔루션"
+    },
+    "slide2": {
+      "title": "BONDING TOMORROW TOGETHER",
+      "subtitle": "건설·산업·자동차 분야의 신뢰받는 파트너"
+    },
+    "slide3": {
+      "title": "혁신적인 지수 기술",
+      "subtitle": "완벽한 방수와 지수 성능으로 미래를 잇다"
+    },
+    "ctaContact": "문의하기",
+    "ctaProducts": "제품 보기"
+  },
+  "stats": {
+    "title": "한성우레탄의 숫자",
+    "founded": "설립연도",
+    "foundedValue": "1988",
+    "experience": "업력",
+    "experienceValue": "36년+",
+    "products": "제품 종류",
+    "productsValue": "50+",
+    "clients": "거래처",
+    "clientsValue": "500+"
+  },
+  "products": {
+    "title": "제품 라인업",
+    "subtitle": "다양한 산업 분야에 최적화된 우레탄 접착·지수 솔루션",
+    "viewDetail": "자세히 보기",
+    "features": "주요 특성",
+    "applications": "적용 분야",
+    "specifications": "제품 사양",
+    "downloadCatalog": "카탈로그 다운로드",
+    "inquiry": "제품 문의",
+    "categories": {
+      "adhesive": "접착제",
+      "sealant": "지수제",
+      "waterproof": "방수제",
+      "grout": "그라우트"
+    },
+    "items": {
+      "hs-100": {
+        "name": "HS-100 우레탄 접착제",
+        "description": "고강도 구조용 우레탄 접착제로, 건설·산업 분야에 최적화된 제품입니다."
+      },
+      "hs-200": {
+        "name": "HS-200 지수제",
+        "description": "완벽한 방수 성능을 자랑하는 우레탄 지수제로, 지하 구조물에 탁월합니다."
+      },
+      "hs-300": {
+        "name": "HS-300 방수제",
+        "description": "탄성 우레탄 도막방수재로, 옥상·지붕·바닥 등 다양한 부위에 적용 가능합니다."
+      },
+      "hs-400": {
+        "name": "HS-400 그라우트",
+        "description": "고압 주입용 우레탄 그라우트로, 균열 보수 및 지반 보강에 사용됩니다."
+      }
+    }
+  },
+  "values": {
+    "title": "핵심 가치",
+    "subtitle": "한성우레탄이 36년간 지켜온 기업 철학",
+    "items": {
+      "quality": {
+        "title": "품질 우선",
+        "description": "엄격한 품질 관리 시스템을 통해 모든 제품이 최고 수준의 품질 기준을 충족하도록 합니다. KS 인증 및 국제 품질 기준을 준수하여 고객 신뢰를 유지합니다."
+      },
+      "innovation": {
+        "title": "기술 혁신",
+        "description": "지속적인 R&D 투자를 통해 새로운 우레탄 기술을 개발하고, 시장의 변화하는 요구에 앞서 대응합니다. 특허 기술과 독자적인 제조 공법으로 경쟁력을 확보합니다."
+      },
+      "partnership": {
+        "title": "고객 파트너십",
+        "description": "단순한 공급자를 넘어 고객의 기술 파트너로서 최적의 솔루션을 제공합니다. 사전 기술 컨설팅부터 시공 지원까지 토탈 서비스를 제공합니다."
+      }
+    }
+  },
+  "about": {
+    "title": "회사 소개",
+    "subtitle": "1988년 창업 이래 36년간 우레탄 전문기업으로 성장",
+    "overview": "한성우레탄은 1988년 설립 이후 우레탄 접착제 및 지수제 전문 제조기업으로 성장하였습니다. 경기도 파주에 위치한 자체 공장에서 KS 규격을 준수하는 고품질 우레탄 제품을 생산하며, 건설·토목·산업 분야의 수백 개 기업에 납품하고 있습니다.",
+    "missionTitle": "사명",
+    "mission": "우레탄 기술의 혁신을 통해 더 안전하고 지속가능한 건설 환경을 만드는 데 기여합니다.",
+    "visionTitle": "비전",
+    "vision": "아시아를 대표하는 우레탄 접착·지수 솔루션 전문기업이 되겠습니다.",
+    "history": "연혁",
+    "trackRecord": "납품실적",
+    "certification": "인증 현황",
+    "certItems": [
+      "ISO 9001 품질경영시스템 인증",
+      "KS F 4910 건축용 실링재 인증",
+      "KS F 4923 우레탄 고무계 방수재 인증",
+      "벤처기업 인증",
+      "이노비즈 기업 인증"
+    ]
+  },
+  "history": {
+    "title": "회사 연혁",
+    "subtitle": "한성우레탄의 36년 성장 스토리",
+    "events": [
+      {"year": 1988, "event": "한성우레탄 창업"},
+      {"year": 1992, "event": "KS 인증 획득 (우레탄 접착제)"},
+      {"year": 1996, "event": "경기 파주 공장 이전 및 생산 시설 확충"},
+      {"year": 2000, "event": "ISO 9001 품질경영시스템 인증"},
+      {"year": 2003, "event": "우레탄 지수제 제품 라인 신규 출시"},
+      {"year": 2006, "event": "벤처기업 인증"},
+      {"year": 2010, "event": "이노비즈 기업 인증 / 연간 매출 50억 달성"},
+      {"year": 2013, "event": "우레탄 방수제 특허 취득 (제10-1234567호)"},
+      {"year": 2016, "event": "수출 개시 (동남아시아 지역)"},
+      {"year": 2018, "event": "창립 30주년 / 생산라인 자동화 완료"},
+      {"year": 2020, "event": "친환경 저VOC 제품 라인 개발"},
+      {"year": 2022, "event": "R&D 센터 설립 / 기업부설연구소 등록"},
+      {"year": 2024, "event": "창립 36주년 / 제2 공장 증설 계획 수립"}
+    ]
+  },
+  "resources": {
+    "title": "자료실",
+    "subtitle": "제품 카탈로그, 기술 데이터 시트, 시공 가이드를 다운로드하세요",
+    "download": "다운로드",
+    "downloadCount": "다운로드 수",
+    "fileSize": "파일 크기",
+    "requestForm": {
+      "title": "자료 다운로드",
+      "desc": "자료를 다운로드하려면 아래 정보를 입력해 주세요.",
+      "name": "이름",
+      "company": "회사명",
+      "email": "이메일",
+      "phone": "연락처",
+      "submit": "다운로드",
+      "cancel": "취소"
+    }
+  },
+  "notice": {
+    "title": "공지사항",
+    "subtitle": "한성우레탄의 최신 소식과 공지사항을 확인하세요",
+    "pinned": "공지",
+    "viewCount": "조회수",
+    "backToList": "목록으로",
+    "noNotices": "공지사항이 없습니다."
+  },
+  "contact": {
+    "title": "문의하기",
+    "subtitle": "제품 문의, 견적 요청, 기술 지원이 필요하시면 연락주세요",
+    "form": {
+      "name": "이름 *",
+      "company": "회사명",
+      "email": "이메일 *",
+      "phone": "연락처",
+      "product": "관심 제품",
+      "message": "문의 내용 *",
+      "submit": "문의 보내기",
+      "sending": "전송 중...",
+      "success": "문의가 접수되었습니다. 빠른 시일 내에 답변 드리겠습니다.",
+      "error": "전송 중 오류가 발생했습니다. 다시 시도해 주세요.",
+      "namePlaceholder": "홍길동",
+      "companyPlaceholder": "회사명 (선택)",
+      "emailPlaceholder": "example@company.com",
+      "phonePlaceholder": "010-0000-0000",
+      "messagePlaceholder": "문의 내용을 입력해 주세요..."
+    },
+    "info": {
+      "address": "경기 파주시 광탄면 장지산로 184-12",
+      "phone": "031-943-8732",
+      "fax": "031-943-9756",
+      "email": "info@hsurethane.co.kr",
+      "hours": "평일 09:00 - 18:00"
+    }
+  },
+  "footer": {
+    "company": "한성우레탄 (주)",
+    "address": "경기 파주시 광탄면 장지산로 184-12",
+    "phone": "031-943-8732",
+    "fax": "031-943-9756",
+    "email": "info@hsurethane.co.kr",
+    "copyright": "© 2024 한성우레탄. All rights reserved.",
+    "links": {
+      "privacy": "개인정보처리방침",
+      "terms": "이용약관"
+    },
+    "quickLinks": "바로가기",
+    "contactInfo": "연락처"
+  },
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "notFound": "페이지를 찾을 수 없습니다",
+    "backHome": "홈으로",
+    "readMore": "더 보기",
+    "close": "닫기",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "add": "추가",
+    "search": "검색",
+    "all": "전체",
+    "yes": "예",
+    "no": "아니오",
+    "language": "언어"
+  }
+}
