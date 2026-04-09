@@ -61,8 +61,7 @@ export default async function ValuesSection() {
                 {/* Icon visual block */}
                 <div className="w-full md:w-1/2">
                   <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-navy flex items-center justify-center">
-                    <div className="absolute inset-0 bg-navy opacity-90" />
-                    <div className="relative z-10 flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center gap-4">
                       <div className="w-20 h-20 bg-gold rounded-full flex items-center justify-center">
                         <Icon className="h-10 w-10 text-white" />
                       </div>
