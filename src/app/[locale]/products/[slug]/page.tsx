@@ -240,11 +240,11 @@ export default async function ProductDetailPage({
         <div className="relative z-10 h-full flex items-end">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-8">
             <Link
-              href={`/${locale}`}
+              href={`/${locale}/products`}
               className="inline-flex items-center gap-1 text-white/70 hover:text-white text-sm mb-4 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              {isKo ? '홈으로' : 'Back to Home'}
+              {isKo ? '제품 목록으로' : 'Back to Products'}
             </Link>
             <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">
               {getCategoryLabel(product.category, isKo)}

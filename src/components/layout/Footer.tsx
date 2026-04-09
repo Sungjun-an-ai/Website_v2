@@ -31,7 +31,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">{t('quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href={`/${locale}/products/hs-100`} className="hover:text-gold transition-colors">{nav('products')}</Link></li>
+              <li><Link href={`/${locale}/products`} className="hover:text-gold transition-colors">{nav('products')}</Link></li>
               <li><Link href={`/${locale}/about`} className="hover:text-gold transition-colors">{nav('about')}</Link></li>
               <li><Link href={`/${locale}/about/history`} className="hover:text-gold transition-colors">{nav('history')}</Link></li>
               <li><Link href={`/${locale}/about/track-record`} className="hover:text-gold transition-colors">{nav('trackRecord')}</Link></li>
@@ -71,10 +71,10 @@ export default function Footer() {
         <div className="border-t border-navy-700 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-500">{t('copyright')}</p>
           <div className="flex gap-4 text-xs">
-            <Link href={`/${locale}`} className="text-gray-500 hover:text-gray-300 transition-colors">
+            <Link href={`/${locale}/privacy`} className="text-gray-500 hover:text-gray-300 transition-colors">
               {t('links.privacy')}
             </Link>
-            <Link href={`/${locale}`} className="text-gray-500 hover:text-gray-300 transition-colors">
+            <Link href={`/${locale}/terms`} className="text-gray-500 hover:text-gray-300 transition-colors">
               {t('links.terms')}
             </Link>
           </div>
