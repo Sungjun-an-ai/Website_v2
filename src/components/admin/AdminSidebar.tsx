@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, Image, Package, Star, BarChart2, Info,
-  FileText, Bell, Users, LogOut, MessageSquare, Layers, Type
+  FileText, Bell, Users, LogOut, MessageSquare, Layers, Type, Scale
 } from 'lucide-react'
 
 const navItems = [
@@ -20,6 +20,7 @@ const navItems = [
   { href: '/admin/resources', label: '자료실', icon: FileText },
   { href: '/admin/notices', label: '공지사항', icon: Bell },
   { href: '/admin/leads', label: '문의 관리', icon: MessageSquare },
+  { href: '/admin/legal', label: '법적고지 관리', icon: Scale },
   { href: '/admin/users', label: '사용자 관리', icon: Users },
   { href: '/admin/typography', label: '글씨체 관리', icon: Type },
 ]
