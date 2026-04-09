@@ -64,6 +64,11 @@ export default function Header() {
 
   const isMainPage = pathname === `/${locale}` || pathname === `/${locale}/`
 
+  // Logo animation constants
+  const HEADER_HEIGHT_PX = 80
+  const LOGO_MAX_PX = 120
+  const LOGO_MIN_PX = 64
+
   useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY)
@@ -73,8 +78,8 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Logo box size: 120px when scrollY=0, 64px when scrollY>=80
-  const logoSize = Math.round(Math.max(64, 120 - (scrollY / 80) * 56))
+  // Logo box size: LOGO_MAX_PX when scrollY=0, LOGO_MIN_PX when scrollY>=HEADER_HEIGHT_PX
+  const logoSize = Math.round(Math.max(LOGO_MIN_PX, LOGO_MAX_PX - (scrollY / HEADER_HEIGHT_PX) * (LOGO_MAX_PX - LOGO_MIN_PX)))
 
   const navItems = [
     { label: t('products'), href: `/${locale}/products` },
@@ -103,7 +108,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo Box */}
-          <Link href={`/${locale}`} className="flex-shrink-0 relative" style={{ marginTop: logoSize > 80 ? logoSize - 80 : 0 }}>
+          <Link href={`/${locale}`} className="flex-shrink-0 relative" style={{ marginTop: logoSize > HEADER_HEIGHT_PX ? logoSize - HEADER_HEIGHT_PX : 0 }}>
             <div
               className="bg-gray-100 flex items-center justify-center transition-all duration-300 overflow-hidden"
               style={{ width: logoSize, height: logoSize }}
