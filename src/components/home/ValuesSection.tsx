@@ -1,7 +1,9 @@
 import { useTranslations } from 'next-intl'
 import { Award, Lightbulb, Handshake } from 'lucide-react'
 
-const values = [
+type ValueKey = 'quality' | 'innovation' | 'partnership'
+
+const values: { key: ValueKey; icon: typeof Award; image: string; reverse: boolean }[] = [
   {
     key: 'quality',
     icon: Award,
@@ -70,11 +72,11 @@ export default function ValuesSection() {
                     </span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-bold text-navy mb-4">
-                    {t(`items.${value.key}.title` as any)}
+                    {t(`items.${value.key}.title`)}
                   </h3>
                   <div className="w-12 h-1 bg-gold mb-4" />
                   <p className="text-gray-600 leading-relaxed text-base md:text-lg">
-                    {t(`items.${value.key}.description` as any)}
+                    {t(`items.${value.key}.description`)}
                   </p>
                 </div>
               </div>

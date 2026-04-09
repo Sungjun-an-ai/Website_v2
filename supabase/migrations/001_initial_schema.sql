@@ -186,12 +186,12 @@ ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE catalog_downloads ENABLE ROW LEVEL SECURITY;
 
 -- Allow inserts from anonymous users (for contact forms)
-CREATE POLICY "Allow insert for all" ON leads FOR INSERT WITH CHECK (TRUE);
-CREATE POLICY "Allow insert for all" ON catalog_downloads FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "Allow insert for all leads" ON leads FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "Allow insert for all catalog_downloads" ON catalog_downloads FOR INSERT WITH CHECK (TRUE);
 
 -- Allow read only for authenticated users (admin)
-CREATE POLICY "Allow read for auth" ON leads FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "Allow read for auth" ON catalog_downloads FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow read for auth on leads" ON leads FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow read for auth on catalog_downloads" ON catalog_downloads FOR SELECT USING (auth.role() = 'authenticated');
 
 -- Public read for content tables
 ALTER TABLE hero_slides ENABLE ROW LEVEL SECURITY;

@@ -16,16 +16,16 @@ const mockLeads = [
 export default function AdminLeadsPage() {
   const handleExport = () => {
     csvExport(mockLeads.map(lead => ({
-      이름: lead.name,
-      회사: lead.company,
-      이메일: lead.email,
-      전화: lead.phone,
-      관심제품: lead.product_interest,
-      문의내용: lead.message,
-      상태: lead.status,
-      언어: lead.locale,
-      등록일: lead.created_at,
-    })), '문의목록')
+      '이름/Name': lead.name,
+      '회사/Company': lead.company,
+      '이메일/Email': lead.email,
+      '전화/Phone': lead.phone,
+      '관심제품/Product': lead.product_interest,
+      '문의내용/Message': lead.message,
+      '상태/Status': lead.status,
+      '언어/Locale': lead.locale,
+      '등록일/Created': lead.created_at,
+    })), '문의목록_Leads')
   }
 
   return (
