@@ -108,7 +108,7 @@ export default function AdminStatsPage() {
               ))}
               <div className="space-y-1">
                 <Label>순서</Label>
-                <Input type="number" value={form.order_index} onChange={e => f('order_index', parseInt(e.target.value) || 0)} />
+                <Input type="number" value={form.order_index} onChange={e => f('order_index', parseInt(e.target.value, 10) || 0)} />
               </div>
               <div className="space-y-1 flex items-center gap-2 pt-5">
                 <input type="checkbox" id="is_active_stat" checked={form.is_active} onChange={e => f('is_active', e.target.checked)} className="h-4 w-4" />

@@ -119,7 +119,7 @@ export default function AdminValuesPage() {
               </div>
               <div className="space-y-1">
                 <Label>순서</Label>
-                <Input type="number" value={form.order_index} onChange={e => f('order_index', parseInt(e.target.value))} />
+                <Input type="number" value={form.order_index} onChange={e => f('order_index', parseInt(e.target.value, 10))} />
               </div>
               <div className="space-y-1 flex items-center gap-2 pt-5">
                 <input type="checkbox" id="is_active_val" checked={form.is_active} onChange={e => f('is_active', e.target.checked)} className="h-4 w-4" />

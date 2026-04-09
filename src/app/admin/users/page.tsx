@@ -23,6 +23,7 @@ export default function AdminUsersPage() {
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviting, setInviting] = useState(false)
   const [inviteMsg, setInviteMsg] = useState('')
+  const [inviteError, setInviteError] = useState(false)
 
   const fetchUsers = async () => {
     try {
@@ -41,6 +42,7 @@ export default function AdminUsersPage() {
   const handleInvite = async () => {
     setInviting(true)
     setInviteMsg('')
+    setInviteError(false)
     try {
       const res = await fetch('/api/admin/users', {
         method: 'POST',
@@ -50,13 +52,16 @@ export default function AdminUsersPage() {
       const data = await res.json()
       if (data.error) {
         setInviteMsg('오류: ' + data.error)
+        setInviteError(true)
       } else {
         setInviteMsg('초대 이메일이 발송되었습니다.')
+        setInviteError(false)
         setInviteEmail('')
         fetchUsers()
       }
     } catch {
       setInviteMsg('오류가 발생했습니다.')
+      setInviteError(true)
     }
     setInviting(false)
   }
@@ -69,7 +74,7 @@ export default function AdminUsersPage() {
             <h1 className="text-2xl font-bold text-gray-900">사용자 관리</h1>
             <p className="text-sm text-gray-500 mt-1">관리자 사용자를 관리합니다</p>
           </div>
-          <Button onClick={() => { setInviteOpen(true); setInviteMsg('') }}><Plus className="h-4 w-4 mr-2" />사용자 초대</Button>
+          <Button onClick={() => { setInviteOpen(true); setInviteMsg(''); setInviteError(false) }}><Plus className="h-4 w-4 mr-2" />사용자 초대</Button>
         </div>
 
         {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>}
@@ -105,7 +110,7 @@ export default function AdminUsersPage() {
                 <Label>이메일 주소</Label>
                 <Input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="admin@example.com" />
               </div>
-              {inviteMsg && <p className={`text-sm ${inviteMsg.startsWith('오류') ? 'text-red-600' : 'text-green-600'}`}>{inviteMsg}</p>}
+              {inviteMsg && <p className={`text-sm ${inviteError ? 'text-red-600' : 'text-green-600'}`}>{inviteMsg}</p>}
             </div>
             <DialogFooter className="gap-2 mt-4">
               <Button variant="outline" onClick={() => setInviteOpen(false)}>취소</Button>
