@@ -85,7 +85,7 @@ export default function StatsSection() {
             <div key={stat.id} className="text-center">
               <div className="text-4xl md:text-5xl font-bold text-gold mb-2">
                 <CountUp
-                  end={parseFloat(stat.value) || 0}
+                  end={parseInt(stat.value, 10) || 0}
                   suffix={stat.suffix}
                   started={started}
                 />

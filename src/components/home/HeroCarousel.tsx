@@ -75,7 +75,11 @@ export default function HeroCarousel() {
 
   if (slides.length === 0) {
     return (
-      <section className="relative h-screen min-h-[600px] bg-navy" aria-label="로딩 중" aria-busy="true">
+      <section
+        className="relative h-screen min-h-[600px] bg-navy"
+        aria-label={locale === 'ko' ? '로딩 중' : 'Loading...'}
+        aria-busy="true"
+      >
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 animate-bounce">
           <ChevronDown className="h-8 w-8 text-white opacity-70" />
         </div>
