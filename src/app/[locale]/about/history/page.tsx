@@ -1,7 +1,8 @@
 import { setRequestLocale } from 'next-intl/server'
 import { getTranslations } from 'next-intl/server'
+import { createClient } from '@/lib/supabase/server'
 
-const historyEvents = [
+const fallbackHistoryEvents = [
   { year: 1988, month: null, event_ko: '한성우레탄 창업', event_en: 'Founded Hansung Urethane' },
   { year: 1992, month: null, event_ko: 'KS 인증 획득 (우레탄 접착제)', event_en: 'KS Certification (Urethane Adhesive)' },
   { year: 1996, month: null, event_ko: '경기 파주 공장 이전 및 생산 시설 확충', event_en: 'Relocated to Paju factory, expanded production facilities' },
@@ -17,6 +18,13 @@ const historyEvents = [
   { year: 2024, month: null, event_ko: '창립 36주년 / 제2 공장 증설 계획 수립', event_en: '36th Anniversary / Second factory expansion plan' },
 ]
 
+type HistoryEvent = {
+  year: number
+  month: number | null
+  event_ko: string
+  event_en: string
+}
+
 export default async function HistoryPage({
   params
 }: {
@@ -27,12 +35,29 @@ export default async function HistoryPage({
   const t = await getTranslations({ locale, namespace: 'history' })
   const isKo = locale === 'ko'
 
+  let historyEvents: HistoryEvent[] = fallbackHistoryEvents
+
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('history_items')
+      .select('year, month, event_ko, event_en')
+      .order('year', { ascending: false })
+      .order('order_index')
+    if (data && data.length > 0) {
+      historyEvents = data
+    }
+  } catch (err) {
+    console.error('History items fetch error:', err)
+    // Use fallback data
+  }
+
   const grouped = historyEvents.reduce((acc, item) => {
     const decade = Math.floor(item.year / 10) * 10
     if (!acc[decade]) acc[decade] = []
     acc[decade].push(item)
     return acc
-  }, {} as Record<number, typeof historyEvents>)
+  }, {} as Record<number, HistoryEvent[]>)
 
   const decades = Object.keys(grouped).map(Number).sort((a, b) => b - a)
 
@@ -58,7 +83,7 @@ export default async function HistoryPage({
               {grouped[decade]
                 .sort((a, b) => b.year - a.year)
                 .map((item) => (
-                  <div key={item.year} className="relative">
+                  <div key={`${item.year}-${item.event_ko}`} className="relative">
                     <div className="absolute -left-10 w-4 h-4 rounded-full bg-gold border-2 border-white shadow" />
                     <div className="flex items-start gap-4">
                       <div className="text-2xl font-bold text-navy w-16 flex-shrink-0">{item.year}</div>
