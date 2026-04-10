@@ -64,10 +64,14 @@ export default function AdminBrandingPage() {
     setUploading(true)
     setUploadError('')
     try {
-      const ALLOWED_EXTS = ['png', 'jpg', 'jpeg', 'svg', 'webp', 'ico', 'gif']
+      const ALLOWED_EXTS = ['png', 'jpg', 'jpeg', 'webp', 'ico', 'gif']
+      const ALLOWED_MIMES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/x-icon', 'image/vnd.microsoft.icon']
       const rawExt = file.name.includes('.') ? file.name.split('.').pop()?.toLowerCase() : ''
       if (!rawExt || !ALLOWED_EXTS.includes(rawExt)) {
         throw new Error(`지원하지 않는 파일 형식입니다. (${ALLOWED_EXTS.join(', ')})`)
+      }
+      if (!ALLOWED_MIMES.includes(file.type)) {
+        throw new Error('파일 MIME 타입이 허용되지 않습니다.')
       }
       const supabase = createClient()
       const path = `branding/logo.${rawExt}`

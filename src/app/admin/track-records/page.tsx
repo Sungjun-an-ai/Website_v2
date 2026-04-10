@@ -156,7 +156,10 @@ export default function AdminTrackRecordsPage() {
                 <Input
                   type="number"
                   value={form.year}
-                  onChange={e => f('year', parseInt(e.target.value, 10) || new Date().getFullYear())}
+                  onChange={e => {
+                    const parsed = parseInt(e.target.value, 10)
+                    f('year', Number.isNaN(parsed) ? new Date().getFullYear() : parsed)
+                  }}
                 />
               </div>
               <div className="space-y-1">

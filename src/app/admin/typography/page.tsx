@@ -60,8 +60,9 @@ export default function AdminTypographyPage() {
     if (data) {
       const map: Partial<Settings> = {}
       data.forEach(row => {
-        if (row.key in DEFAULT_SETTINGS) {
-          map[row.key as keyof Settings] = row.value
+        const key = row.key as string
+        if (Object.prototype.hasOwnProperty.call(DEFAULT_SETTINGS, key)) {
+          map[key as keyof Settings] = row.value
         }
       })
       setSettings(prev => ({ ...prev, ...map }))

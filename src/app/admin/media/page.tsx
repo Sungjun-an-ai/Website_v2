@@ -82,7 +82,9 @@ export default function AdminMediaPage() {
   const sanitizeFilename = (name: string): string => {
     // Strip path components and keep only safe characters
     const basename = name.replace(/^.*[/\\]/, '')
-    return basename.replace(/[^a-zA-Z0-9._\-가-힣]/g, '_')
+    // Reject filenames starting with dots or containing consecutive periods
+    const cleaned = basename.replace(/^\.+/, '').replace(/\.{2,}/g, '_')
+    return cleaned.replace(/[^a-zA-Z0-9._\-가-힣]/g, '_') || 'upload'
   }
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -296,7 +298,7 @@ export default function AdminMediaPage() {
                 ) : preview.metadata.mimetype.startsWith('video/') ? (
                   <video src={preview.publicUrl} controls className="max-w-full max-h-full" />
                 ) : preview.metadata.mimetype === 'application/pdf' ? (
-                  <iframe src={preview.publicUrl} className="w-full h-96" title={preview.name} sandbox="allow-scripts allow-same-origin" />
+                  <iframe src={preview.publicUrl} className="w-full h-96" title={preview.name} sandbox="allow-scripts" />
                 ) : (
                   <div className="text-center">
                     <File className="h-16 w-16 text-gray-300 mx-auto mb-3" />
