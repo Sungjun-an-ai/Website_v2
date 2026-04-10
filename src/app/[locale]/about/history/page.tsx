@@ -47,7 +47,8 @@ export default async function HistoryPage({
     if (data && data.length > 0) {
       historyEvents = data
     }
-  } catch {
+  } catch (err) {
+    console.error('History items fetch error:', err)
     // Use fallback data
   }
 

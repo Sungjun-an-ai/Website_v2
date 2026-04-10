@@ -54,7 +54,8 @@ export default async function TrackRecordPage({
     if (data && data.length > 0) {
       trackRecords = data
     }
-  } catch {
+  } catch (err) {
+    console.error('Track records fetch error:', err)
     // Use fallback data
   }
 

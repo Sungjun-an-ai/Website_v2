@@ -64,9 +64,13 @@ export default function AdminBrandingPage() {
     setUploading(true)
     setUploadError('')
     try {
+      const ALLOWED_EXTS = ['png', 'jpg', 'jpeg', 'svg', 'webp', 'ico', 'gif']
+      const rawExt = file.name.includes('.') ? file.name.split('.').pop()?.toLowerCase() : ''
+      if (!rawExt || !ALLOWED_EXTS.includes(rawExt)) {
+        throw new Error(`지원하지 않는 파일 형식입니다. (${ALLOWED_EXTS.join(', ')})`)
+      }
       const supabase = createClient()
-      const ext = file.name.split('.').pop()
-      const path = `branding/logo.${ext}`
+      const path = `branding/logo.${rawExt}`
       const { error: uploadErr } = await supabase.storage
         .from('media')
         .upload(path, file, { upsert: true })

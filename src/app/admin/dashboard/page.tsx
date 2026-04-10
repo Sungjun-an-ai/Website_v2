@@ -22,7 +22,8 @@ async function getDashboardStats() {
     const recentLeads = recentLeadsRes.data ?? []
 
     return { totalLeads, newLeads, totalNotices, recentLeads, error: null }
-  } catch {
+  } catch (err) {
+    console.error('Dashboard stats fetch error:', err)
     return { totalLeads: 0, newLeads: 0, totalNotices: 0, recentLeads: [], error: '데이터를 불러오지 못했습니다.' }
   }
 }

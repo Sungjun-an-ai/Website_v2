@@ -79,6 +79,12 @@ export default function AdminMediaPage() {
 
   useEffect(() => { fetchFiles() }, [fetchFiles])
 
+  const sanitizeFilename = (name: string): string => {
+    // Strip path components and keep only safe characters
+    const basename = name.replace(/^.*[/\\]/, '')
+    return basename.replace(/[^a-zA-Z0-9._\-가-힣]/g, '_')
+  }
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = e.target.files
     if (!fileList || fileList.length === 0) return
@@ -87,10 +93,12 @@ export default function AdminMediaPage() {
     const supabase = createClient()
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i]
+      // Prefix with timestamp to avoid conflicts and prevent path traversal
+      const safeName = `${Date.now()}_${sanitizeFilename(file.name)}`
       setUploadProgress(`업로드 중: ${file.name} (${i + 1}/${fileList.length})`)
       const { error: upErr } = await supabase.storage
         .from(BUCKET)
-        .upload(file.name, file, { upsert: true })
+        .upload(safeName, file, { upsert: false })
       if (upErr) {
         setError(`오류: ${upErr.message}`)
         break
@@ -288,7 +296,7 @@ export default function AdminMediaPage() {
                 ) : preview.metadata.mimetype.startsWith('video/') ? (
                   <video src={preview.publicUrl} controls className="max-w-full max-h-full" />
                 ) : preview.metadata.mimetype === 'application/pdf' ? (
-                  <iframe src={preview.publicUrl} className="w-full h-96" title={preview.name} />
+                  <iframe src={preview.publicUrl} className="w-full h-96" title={preview.name} sandbox="allow-scripts allow-same-origin" />
                 ) : (
                   <div className="text-center">
                     <File className="h-16 w-16 text-gray-300 mx-auto mb-3" />
