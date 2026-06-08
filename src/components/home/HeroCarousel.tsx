@@ -76,7 +76,7 @@ export default function HeroCarousel() {
   if (slides.length === 0) {
     return (
       <section
-        className="relative h-screen min-h-[600px] bg-navy"
+        className="relative h-screen w-full flex-shrink-0 snap-start bg-navy"
         aria-label={locale === 'ko' ? '로딩 중' : 'Loading...'}
         aria-busy="true"
       >
@@ -88,16 +88,27 @@ export default function HeroCarousel() {
   }
 
   return (
-    <section className="relative h-screen min-h-[600px]">
+    <section className="relative h-screen w-full flex-shrink-0 snap-start">
       <div ref={swiperRef} className="swiper h-full">
         <div className="swiper-wrapper">
           {slides.map((slide) => (
-            <div key={slide.id} className="swiper-slide relative h-screen min-h-[600px]">
-              {/* Background Image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${slide.image_url})` }}
-              />
+            <div key={slide.id} className="swiper-slide relative h-full w-full">
+              {/* Background Media */}
+              {slide.image_url?.match(/\.(mp4|webm|ogg)(?:\?.*)?$/i) ? (
+                <video
+                  src={slide.image_url}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              ) : (
+                <div
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                  style={{ backgroundImage: `url(${slide.image_url})` }}
+                />
+              )}
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-navy-900 to-navy-600 opacity-75" />
 

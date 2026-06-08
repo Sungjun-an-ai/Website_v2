@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server'
 import { getTranslations } from 'next-intl/server'
-import { Award, CheckCircle } from 'lucide-react'
+import { createClient } from '@/lib/supabase/server'
 
 export default async function AboutPage({
   params
@@ -12,88 +12,68 @@ export default async function AboutPage({
   const t = await getTranslations({ locale, namespace: 'about' })
   const isKo = locale === 'ko'
 
-  const certItems = isKo ? [
-    'ISO 9001 품질경영시스템 인증',
-    'KS F 4910 건축용 실링재 인증',
-    'KS F 4923 우레탄 고무계 방수재 인증',
-    '벤처기업 인증',
-    '이노비즈 기업 인증',
-  ] : [
-    'ISO 9001 Quality Management System Certification',
-    'KS F 4910 Building Sealant Certification',
-    'KS F 4923 Urethane Rubber Waterproofing Certification',
-    'Venture Company Certification',
-    'Innobiz Company Certification',
-  ]
+  const supabase = await createClient()
+  const { data: slides } = await supabase
+    .from('about_sections')
+    .select('*')
+    .order('order_index')
 
   return (
-    <div className="pt-20">
-      {/* Hero */}
-      <div className="bg-navy py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">About Us</div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('title')}</h1>
-          <p className="text-gray-300 max-w-2xl mx-auto">{t('subtitle')}</p>
+    <div className="pt-16 md:pt-20 flex flex-col min-h-screen relative">
+      {/* Sub GNB */}
+      <div className="bg-navy/95 backdrop-blur-md sticky top-16 md:top-20 z-40 flex-shrink-0 border-b border-white/10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
+            <div className="hidden md:block"></div>
+            <div className="text-center">
+              <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
+                {t('title')}
+              </h1>
+            </div>
+            <div className="hidden md:block"></div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 items-center">
-          <div>
-            <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Overview</div>
-            <h2 className="text-3xl font-bold text-navy mb-4">{t('title')}</h2>
-            <div className="w-12 h-1 bg-gold mb-6" />
-            <p className="text-gray-600 leading-relaxed text-lg">{t('overview')}</p>
-          </div>
-          <div className="relative">
-            <div
-              className="w-full h-72 rounded-2xl bg-cover bg-center shadow-xl"
-              style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80)' }}
-            />
-            <div className="absolute -bottom-4 -right-4 bg-gold text-white rounded-xl p-4 shadow-lg">
-              <div className="text-3xl font-bold">36+</div>
-              <div className="text-sm">{isKo ? '년의 경험' : 'Years of Experience'}</div>
-            </div>
-          </div>
-        </div>
+      <div className="flex-grow flex flex-col">
+        {slides && slides.length > 0 ? (
+          slides.map((slide, index) => (
+            <section
+              key={slide.id}
+              className="w-full relative flex items-center justify-center overflow-hidden min-h-[calc(100vh-140px)] md:min-h-[calc(100vh-160px)]"
+            >
+              {/* Background Parallax Layer */}
+              <div
+                className="absolute inset-0 bg-cover bg-center bg-fixed w-full h-full"
+                style={{ backgroundImage: `url(${slide.image_url})` }}
+              />
+              {/* Dark Overlay for Readability */}
+              <div className="absolute inset-0 bg-navy/60" />
 
-        {/* Mission & Vision */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-          <div className="bg-navy rounded-2xl p-8 text-white">
-            <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center mb-4">
-              <Award className="h-6 w-6 text-white" />
-            </div>
-            <h3 className="text-xl font-bold mb-3">{t('missionTitle')}</h3>
-            <div className="w-10 h-0.5 bg-gold mb-4" />
-            <p className="text-gray-300 leading-relaxed">{t('mission')}</p>
-          </div>
-          <div className="bg-gold rounded-2xl p-8 text-white">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-4">
-              <Award className="h-6 w-6 text-gold" />
-            </div>
-            <h3 className="text-xl font-bold mb-3">{t('visionTitle')}</h3>
-            <div className="w-10 h-0.5 bg-white mb-4" />
-            <p className="text-white/90 leading-relaxed">{t('vision')}</p>
-          </div>
-        </div>
-
-        {/* Certifications */}
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-navy">{t('certification')}</h2>
-            <div className="w-12 h-1 bg-gold mx-auto mt-3" />
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {certItems.map((cert, idx) => (
-              <div key={idx} className="flex items-center gap-3 bg-gray-50 rounded-xl p-4 border border-gray-200">
-                <CheckCircle className="h-5 w-5 text-gold flex-shrink-0" />
-                <span className="text-gray-700 text-sm">{cert}</span>
+              {/* Content Container */}
+              <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white py-20">
+                <div className="bg-black/50 backdrop-blur-md border border-white/10 rounded-2xl p-8 md:p-12 shadow-2xl max-w-4xl mx-auto transform transition-all duration-700 hover:bg-black/60">
+                   <div className="text-gold text-sm md:text-base font-bold tracking-[0.2em] uppercase mb-4">
+                     {slide.section_key}
+                   </div>
+                   <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight whitespace-pre-wrap">
+                     {isKo ? slide.title_ko : slide.title_en}
+                   </h2>
+                   <div className="w-16 h-1 bg-gold mx-auto mb-8 opacity-80" />
+                   <p className="text-lg md:text-xl text-gray-200 leading-relaxed font-light whitespace-pre-wrap">
+                     {isKo ? slide.content_ko : slide.content_en}
+                   </p>
+                </div>
               </div>
-            ))}
+            </section>
+          ))
+        ) : (
+          <div className="min-h-[50vh] flex items-center justify-center text-gray-500">
+            {isKo ? '회사 소개 데이터가 없습니다.' : 'No about data available.'}
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
 }
+

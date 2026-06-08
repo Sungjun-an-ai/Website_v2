@@ -128,13 +128,19 @@ export default function ResourcesPage() {
   }
 
   return (
-    <div className="pt-20">
-      {/* Hero */}
-      <div className="bg-navy py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Resources</div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('title')}</h1>
-          <p className="text-gray-300 max-w-2xl mx-auto">{t('subtitle')}</p>
+    <div className="pt-16 md:pt-20 flex flex-col">
+      {/* Sub GNB */}
+      <div className="bg-navy/95 backdrop-blur-md sticky top-16 md:top-20 z-40 flex-shrink-0 border-b border-white/10">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
+            <div className="hidden md:block"></div>
+            <div className="text-center">
+              <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
+                {t('title')}
+              </h1>
+            </div>
+            <div className="hidden md:block"></div>
+          </div>
         </div>
       </div>
 

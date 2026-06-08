@@ -7,15 +7,13 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Menu, X, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-function HsuEmblem({ size }: { size: number }) {
-  const scale = size / 120
+function HsuEmblem({ className }: { className?: string }) {
   return (
     <svg
-      width={size}
-      height={size}
       viewBox="0 0 120 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      className={className}
       style={{ display: 'block' }}
     >
       {/* Outer circle */}
@@ -24,29 +22,15 @@ function HsuEmblem({ size }: { size: number }) {
       <circle cx="60" cy="60" r="42" stroke="#1B2A6B" strokeWidth="2" fill="none" />
       {/* H.S.U. text */}
       <text
-        x="60"
-        y="58"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="serif"
-        fontWeight="bold"
-        fontSize={Math.round(18 * scale + 18 * (1 - scale))}
-        fill="#1B2A6B"
-        letterSpacing="2"
+        x="60" y="58" textAnchor="middle" dominantBaseline="middle"
+        fontFamily="serif" fontWeight="bold" fontSize="18" fill="#1B2A6B" letterSpacing="2"
       >
         H.S.U.
       </text>
       {/* 한성우레탄 text below */}
       <text
-        x="60"
-        y="80"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="sans-serif"
-        fontWeight="600"
-        fontSize={Math.round(11 * scale + 11 * (1 - scale))}
-        fill="#1B2A6B"
-        letterSpacing="1"
+        x="60" y="80" textAnchor="middle" dominantBaseline="middle"
+        fontFamily="sans-serif" fontWeight="600" fontSize="11" fill="#1B2A6B" letterSpacing="1"
       >
         한성우레탄
       </text>
@@ -54,32 +38,37 @@ function HsuEmblem({ size }: { size: number }) {
   )
 }
 
-export default function Header() {
+export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: string | null }) {
   const t = useTranslations('nav')
   const locale = useLocale()
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  const [logoUrl, setLogoUrl] = useState<string | null>(initialLogoUrl)
+
+  // Sync prop changes
+  useEffect(() => {
+    if (initialLogoUrl !== undefined) {
+      setLogoUrl(initialLogoUrl)
+    }
+  }, [initialLogoUrl])
 
   const isMainPage = pathname === `/${locale}` || pathname === `/${locale}/`
 
-  // Logo animation constants
-  const HEADER_HEIGHT_PX = 80
-  const LOGO_MAX_PX = 120
-  const LOGO_MIN_PX = 64
-
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-      setIsScrolled(window.scrollY > 10)
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement | Document
+      const scrollPos = target === document ? window.scrollY : (target as HTMLElement).scrollTop
+      if (scrollPos !== undefined) {
+        setScrollY(scrollPos)
+        setIsScrolled(scrollPos > 10)
+      }
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    window.addEventListener('scroll', handleScroll, true)
 
-  // Logo box size: LOGO_MAX_PX when scrollY=0, LOGO_MIN_PX when scrollY>=HEADER_HEIGHT_PX
-  const logoSize = Math.round(Math.max(LOGO_MIN_PX, LOGO_MAX_PX - (scrollY / HEADER_HEIGHT_PX) * (LOGO_MAX_PX - LOGO_MIN_PX)))
+    return () => window.removeEventListener('scroll', handleScroll, true)
+  }, [])
 
   const navItems = [
     { label: t('products'), href: `/${locale}/products` },
@@ -108,12 +97,21 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo Box */}
-          <Link href={`/${locale}`} className="flex-shrink-0 relative" style={{ marginTop: logoSize > HEADER_HEIGHT_PX ? logoSize - HEADER_HEIGHT_PX : 0 }}>
+          <Link href={`/${locale}`} className="flex-shrink-0 self-start">
             <div
-              className="bg-gray-100 flex items-center justify-center transition-all duration-300 overflow-hidden"
-              style={{ width: logoSize, height: logoSize }}
+              className={cn(
+                "flex items-center justify-center transition-all duration-300 origin-top",
+                !isScrolled
+                  ? "bg-white rounded-b-xl shadow-md w-[110px] h-[110px] md:w-[172px] md:h-[172px] p-[10%]"
+                  : "bg-transparent shadow-none w-24 h-16 md:w-36 md:h-20 p-2"
+              )}
             >
-              <HsuEmblem size={logoSize} />
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
+              ) : (
+                <HsuEmblem className="w-full h-full object-contain" />
+              )}
             </div>
           </Link>
 

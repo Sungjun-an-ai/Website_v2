@@ -50,14 +50,22 @@ export default function AdminProductsPage() {
   const handleSave = async () => {
     setSaving(true)
     const supabase = createClient()
+    let saveError = null
     if (editing) {
-      await supabase.from('products').update(form).eq('id', editing.id)
+      const { error } = await supabase.from('products').update(form).eq('id', editing.id)
+      saveError = error
     } else {
-      await supabase.from('products').insert(form)
+      const { error } = await supabase.from('products').insert(form)
+      saveError = error
     }
     setSaving(false)
-    setOpen(false)
-    fetchProducts()
+    if (saveError) {
+      alert(`저장 실패: ${saveError.message || JSON.stringify(saveError)}`)
+      console.error('Save error:', saveError)
+    } else {
+      setOpen(false)
+      fetchProducts()
+    }
   }
 
   const handleDelete = async (id: string) => {

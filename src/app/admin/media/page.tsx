@@ -92,24 +92,34 @@ export default function AdminMediaPage() {
     if (!fileList || fileList.length === 0) return
     setUploading(true)
     setError('')
-    const supabase = createClient()
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i]
-      // Prefix with timestamp to avoid conflicts and prevent path traversal
-      const safeName = `${Date.now()}_${sanitizeFilename(file.name)}`
-      setUploadProgress(`업로드 중: ${file.name} (${i + 1}/${fileList.length})`)
-      const { error: upErr } = await supabase.storage
-        .from(BUCKET)
-        .upload(safeName, file, { upsert: false })
-      if (upErr) {
-        setError(`오류: ${upErr.message}`)
-        break
+    
+    let hasError = false
+    try {
+      const supabase = createClient()
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i]
+        const safeName = `${Date.now()}_${sanitizeFilename(file.name)}`
+        setUploadProgress(`업로드 중: ${file.name} (${i + 1}/${fileList.length})`)
+        const { error: upErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(safeName, file, { upsert: true })
+        if (upErr) {
+          setError(`업로드 오류 (${file.name}): ${upErr.message}`)
+          hasError = true
+          break
+        }
+      }
+    } catch (err) {
+      hasError = true
+      setError(`시스템 오류: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setUploadProgress('')
+      setUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      if (!hasError) {
+        setTimeout(() => fetchFiles(), 500) // slight delay to bypass cache
       }
     }
-    setUploadProgress('')
-    setUploading(false)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-    fetchFiles()
   }
 
   const handleDelete = async (file: MediaFile) => {

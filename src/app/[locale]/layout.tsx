@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import { createClient } from '@/lib/supabase/server'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -23,9 +24,18 @@ export default async function LocaleLayout({
 
   const messages = await getMessages()
 
+  let logoUrl = null
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase.from('site_settings').select('value').eq('key', 'header_logo_url').single()
+    if (data?.value) logoUrl = data.value
+  } catch (error) {
+    console.error('[Layout] Failed to fetch logo:', error)
+  }
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <Header />
+      <Header initialLogoUrl={logoUrl} />
       <main>{children}</main>
       <Footer />
     </NextIntlClientProvider>

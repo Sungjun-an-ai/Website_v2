@@ -47,9 +47,9 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+    <section id="contact" className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-gray-50 py-16">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 md:mb-12">
           <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Contact</div>
           <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">{t('title')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{t('subtitle')}</p>

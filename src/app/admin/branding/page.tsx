@@ -80,10 +80,12 @@ export default function AdminBrandingPage() {
         .upload(path, file, { upsert: true })
       if (uploadErr) throw new Error(uploadErr.message)
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(path)
+      const timestamp = new Date().getTime()
+      const cacheBustedUrl = `${publicUrl}?t=${timestamp}`
       setSettings(prev => ({
         ...prev,
-        header_logo_url: publicUrl,
-        favicon_url: publicUrl,
+        header_logo_url: cacheBustedUrl,
+        favicon_url: cacheBustedUrl,
       }))
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : '업로드 오류')

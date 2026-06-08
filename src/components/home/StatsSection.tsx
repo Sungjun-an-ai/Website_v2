@@ -74,8 +74,8 @@ export default function StatsSection() {
   const sectionTitle = locale === 'ko' ? '한성우레탄의 숫자' : 'Hansung Urethane in Numbers'
 
   return (
-    <section className="bg-navy py-16 md:py-24" ref={ref}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-navy h-screen w-full flex-shrink-0 snap-start flex items-center justify-center relative" ref={ref}>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-white">{sectionTitle}</h2>
           <div className="w-16 h-1 bg-gold mx-auto mt-4" />

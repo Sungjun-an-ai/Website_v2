@@ -12,12 +12,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale)
 
   return (
-    <>
+    <main className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory hide-scrollbar bg-navy" id="main-scroll-container">
       <HeroCarousel />
       <StatsSection />
       <ProductsSection />
       <ValuesSection />
       <ContactSection />
-    </>
+    </main>
   )
 }

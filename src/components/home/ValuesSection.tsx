@@ -33,64 +33,69 @@ export default async function ValuesSection() {
   if (error) console.error('[ValuesSection] fetch error:', error)
   const values: CoreValue[] = data || []
 
-  return (
-    <section className="py-16 md:py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Core Values</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">
-            {isKo ? '핵심 가치' : 'Core Values'}
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            {isKo
-              ? '한성우레탄이 36년간 지켜온 기업 철학'
-              : 'The corporate philosophy Hansung Urethane has upheld for 36 years'}
-          </p>
-          <div className="w-16 h-1 bg-gold mx-auto mt-4" />
-        </div>
+  // Default images for values if they don't have one, just to make the background look premium
+  const bgImages = [
+    'https://images.unsplash.com/photo-1504917595217-d4f3915ce113?w=1920&q=80',
+    'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80',
+    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80',
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1920&q=80'
+  ]
 
-        <div className="space-y-16 md:space-y-24">
-          {values.map((value, idx) => {
-            const Icon: LucideIcon = iconMap[value.icon] ?? Award
-            const reverse = idx % 2 === 1
-            return (
-              <div
-                key={value.id}
-                className={`flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-8 md:gap-16`}
-              >
-                {/* Icon visual block */}
-                <div className="w-full md:w-1/2">
-                  <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-video bg-navy flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <div className="w-20 h-20 bg-gold rounded-full flex items-center justify-center">
-                        <Icon className="h-10 w-10 text-white" />
-                      </div>
-                    </div>
-                  </div>
+  return (
+    <section className="relative h-screen w-full flex-shrink-0 snap-start flex flex-col bg-navy pt-16 md:pt-20 overflow-hidden">
+      {/* Title Overlay */}
+      <div className="absolute top-24 md:top-32 left-1/2 -translate-x-1/2 z-20 text-center pointer-events-none w-full px-4">
+        <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Core Values</div>
+        <h2 className="text-3xl md:text-5xl font-bold text-white drop-shadow-xl mb-4">
+          {isKo ? '핵심 가치' : 'Core Values'}
+        </h2>
+        <div className="w-16 h-1 bg-gold mx-auto" />
+      </div>
+
+      <div className="flex-grow flex flex-col h-full w-full group pt-20 pb-8 md:pt-36">
+        {values.map((value, idx) => {
+          const Icon: LucideIcon = iconMap[value.icon] ?? Award
+          const bgImg = bgImages[idx % bgImages.length]
+
+          return (
+            <div
+              key={value.id}
+              className="group/item flex-1 hover:flex-[1.5] transition-all duration-700 ease-out relative flex items-center justify-center overflow-hidden border-b border-white/5 last:border-b-0 cursor-pointer"
+            >
+              {/* Background Image & Overlay */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover/item:scale-105"
+                style={{ backgroundImage: `url(${bgImg})` }}
+              />
+              <div className="absolute inset-0 bg-navy/85 group-hover/item:bg-navy/70 transition-colors duration-500" />
+              
+              {/* Content Container */}
+              <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center gap-6 md:gap-12 transition-transform duration-500">
+                {/* Number & Icon */}
+                <div className="flex flex-col items-center justify-center text-gold opacity-80 group-hover/item:opacity-100 transition-opacity duration-300 md:w-32">
+                  <span className="text-xs font-bold tracking-[0.2em] mb-2 uppercase">0{idx + 1}</span>
+                  <Icon className="h-10 w-10 md:h-12 md:w-12 transform group-hover/item:scale-110 transition-transform duration-500" />
                 </div>
 
-                {/* Content */}
-                <div className="w-full md:w-1/2">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-navy rounded-full flex items-center justify-center">
-                      <Icon className="h-5 w-5 text-gold" />
-                    </div>
-                    <span className="text-gold text-sm font-semibold tracking-widest uppercase">
-                      0{idx + 1}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-navy mb-4">
+                {/* Text Content */}
+                <div className="text-center md:text-left flex-1 md:pr-12 md:opacity-75 group-hover/item:opacity-100 transition-opacity duration-500">
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-3">
                     {isKo ? value.title_ko : value.title_en}
                   </h3>
-                  <div className="w-12 h-1 bg-gold mb-4" />
-                  <p className="text-gray-600 leading-relaxed text-base md:text-lg">
-                    {isKo ? value.description_ko : value.description_en}
+                  <div className="w-12 h-0.5 bg-gold mx-auto md:mx-0 mb-3 md:mb-4 transform origin-left md:scale-x-100 scale-x-50 group-hover/item:scale-x-100 transition-transform duration-500" />
+                  
+                  <p className="text-gray-300 text-sm md:text-lg leading-relaxed max-w-3xl hidden md:block opacity-0 md:opacity-100 transform translate-y-4 group-hover/item:translate-y-0 transition-all duration-500">
+                     {isKo ? value.description_ko : value.description_en}
+                  </p>
+                  {/* Mobile exact description mapping */}
+                  <p className="text-gray-300 text-sm leading-relaxed md:hidden">
+                     {isKo ? value.description_ko : value.description_en}
                   </p>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
     </section>
   )
