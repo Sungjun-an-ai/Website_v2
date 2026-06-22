@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
+import HistoryHero from '@/components/about/HistoryHero'
 
 const fallbackHistoryEvents = [
   { year: 1988, month: null, event_ko: '한성우레탄 창업', event_en: 'Founded Hansung Urethane' },
@@ -52,59 +53,9 @@ export default async function HistoryPage({
     // Use fallback data
   }
 
-  const grouped = historyEvents.reduce((acc, item) => {
-    const decade = Math.floor(item.year / 10) * 10
-    if (!acc[decade]) acc[decade] = []
-    acc[decade].push(item)
-    return acc
-  }, {} as Record<number, HistoryEvent[]>)
-
-  const decades = Object.keys(grouped).map(Number).sort((a, b) => b - a)
+  const title = t('title')
 
   return (
-    <div className="pt-16 md:pt-20 flex flex-col">
-      {/* Sub GNB */}
-      <div className="bg-navy/95 backdrop-blur-md sticky top-16 md:top-20 z-40 flex-shrink-0 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
-            <div className="hidden md:block"></div>
-            <div className="text-center">
-              <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
-                {t('title')}
-              </h1>
-            </div>
-            <div className="hidden md:block"></div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {decades.map(decade => (
-          <div key={decade} className="mb-12">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="text-3xl font-bold text-navy">{decade}s</div>
-              <div className="flex-1 h-px bg-gray-200" />
-            </div>
-            <div className="relative pl-8 border-l-2 border-navy/20 space-y-6">
-              {grouped[decade]
-                .sort((a, b) => b.year - a.year)
-                .map((item) => (
-                  <div key={`${item.year}-${item.event_ko}`} className="relative">
-                    <div className="absolute -left-10 w-4 h-4 rounded-full bg-gold border-2 border-white shadow" />
-                    <div className="flex items-start gap-4">
-                      <div className="text-2xl font-bold text-navy w-16 flex-shrink-0">{item.year}</div>
-                      <div className="flex-1 pt-1">
-                        <p className="text-gray-700 leading-relaxed">
-                          {isKo ? item.event_ko : item.event_en}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <HistoryHero events={historyEvents} isKo={isKo} title={title} />
   )
 }

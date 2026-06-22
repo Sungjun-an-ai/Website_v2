@@ -1,180 +1,175 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
-const products = [
-  {
-    slug: 'hs-100',
-    category: 'adhesive',
-    name_ko: 'HS-100 우레탄 접착제',
-    name_en: 'HS-100 Urethane Adhesive',
-    description_ko: '고강도 우레탄 접착제. 콘크리트, 금속, 목재 등 다양한 소재의 접합에 사용되는 2액형 폴리우레탄 접착제입니다.',
-    description_en: 'High-strength urethane adhesive. A two-component polyurethane adhesive for bonding concrete, metal, wood, and various other substrates.',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
-  },
-  {
-    slug: 'hs-200',
-    category: 'sealant',
-    name_ko: 'HS-200 폴리우레탄 지수제',
-    name_en: 'HS-200 Polyurethane Sealant',
-    description_ko: '탁월한 수밀성의 지수제. 지하 구조물, 터널, 댐 등의 누수 방지 및 방수 처리에 적합한 2액형 폴리우레탄 지수제입니다.',
-    description_en: 'Excellent watertightness sealant. A two-component polyurethane sealant suitable for waterproofing underground structures, tunnels, and dams.',
-    image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=80',
-  },
-  {
-    slug: 'hs-300',
-    category: 'waterproof',
-    name_ko: 'HS-300 우레탄 방수제',
-    name_en: 'HS-300 Urethane Waterproofing',
-    description_ko: '탄성 도막형 방수제. 건물 옥상, 지붕, 발코니 등의 방수 시공에 사용되는 우레탄 고무계 방수재입니다.',
-    description_en: 'Elastic membrane waterproofing. A urethane rubber waterproofing material for rooftops, roofs, balconies, and other surfaces.',
-    image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
-  },
-  {
-    slug: 'hs-400',
-    category: 'grout',
-    name_ko: 'HS-400 발포 우레탄 그라우트',
-    name_en: 'HS-400 Expanding Urethane Grout',
-    description_ko: '수반응 급결 그라우트. 콘크리트 균열 보수, 터널 용수 차단, 지반 보강 주입에 사용되는 고발포성 우레탄 그라우트입니다.',
-    description_en: 'Water-reactive rapid-setting grout. A high-expansion urethane grout used for concrete crack repair, tunnel water blocking, and ground reinforcement.',
-    image: 'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=800&q=80',
-  },
-]
+type ProductGroup = {
+  key: string
+  labelKo: string
+  labelEn: string
+  subtitleKo: string
+  subtitleEn: string
+  href: (locale: string) => string
+  image: string
+}
 
-const categories = [
-  { key: 'all', ko: '전체', en: 'All' },
-  { key: 'adhesive', ko: '접착제', en: 'Adhesive' },
-  { key: 'sealant', ko: '지수제', en: 'Sealant' },
-  { key: 'waterproof', ko: '방수제', en: 'Waterproofing' },
-  { key: 'grout', ko: '그라우트', en: 'Grout' },
+const productGroups: ProductGroup[] = [
+  {
+    key: 'sealant',
+    labelKo: '지수제',
+    labelEn: 'Sealing Agent',
+    subtitleKo: '누수 차단의 정밀함과 내구성을 동시에',
+    subtitleEn: 'Precision leak-blocking with lasting durability',
+    href: (locale) => `/${locale}/products/ws-3000`,
+    image: '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4',
+  },
+  {
+    key: 'fire-door-adhesive',
+    labelKo: '방화문 접착제',
+    labelEn: 'Fire Door Adhesive',
+    subtitleKo: '내열 성능과 안정 접착을 위한 방화문 솔루션',
+    subtitleEn: 'Heat-resistant bonding solution for fire doors',
+    href: (locale) => `/${locale}/products/nflv-eco`,
+    image: '/about/A_photorealistic_hero_image_on_Nano_Banana_2_74206.png',
+  },
+  {
+    key: 'interior-door-adhesive',
+    labelKo: '실내문 접착제',
+    labelEn: 'Interior Door Adhesive',
+    subtitleKo: '실내도어 양산 공정을 위한 균일 접착 성능',
+    subtitleEn: 'Consistent bonding for interior door production',
+    href: (locale) => `/${locale}/products/id`,
+    image: '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4',
+  },
+  {
+    key: 'general-adhesive',
+    labelKo: '일반 접착제',
+    labelEn: 'General Adhesive',
+    subtitleKo: '다양한 공정에 적용 가능한 범용 우레탄 접착',
+    subtitleEn: 'Versatile urethane bonding across processes',
+    href: (locale) => `/${locale}/products/hanaro-p`,
+    image: '/about/An_extreme_macro_close-up_of_u_Nano_Banana_Pro_81286.png',
+  },
+  {
+    key: 'urethane-solution',
+    labelKo: '우레탄 솔루션',
+    labelEn: 'Urethane Solution',
+    subtitleKo: '제품을 넘어 공정 전체를 함께 설계하는 파트너십',
+    subtitleEn: 'Process-wide partnership beyond products',
+    href: (locale) => `/${locale}/about`,
+    image: '/about/A_photorealistic_hero_image_se_Nano_Banana_Pro_42629.png',
+  },
 ]
 
 export default function ProductsPage() {
   const params = useParams()
   const locale = params.locale as string
   const isKo = locale === 'ko'
-  const [activeCategory, setActiveCategory] = useState('all')
-  const [hovered, setHovered] = useState<string | null>(null)
+  const [showCardEntrance, setShowCardEntrance] = useState(false)
+  const sliderRef = useRef<HTMLDivElement | null>(null)
+  const loopGroups = [...productGroups, ...productGroups]
 
-  const filtered = activeCategory === 'all'
-    ? products
-    : products.filter(p => p.category === activeCategory)
+  const fadeIn = (delayMs: number): React.CSSProperties =>
+    showCardEntrance
+      ? { animation: `hero-fade-up 1.1s cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms both` }
+      : { opacity: 0, transform: 'translateY(20px)', filter: 'blur(4px)' }
+
+  const cardEntranceStyle = (order: number): React.CSSProperties => fadeIn(200 + order * 260)
+
+  useEffect(() => {
+    requestAnimationFrame(() => setShowCardEntrance(true))
+  }, [])
+
+  useEffect(() => {
+    const slider = sliderRef.current
+    if (!slider) return
+
+    const interval = window.setInterval(() => {
+      const columnWidth = slider.clientWidth / 3
+      const next = slider.scrollLeft + columnWidth
+      const firstLoopEnd = columnWidth * productGroups.length
+
+      if (next > firstLoopEnd + 2) {
+        slider.scrollTo({ left: 0, behavior: 'auto' })
+        return
+      }
+
+      slider.scrollTo({ left: next, behavior: 'smooth' })
+    }, 3600)
+
+    return () => window.clearInterval(interval)
+  }, [productGroups.length])
 
   return (
-    <div className="min-h-screen bg-navy flex flex-col pt-16 md:pt-20">
-      {/* Compact Header & Category Filter */}
-      <div className="bg-navy/95 backdrop-blur-md sticky top-16 md:top-20 z-40 flex-shrink-0 border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3">
-            {/* Left Blank (For avoiding logo collision) */}
-            <div className="hidden md:block"></div>
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat bg-center"
+        style={{ backgroundImage: "url('/about/Same_image_change_to_169_ratio_Nano_Banana_2_00205.png')" }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(135deg, rgba(27, 42, 107, 0.60) 0%, rgba(27, 42, 107, 0.42) 38%, rgba(27, 42, 107, 0.18) 68%, rgba(2, 6, 23, 0.35) 100%)',
+        }}
+      />
+      <div className="absolute inset-0 bg-slate-950/10" />
 
-            {/* Title (Center) */}
-            <div className="text-center">
-              <h1 className="text-xl md:text-2xl font-extrabold text-white tracking-tight">
-                {isKo ? '한성우레탄 제품군' : 'Hansung Urethane Products'}
-              </h1>
-            </div>
+      <section className="relative z-10 flex flex-col pt-28 md:pt-36">
+        <div className="mx-auto w-full max-w-7xl mb-8 px-5 pt-6 sm:px-8 md:pt-8 lg:px-12 lg:pt-10">
+          <p className="text-gold text-xs sm:text-sm font-semibold tracking-[0.24em] uppercase mb-4" style={fadeIn(0)}>Products</p>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[0.95] text-white" style={fadeIn(120)}>
+            {isKo ? '한성우레탄 제품군' : 'Hansung Urethane Product Groups'}
+          </h1>
+          <p className="mt-5 text-base sm:text-lg text-white/80 max-w-4xl leading-relaxed" style={fadeIn(260)}>
+            {isKo
+              ? '좌우로 스크롤하며 5개 제품군의 대표 이미지를 3분할 화면으로 확인하세요.'
+              : 'Scroll horizontally to explore 5 product groups in split-screen visuals.'}
+          </p>
+        </div>
 
-            {/* Category Submenu (Right) */}
-            <div className="flex gap-1.5 md:gap-2 overflow-x-auto hide-scrollbar justify-center md:justify-end">
-              {categories.map(cat => (
-                <button
-                  key={cat.key}
-                  onClick={() => setActiveCategory(cat.key)}
-                  className={`px-4 md:px-5 py-2 rounded-full text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap transition-all duration-300 ${
-                    activeCategory === cat.key
-                      ? 'bg-gold text-navy shadow-[0_0_10px_rgba(212,175,55,0.4)]'
-                      : 'text-gray-400 border border-transparent hover:text-white hover:bg-white/10 hover:border-white/20'
-                  }`}
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 h-[64vh] min-h-[440px] max-h-[640px]">
+          <div
+            ref={sliderRef}
+            className="h-full overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            <div className="flex h-full snap-x snap-mandatory gap-0">
+              {loopGroups.map((group, index) => (
+                <Link
+                  key={`${group.key}-${index}`}
+                  href={group.href(locale)}
+                  className="group relative h-full basis-1/3 flex-none snap-start overflow-hidden"
+                  style={index < 3 ? cardEntranceStyle(index) : undefined}
                 >
-                  {isKo ? cat.ko : cat.en}
-                </button>
+                  {group.image.endsWith('.mp4') ? (
+                    <video autoPlay muted loop playsInline className="h-full w-full object-cover object-center">
+                      <source src={group.image} type="video/mp4" />
+                    </video>
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={group.image} alt="" className="h-full w-full object-cover object-center" />
+                  )}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/22 to-black/34" />
+
+                  <div className="absolute top-6 right-6 z-10 max-w-[82%] text-right md:top-10 md:right-10 drop-shadow-[0_8px_26px_rgba(0,0,0,0.66)]">
+                    <h2
+                      className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[0.98] text-gold transition-colors"
+                      style={{ WebkitTextStroke: '0.55px rgba(255,255,255,0.92)', paintOrder: 'stroke fill' }}
+                    >
+                      {isKo ? group.labelKo : group.labelEn}
+                    </h2>
+                    <p className="mt-3 text-xs sm:text-sm lg:text-base text-white/95 leading-relaxed">
+                      {isKo ? group.subtitleKo : group.subtitleEn}
+                    </p>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
         </div>
-      </div>
-
-      {/* 4-Column Horizontal Image Layout */}
-      <div className="w-full flex-grow flex flex-col">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 w-full flex-grow min-h-[600px]">
-          {filtered.map((product) => {
-            const catLabel = isKo
-              ? categories.find(c => c.key === product.category)?.ko
-              : categories.find(c => c.key === product.category)?.en
-            const isHovered = hovered === product.slug
-
-            return (
-              <Link
-                key={product.slug}
-                href={`/${locale}/products/${product.slug}`}
-                className="relative h-[400px] sm:h-[450px] lg:h-auto overflow-hidden group cursor-pointer border-r border-b lg:border-b-0 border-white/10"
-                onMouseEnter={() => setHovered(product.slug)}
-                onMouseLeave={() => setHovered(null)}
-              >
-                {/* Background image */}
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
-                  style={{ backgroundImage: `url(${product.image})` }}
-                />
-
-                {/* Gradient overlay */}
-                <div className={`absolute inset-0 transition-all duration-500 ease-out ${
-                  isHovered
-                    ? 'bg-navy/85'
-                    : 'bg-gradient-to-t from-navy/95 via-navy/50 to-transparent'
-                }`} />
-
-                {/* Content - always visible at bottom, full reveal on hover */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-                  {/* Category badge */}
-                  <span className={`text-xs font-bold tracking-[0.15em] uppercase text-gold mb-3 transition-all duration-500 ease-out ${
-                    isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
-                  }`}>
-                    {catLabel}
-                  </span>
-
-                  {/* Product Name */}
-                  <h2 className={`text-xl font-bold leading-snug transition-all duration-500 ease-out ${
-                    isHovered ? 'translate-y-0' : 'translate-y-8'
-                  }`}>
-                    {isKo ? product.name_ko : product.name_en}
-                  </h2>
-
-                  {/* Description - only on hover */}
-                  <div className={`mt-4 overflow-hidden transition-all duration-500 ease-out ${
-                    isHovered ? 'opacity-100 max-h-40 translate-y-0' : 'opacity-0 max-h-0 translate-y-4'
-                  }`}>
-                    <p className="text-sm text-gray-300 leading-relaxed max-w-[280px]">
-                      {isKo ? product.description_ko : product.description_en}
-                    </p>
-                  </div>
-
-                  {/* CTA */}
-                  <span className={`mt-6 inline-flex items-center justify-center px-5 py-2 border border-gold/50 rounded-full text-xs font-semibold text-gold transition-all duration-500 ease-out hover:bg-gold hover:text-navy ${
-                    isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`}>
-                    {isKo ? '자세히 보기' : 'Learn More'}
-                  </span>
-                </div>
-
-                {/* Bottom strip - visible when not hovered */}
-                <div className={`absolute bottom-0 left-0 right-0 p-6 transition-all duration-500 ease-out ${
-                  isHovered ? 'opacity-0 translate-y-6' : 'opacity-100 translate-y-0'
-                }`}>
-                  <p className="text-xs font-semibold text-gold tracking-widest uppercase mb-1">{catLabel}</p>
-                  <h3 className="text-lg font-bold text-white leading-tight line-clamp-2">
-                    {isKo ? product.name_ko : product.name_en}
-                  </h3>
-                </div>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
+      </section>
     </div>
   )
 }

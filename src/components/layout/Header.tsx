@@ -82,8 +82,13 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
   const otherLocale = locale === 'ko' ? 'en' : 'ko'
   const localePath = pathname.replace(`/${locale}`, `/${otherLocale}`)
 
-  // Sub-pages always use white header; main page uses scroll-based transparency
-  const isWhiteHeader = !isMainPage || isScrolled
+  // Keep sub-page GNB transparent; only main page turns white after scroll.
+  const isWhiteHeader = isMainPage && isScrolled
+  const isNavItemActive = (href: string) => {
+    // Only highlight "about" on its exact page, not on history/track-record subpages.
+    if (href === `/${locale}/about`) return pathname === href
+    return pathname === href || pathname.startsWith(href + '/')
+  }
 
   return (
     <header
@@ -103,7 +108,7 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
                 "flex items-center justify-center transition-all duration-300 origin-top",
                 !isScrolled
                   ? "bg-white rounded-b-xl shadow-md w-[110px] h-[110px] md:w-[172px] md:h-[172px] p-[10%]"
-                  : "bg-transparent shadow-none w-24 h-16 md:w-36 md:h-20 p-2"
+                  : "bg-white rounded-b-lg shadow-md w-24 h-16 md:w-36 md:h-20 p-2"
               )}
             >
               {logoUrl ? (
@@ -122,8 +127,11 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm font-medium hover:text-gold transition-colors",
-                  isWhiteHeader ? 'text-gray-700' : 'text-white'
+                  "text-sm hover:text-gold transition-colors gnb-text-shadow",
+                  isWhiteHeader ? 'text-gray-700' : 'text-white',
+                  isNavItemActive(item.href)
+                    ? 'font-extrabold text-gold'
+                    : 'font-medium'
                 )}
               >
                 {item.label}
@@ -137,7 +145,7 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
             <Link
               href={localePath}
               className={cn(
-                "hidden md:flex items-center gap-1 text-sm font-medium hover:text-gold transition-colors",
+                "hidden md:flex items-center gap-1 text-sm font-medium hover:text-gold transition-colors gnb-text-shadow",
                 isWhiteHeader ? 'text-gray-700' : 'text-white'
               )}
             >
@@ -156,7 +164,7 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
             {/* Mobile menu button */}
             <button
               className={cn(
-                "md:hidden p-2",
+                "md:hidden p-2 gnb-text-shadow",
                 isWhiteHeader ? 'text-navy' : 'text-white'
               )}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
