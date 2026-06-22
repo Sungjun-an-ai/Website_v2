@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>한성우레탄 — 현장 대화로 만나는 솔루션</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #1A2B6B;
+      --gold: #C9A227;
+      --section-bg: #F0F2F7;
+      --card-bg: #FFFFFF;
+      --ink: #111827;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans KR", sans-serif;
+      background: var(--section-bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .section {
+      width: 100%;
+      padding: 64px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ---- section head: LEFT aligned ---- */
+    .section-head {
+      text-align: left;
+      margin-bottom: 36px;
+      width: 100%;
+      max-width: 1080px;
+    }
+    .section-head .eyebrow {
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .section-head h2 {
+      color: var(--navy);
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .section-head p {
+      color: #4B5563;
+      font-size: 0.95rem;
+      margin-top: 12px;
+      line-height: 1.7;
+    }
+
+    /* ---------- Carousel shell ---------- */
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border-top: 3px solid var(--gold);
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(26, 43, 107, 0.10);
+      overflow: hidden;
+      display: flex;
+      min-height: 460px;
+    }
+
+    /* chat panel: full width + centered content first, shrinks to 55% on reveal */
+    .chat-panel {
+      flex: 0 0 100%;
+      max-width: 100%;
+      padding: 32px 28px;
+      display: flex;
+      align-items: center;
+      transition: flex-basis 0.6s ease, max-width 0.6s ease;
+    }
+    .card.revealed .chat-panel {
+      flex-basis: 55%;
+      max-width: 55%;
+    }
+
+    .chat-inner {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;          /* centered while full width, drifts left as panel shrinks */
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      transition: margin 0.6s ease;
+    }
+
+    /* product panel: 0 width -> 45% on reveal */
+    .product-panel {
+      flex: 0 0 0%;
+      max-width: 0%;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      background: #F8F9FC;
+      border-left: 1px solid #ECEEF4;
+      opacity: 0;
+      overflow: hidden;
+      transition: flex-basis 0.6s ease, max-width 0.6s ease, opacity 0.6s ease, padding 0.6s ease;
+    }
+    .card.revealed .product-panel {
+      flex-basis: 45%;
+      max-width: 45%;
+      padding: 20px;
+      opacity: 1;
+    }
+
+    /* ---------- Chat rows ---------- */
+    .chat-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .chat-row.customer { justify-content: flex-start; transform: translateX(-22px); }
+    .chat-row.hansung  { justify-content: flex-end; transform: translateX(22px); }
+    .chat-row.show { opacity: 1; transform: translateX(0); }
+
+    /* avatar + label column */
+    .avatar-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      width: 56px;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .avatar.customer { background: #D1D5DB; }
+    .avatar.customer svg { width: 22px; height: 22px; }
+    .avatar.hansung {
+      background: #FFFFFF;
+      border: 1px solid #D1D5DB;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 3px;
+    }
+    .avatar.hansung img { width: 100%; height: 100%; object-fit: contain; }
+    .avatar-label {
+      font-size: 0.68rem;
+      color: #6B7280;
+      white-space: nowrap;
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 12px 16px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      min-height: 44px;
+    }
+    .bubble.customer {
+      background: #F3F4F6;
+      color: #111827;
+      border-radius: 4px 18px 18px 18px;
+      font-style: italic;
+    }
+    .bubble.hansung {
+      background: var(--navy);
+      color: #FFFFFF;
+      border-radius: 18px 4px 18px 18px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* typewriter caret for customer */
+    .caret {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: #6B7280;
+      margin-left: 1px;
+      vertical-align: -2px;
+      animation: blink 0.9s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* typing dots (inside hansung bubble) */
+    .typing-dots {
+      display: inline-flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .typing-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.85);
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ---------- Product reveal ---------- */
+    .product-img {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 240px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--navy);
+    }
+    .product-img img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .product-img .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent, rgba(15, 25, 70, 0.85));
+    }
+    .product-img .overlay-text {
+      position: absolute;
+      left: 18px;
+      bottom: 16px;
+      color: #fff;
+      z-index: 2;
+    }
+    .product-img .overlay-text .pname {
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
+    .product-img .overlay-text .ptag {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 13px 16px;
+      background: var(--gold);
+      color: #111827;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.25s ease, color 0.25s ease;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+    }
+    .cta-btn:hover { background: var(--navy); color: #FFFFFF; }
+
+    /* ---------- Arrows ---------- */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: background 0.25s ease, color 0.25s ease;
+      z-index: 5;
+    }
+    .arrow:hover { background: var(--gold); color: #111827; }
+    .arrow.prev { left: -60px; }
+    .arrow.next { right: -60px; }
+
+    /* ---------- Dots ---------- */
+    .dots {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 26px;
+    }
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #D1D5DB;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.25s ease;
+    }
+    .dot.active { background: var(--gold); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 768px) {
+      .card { flex-direction: column; min-height: 0; }
+      .chat-panel,
+      .card.revealed .chat-panel {
+        flex: 1 1 auto;
+        max-width: 100%;
+      }
+      .chat-inner { max-width: 100%; }
+      .product-panel,
+      .card.revealed .product-panel {
+        flex: 1 1 auto;
+        max-width: 100%;
+        padding: 20px;
+        border-left: none;
+        border-top: 1px solid #ECEEF4;
+      }
+      .product-img { min-height: 220px; }
+      .arrow { display: none; }
+      .section-head h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <section class="section">
+    <div class="section-head">
+      <div class="eyebrow">Field Conversations</div>
+      <h2>현장의 대화에서 시작되는 솔루션</h2>
+      <p>현장에서 자주 듣는 질문에, 한성우레탄이 어떻게 답하는지 확인해 보세요.</p>
+    </div>
+
+    <div class="carousel" id="carousel">
+      <button class="arrow prev" id="prevBtn" aria-label="이전 슬라이드">&#10094;</button>
+      <button class="arrow next" id="nextBtn" aria-label="다음 슬라이드">&#10095;</button>
+
+      <div class="card" id="card">
+        <!-- LEFT: chat -->
+        <div class="chat-panel">
+          <div class="chat-inner">
+            <!-- Customer row (typewriter) -->
+            <div class="chat-row customer" id="customerRow">
+              <div class="avatar-col">
+                <div class="avatar customer" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="8" r="4" fill="#9CA3AF"/>
+                    <path d="M4 20c0-4.418 3.582-7 8-7s8 2.582 8 7" fill="#9CA3AF"/>
+                  </svg>
+                </div>
+                <div class="avatar-label">현장 담당자</div>
+              </div>
+              <div class="bubble customer" id="customerBubble"></div>
+            </div>
+
+            <!-- Hansung row: SAME slot for typing dots and the answer -->
+            <div class="chat-row hansung" id="hansungRow">
+              <div class="bubble hansung" id="hansungBubble"></div>
+              <div class="avatar-col">
+                <div class="avatar hansung" id="hansungAvatar">H</div>
+                <div class="avatar-label">한성우레탄</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: product reveal -->
+        <div class="product-panel" id="productPanel">
+          <div class="product-img">
+            <img id="productImage" alt="" />
+            <div class="overlay"></div>
+            <div class="overlay-text">
+              <div class="pname" id="productName"></div>
+              <div class="ptag" id="productTag"></div>
+            </div>
+          </div>
+          <a class="cta-btn" id="ctaBtn" href="#"></a>
+        </div>
+      </div>
+
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var LOGO_SRC = "/assets/logo.png";
+
+      var slides = [
+        {
+          customer: "시공 후 얼마 안 돼 누수가 재발합니다",
+          hansung: "수압 환경에서도 팽창·밀착 성능을 유지하는 지수재입니다. 터널·지하주차장·수처리시설 현장에서 검증되었습니다.",
+          image: "/assets/product-jisu.jpg",
+          name: "한성우레탄 지수재",
+          tag: "수압 환경 검증 완료",
+          cta: "지수재 제품 보기 →",
+          href: "#"
+        },
+        {
+          customer: "접착제가 들뜨거나 냄새 민원이 자꾸 들어옵니다",
+          hansung: "강한 초기 접착력과 저VOC를 동시에 구현한 접착제입니다. 방화문·실내도어 제조사가 선택하는 이유입니다.",
+          image: "/assets/product-adhesive.jpg",
+          name: "한성우레탄 접착제",
+          tag: "저VOC · 강력 접착",
+          cta: "접착제 제품 보기 →",
+          href: "#"
+        },
+        {
+          customer: "우레탄 소재가 필요한데, 어디에 물어봐야 할지 모릅니다",
+          hansung: "점도·경도·색상·포장 단위까지 원하는 대로 맞춤 배합 상담이 가능합니다. 자체 연구소에서 직접 대응합니다.",
+          image: "/assets/product-custom.jpg",
+          name: "맞춤 배합 솔루션",
+          tag: "자체 연구소 직접 대응",
+          cta: "맞춤 솔루션 문의 →",
+          href: "#"
+        }
+      ];
+
+      var card = document.getElementById("card");
+      var customerRow = document.getElementById("customerRow");
+      var hansungRow = document.getElementById("hansungRow");
+      var productPanel = document.getElementById("productPanel");
+
+      var customerBubble = document.getElementById("customerBubble");
+      var hansungBubble = document.getElementById("hansungBubble");
+      var productImage = document.getElementById("productImage");
+      var productName = document.getElementById("productName");
+      var productTag = document.getElementById("productTag");
+      var ctaBtn = document.getElementById("ctaBtn");
+      var dotsWrap = document.getElementById("dots");
+
+      var current = 0;
+      var hovered = false;
+
+      /* ---- Hansung avatar: use logo image (fallback to navy "H") ---- */
+      (function applyLogo() {
+        var el = document.getElementById("hansungAvatar");
+        var probe = new Image();
+        probe.onload = function () {
+          el.textContent = "";
+          var img = document.createElement("img");
+          img.src = LOGO_SRC;
+          img.alt = "한성우레탄";
+          el.appendChild(img);
+        };
+        probe.onerror = function () { el.textContent = "H"; };
+        probe.src = LOGO_SRC;
+      })();
+
+      /* ---- pause-aware scheduler ---- */
+      var timers = [];
+      var paused = false;
+
+      function schedule(cb, delay) {
+        var task = { cb: cb, remaining: delay, start: Date.now(), id: null, done: false };
+        task.id = setTimeout(function () { task.done = true; cb(); }, delay);
+        timers.push(task);
+        return task;
+      }
+      function clearTimers() {
+        timers.forEach(function (t) { clearTimeout(t.id); });
+        timers = [];
+        paused = false;
+      }
+      function pauseTimers() {
+        if (paused) return;
+        paused = true;
+        var now = Date.now();
+        timers.forEach(function (t) {
+          if (t.done) return;
+          clearTimeout(t.id);
+          t.remaining = t.remaining - (now - t.start);
+        });
+      }
+      function resumeTimers() {
+        if (!paused) return;
+        paused = false;
+        var now = Date.now();
+        timers.forEach(function (t) {
+          if (t.done) return;
+          t.start = now;
+          (function (task) {
+            task.id = setTimeout(function () {
+              task.done = true;
+              task.cb();
+            }, Math.max(0, task.remaining));
+          })(t);
+        });
+      }
+
+      /* ---- character-by-character typewriter (pause-aware via scheduler) ---- */
+      function typeText(el, text, perChar, doneCb) {
+        el.textContent = "";
+        var caret = document.createElement("span");
+        caret.className = "caret";
+        el.appendChild(caret);
+        var typed = "";
+        for (var i = 0; i < text.length; i++) {
+          (function (ch) {
+            schedule(function () {
+              typed += ch;
+              el.textContent = typed;
+              el.appendChild(caret);
+            }, (i + 1) * perChar);
+          })(text.charAt(i));
+        }
+        schedule(function () {
+          if (caret.parentNode) caret.parentNode.removeChild(caret);
+          if (doneCb) doneCb();
+        }, (text.length + 1) * perChar);
+      }
+
+      function resetVisuals() {
+        card.classList.remove("revealed");
+        customerRow.classList.remove("show");
+        hansungRow.classList.remove("show");
+        customerBubble.textContent = "";
+        hansungBubble.innerHTML = "";
+      }
+
+      function loadProductImage(src) {
+        productImage.style.display = "none";
+        var probe = new Image();
+        probe.onload = function () {
+          productImage.src = src;
+          productImage.style.display = "block";
+        };
+        probe.onerror = function () { productImage.style.display = "none"; };
+        probe.src = src;
+      }
+
+      function buildDots() {
+        slides.forEach(function (_, i) {
+          var b = document.createElement("button");
+          b.className = "dot" + (i === 0 ? " active" : "");
+          b.setAttribute("aria-label", (i + 1) + "번 슬라이드");
+          b.addEventListener("click", function () { goTo(i); });
+          dotsWrap.appendChild(b);
+        });
+      }
+      function updateDots() {
+        var ds = dotsWrap.querySelectorAll(".dot");
+        ds.forEach(function (d, i) { d.classList.toggle("active", i === current); });
+      }
+
+      function goTo(index) {
+        clearTimers();
+        current = (index + slides.length) % slides.length;
+        var s = slides[current];
+
+        resetVisuals();
+        productName.textContent = s.name;
+        productTag.textContent = s.tag;
+        ctaBtn.textContent = s.cta;
+        ctaBtn.setAttribute("href", s.href);
+        loadProductImage(s.image);
+        updateDots();
+
+        void card.offsetWidth; // force reflow so transitions replay
+
+        // Timings (a touch slower than before)
+        var PER_CHAR = 75;               // customer typewriter speed
+        var SLIDE_IN = 600;              // customer bubble slide-in before typing
+        var typeDur = s.customer.length * PER_CHAR;
+        var AFTER_TYPE = 800;            // pause before Hansung starts
+        var DOTS_DUR = 1800;             // typing indicator duration
+        var AFTER_ANSWER = 1700;         // pause before product reveal
+        var AFTER_REVEAL = 3400;         // pause before auto-advance
+
+        var dotsStart = SLIDE_IN + typeDur + AFTER_TYPE;
+        var answerStart = dotsStart + DOTS_DUR;
+        var revealStart = answerStart + AFTER_ANSWER;
+        var nextStart = revealStart + AFTER_REVEAL;
+
+        // Step 1: customer bubble slides in, then types char-by-char
+        schedule(function () {
+          customerRow.classList.add("show");
+          typeText(customerBubble, s.customer, PER_CHAR);
+        }, SLIDE_IN);
+
+        // Step 2: Hansung row slides in showing typing dots (same slot as answer)
+        schedule(function () {
+          hansungBubble.innerHTML =
+            '<span class="typing-dots"><span></span><span></span><span></span></span>';
+          hansungRow.classList.add("show");
+        }, dotsStart);
+
+        // Step 3: swap dots -> answer text (position stays identical)
+        schedule(function () {
+          hansungBubble.textContent = s.hansung;
+        }, answerStart);
+
+        // Step 4: reveal product -> chat smoothly shifts left
+        schedule(function () {
+          card.classList.add("revealed");
+        }, revealStart);
+
+        // Step 5: auto-advance
+        schedule(function () { goTo(current + 1); }, nextStart);
+
+        if (hovered) pauseTimers();
+      }
+
+      card.addEventListener("mouseenter", function () { hovered = true; pauseTimers(); });
+      card.addEventListener("mouseleave", function () { hovered = false; resumeTimers(); });
+
+      document.getElementById("prevBtn").addEventListener("click", function () { goTo(current - 1); });
+      document.getElementById("nextBtn").addEventListener("click", function () { goTo(current + 1); });
+
+      buildDots();
+      goTo(0);
+    })();
+  </script>
+</body>
+</html>

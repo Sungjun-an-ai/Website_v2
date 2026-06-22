@@ -217,7 +217,9 @@ export default function ContactSection() {
             <div className="rounded-2xl overflow-hidden shadow-md h-64">
               <iframe
                 title="Hansung Urethane Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3148.5!2d126.8978!3d37.8842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357c958cf3b0b739%3A0x0!2z6rK96riw!5e0!3m2!1sko!2skr!4v1704067200000!5m2!1sko!2skr"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(
+                  '경기 파주시 광탄면 장지산로 184-12',
+                )}&hl=${locale}&z=16&output=embed`}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
