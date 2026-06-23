@@ -34,6 +34,28 @@ interface TrackRecordHeroProps {
 export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHeroProps) {
   const [displayValues, setDisplayValues] = useState<Record<number, number>>({})
 
+  // Standalone full-screen page: make sure we land at the top instead of a
+  // restored or footer-snapped (snap-page) bottom position left over from the
+  // previous route.
+  useEffect(() => {
+    const html = document.documentElement
+    html.classList.remove('snap-page')
+    const prevRestoration = history.scrollRestoration
+    try {
+      history.scrollRestoration = 'manual'
+    } catch {
+      /* not supported */
+    }
+    window.scrollTo(0, 0)
+    return () => {
+      try {
+        history.scrollRestoration = prevRestoration
+      } catch {
+        /* ignore */
+      }
+    }
+  }, [])
+
   // Extract numeric values for counting animation
   const numericStats = stats.map(s => ({
     ...s,
