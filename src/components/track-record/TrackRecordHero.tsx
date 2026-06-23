@@ -36,7 +36,10 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
 
   // Standalone full-screen page: make sure we land at the top instead of a
   // restored or footer-snapped (snap-page) bottom position left over from the
-  // previous route.
+  // previous route. The global `scroll-behavior: smooth` turns scrollTo into an
+  // animated scroll that can get clamped to the bottom when arriving from a
+  // taller page, so we force an instant reset (and repeat it to beat the
+  // router's own scroll handling).
   useEffect(() => {
     const html = document.documentElement
     html.classList.remove('snap-page')
@@ -46,8 +49,18 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
     } catch {
       /* not supported */
     }
-    window.scrollTo(0, 0)
+
+    const prevBehavior = html.style.scrollBehavior
+    html.style.scrollBehavior = 'auto'
+    const scrollTop = () => window.scrollTo(0, 0)
+    scrollTop()
+    const raf = requestAnimationFrame(scrollTop)
+    const timeout = setTimeout(scrollTop, 120)
+
     return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(timeout)
+      html.style.scrollBehavior = prevBehavior
       try {
         history.scrollRestoration = prevRestoration
       } catch {
