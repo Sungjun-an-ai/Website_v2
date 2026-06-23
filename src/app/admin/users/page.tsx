@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Plus, Mail } from 'lucide-react'
+import { Plus, Mail, ShieldCheck, ShieldOff } from 'lucide-react'
 
 type User = {
   id: string
   email: string
   created_at: string
   last_sign_in_at: string
+  is_admin: boolean
+  role: string | null
 }
 
 export default function AdminUsersPage() {
@@ -38,6 +40,24 @@ export default function AdminUsersPage() {
   }
 
   useEffect(() => { fetchUsers() }, [])
+
+  const handleToggleAdmin = async (user: User) => {
+    const next = !user.is_admin
+    const verb = next ? '부여' : '해제'
+    if (!confirm(`${user.email} 계정의 관리자 권한을 ${verb}하시겠습니까?`)) return
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, email: user.email, is_admin: next }),
+      })
+      const data = await res.json()
+      if (data.error) alert('오류: ' + data.error)
+      else fetchUsers()
+    } catch {
+      alert('오류가 발생했습니다.')
+    }
+  }
 
   const handleInvite = async () => {
     setInviting(true)
@@ -85,7 +105,7 @@ export default function AdminUsersPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>{['이메일', '마지막 로그인', '등록일'].map(h => <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-gray-500">{h}</th>)}</tr>
+                <tr>{['이메일', '관리자 권한', '마지막 로그인', '등록일', ''].map(h => <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-gray-500">{h}</th>)}</tr>
               </thead>
               <tbody>
                 {users.map(user => (
@@ -93,8 +113,26 @@ export default function AdminUsersPage() {
                     <td className="py-3 px-4 text-sm font-medium">
                       <span className="flex items-center gap-2"><Mail className="h-4 w-4 text-gray-400" />{user.email}</span>
                     </td>
+                    <td className="py-3 px-4 text-sm">
+                      {user.is_admin ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium">
+                          <ShieldCheck className="h-3.5 w-3.5" />{user.role === 'owner' ? '소유자' : '관리자'}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-xs font-medium">
+                          <ShieldOff className="h-3.5 w-3.5" />권한 없음
+                        </span>
+                      )}
+                    </td>
                     <td className="py-3 px-4 text-sm text-gray-400">{user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString('ko-KR') : '-'}</td>
                     <td className="py-3 px-4 text-sm text-gray-400">{new Date(user.created_at).toLocaleDateString('ko-KR')}</td>
+                    <td className="py-3 px-4 text-sm text-right">
+                      {user.role !== 'owner' && (
+                        <Button variant="outline" size="sm" onClick={() => handleToggleAdmin(user)}>
+                          {user.is_admin ? '권한 해제' : '권한 부여'}
+                        </Button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
