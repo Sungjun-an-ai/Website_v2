@@ -227,20 +227,28 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="relative aspect-[2.09/1] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
+            <div
+              className="relative aspect-[1.9/1] flex flex-col bg-white bg-cover bg-center shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8"
+              style={{
+                backgroundImage:
+                  'url(https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png)',
+              }}
+            >
+              {/* Legibility overlay */}
+              <div className="absolute inset-0 bg-white/70" />
               {/* Logo top-right */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/logo.png"
                 alt={isKo ? '한성우레탄' : 'Hansung Urethane'}
-                className="absolute top-6 right-6 h-28 w-auto"
+                className="absolute top-6 right-6 z-10 h-28 w-auto"
               />
               {/* Title top-left */}
-              <h3 className="text-3xl font-bold text-navy mt-[15pt]">
+              <h3 className="relative z-10 text-3xl font-bold text-navy mt-[15pt]">
                 {isKo ? '한성우레탄' : 'Hansung Urethane'}
               </h3>
               {/* Bottom row: motto (left) + details (right), same vertical span */}
-              <div className="mt-auto flex items-stretch justify-between gap-4">
+              <div className="relative z-10 mt-auto flex items-stretch justify-between gap-4">
                 <div
                   className="flex flex-col justify-between font-bold leading-none text-2xl"
                   style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
