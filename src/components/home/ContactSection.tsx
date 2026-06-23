@@ -236,24 +236,34 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
                 className="absolute top-6 right-6 h-28 w-auto"
               />
               {/* Title top-left */}
-              <h3 className="text-3xl font-bold text-navy mt-[10pt]">
+              <h3 className="text-3xl font-bold text-navy mt-[15pt]">
                 {isKo ? '한성우레탄' : 'Hansung Urethane'}
               </h3>
-              {/* Details bottom-left */}
-              <ul className="mt-auto space-y-1 text-sm text-black leading-tight text-right">
-                <li>{contact?.address || t('info.address')}</li>
-                <li>
-                  <a href={`tel:${contact?.phone || t('info.phone')}`} className="hover:text-navy transition-colors">
-                    {contact?.phone || t('info.phone')}
-                  </a>
-                </li>
-                <li>{contact?.fax || t('info.fax')}</li>
-                <li>
-                  <a href={`mailto:${contact?.email || t('info.email')}`} className="hover:text-navy transition-colors">
-                    {contact?.email || t('info.email')}
-                  </a>
-                </li>
-              </ul>
+              {/* Bottom row: motto (left) + details (right), same vertical span */}
+              <div className="mt-auto flex items-stretch justify-between gap-4">
+                <div
+                  className="flex flex-col justify-between font-bold leading-none text-2xl"
+                  style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
+                >
+                  <span className="text-navy">BONDING</span>
+                  <span className="text-gold">TOMORROW</span>
+                  <span className="text-navy">TOGETHER</span>
+                </div>
+                <ul className="space-y-1 text-sm text-black leading-tight text-right">
+                  <li>{contact?.address || t('info.address')}</li>
+                  <li>
+                    <a href={`tel:${contact?.phone || t('info.phone')}`} className="hover:text-navy transition-colors">
+                      {contact?.phone || t('info.phone')}
+                    </a>
+                  </li>
+                  <li>{contact?.fax || t('info.fax')}</li>
+                  <li>
+                    <a href={`mailto:${contact?.email || t('info.email')}`} className="hover:text-navy transition-colors">
+                      {contact?.email || t('info.email')}
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* Map */}
