@@ -4,6 +4,7 @@ import ChatConversationSection from '@/components/home/ChatConversationSection'
 import ProductsSection from '@/components/home/ProductsSection'
 import ValuesSection from '@/components/home/ValuesSection'
 import ContactSection from '@/components/home/ContactSection'
+import SnapPageEffect from '@/components/common/SnapPageEffect'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,7 +13,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale)
 
   return (
-    <main className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory hide-scrollbar scroll-smooth bg-navy" id="main-scroll-container">
+    <main className="w-full overflow-x-clip bg-navy" id="main-scroll-container">
+      <SnapPageEffect />
       <HeroCarousel />
       <ChatConversationSection />
       <ProductsSection />

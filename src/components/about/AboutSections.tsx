@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
+import SnapPageEffect from '@/components/common/SnapPageEffect'
 
 type Section = {
   mainTitle: string
@@ -98,9 +99,84 @@ function AboutSection({ section }: { section: Section }) {
   )
 }
 
+function AboutHero() {
+  const ref = useRef<HTMLElement>(null)
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(false)
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => setVisible(true))
+          })
+        } else {
+          setVisible(false)
+        }
+      },
+      { threshold: 0.4 }
+    )
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const lineStyle = (delayMs: string): React.CSSProperties => visible
+    ? { animation: `hero-fade-up 1s ${delayMs} cubic-bezier(0.2, 0.85, 0.2, 1) both` }
+    : { opacity: 0 }
+
+  const words = ['ABOUT', 'HANSUNG', 'URETHANE']
+
+  return (
+    <section ref={ref} className="relative snap-start h-screen overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/about/Same_image_change_to_169_ratio_Nano_Banana_2_00205.png"
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+      <div className="absolute inset-0" style={{ backgroundColor: 'rgba(27, 42, 107, 0.5)' }} />
+
+      {/* Text aligned to the same right edge as the header's 문의하기 button */}
+      <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end justify-end pb-24 sm:pb-28">
+        <h1
+          className="text-right text-white leading-[1.02] tracking-wide"
+          style={{ fontFamily: "'Ablation', 'Impact', sans-serif", fontSize: '40px' }}
+        >
+          {words.map((word, i) => (
+            <span key={word} className="block" style={lineStyle(`${i * 0.5}s`)}>
+              {word}
+            </span>
+          ))}
+        </h1>
+      </div>
+
+      {/* Scroll down hint */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-gold">
+        <span className="text-xs sm:text-sm font-semibold tracking-[0.2em] uppercase">Scroll down</span>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 animate-bounce"
+          aria-hidden="true"
+        >
+          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </section>
+  )
+}
+
 export default function AboutSections({ sections }: { sections: Section[] }) {
   return (
-    <div className="h-screen w-full overflow-y-auto snap-y snap-mandatory hide-scrollbar">
+    <div className="w-full">
+      <SnapPageEffect />
+      <AboutHero />
       {sections.map((section, i) => (
         <AboutSection key={i} section={section} />
       ))}

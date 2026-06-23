@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowDown, ArrowLeft, Download, FileText, ShieldCheck } from 'lucide-react'
 import ProductInquiryForm from '@/components/products/ProductInquiryForm'
+import SnapPageEffect from '@/components/common/SnapPageEffect'
 import { ProductCatalogItem, productCatalog, productCategoryLabels } from '@/lib/products/catalog'
 
 const heroVisualByCategory = {
@@ -58,7 +59,7 @@ function RevealSection({
         }
       },
       {
-        root: rootRef.current,
+        root: null,
         threshold: 0.35,
       }
     )
@@ -120,7 +121,7 @@ export default function ProductDetailScroller({
         setHeroActive(entry.isIntersecting)
       },
       {
-        root: scrollRootRef.current,
+        root: null,
         threshold: 0.45,
       }
     )
@@ -169,7 +170,8 @@ export default function ProductDetailScroller({
   }, [heroActive, heroPaused, orderedProducts])
 
   return (
-    <div ref={scrollRootRef} className="h-screen w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory hide-scrollbar bg-slate-950 text-slate-100 antialiased tracking-tight">
+    <div ref={scrollRootRef} className="w-full overflow-x-clip bg-slate-950 text-slate-100 antialiased tracking-tight">
+      <SnapPageEffect />
       <RevealSection
         rootRef={scrollRootRef}
         sectionRef={heroSectionRef}
