@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ScrollResetOnMount from '@/components/common/ScrollResetOnMount'
 
 type HistoryEvent = {
@@ -18,6 +18,29 @@ interface HistoryHeroProps {
 
 export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
   const scrollEvents = [...events, ...events]
+
+  // Count up to 36 as the glassmorphic card rises into view.
+  const [years, setYears] = useState(0)
+  useEffect(() => {
+    const target = 36
+    const duration = 1200
+    const startDelay = 600 // matches the card's fade-in delay
+    let raf = 0
+    let startTime = 0
+    const tick = (now: number) => {
+      if (!startTime) startTime = now
+      const elapsed = now - startTime - startDelay
+      if (elapsed < 0) {
+        raf = requestAnimationFrame(tick)
+        return
+      }
+      const progress = Math.min(elapsed / duration, 1)
+      setYears(Math.round(progress * target))
+      if (progress < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -49,6 +72,13 @@ export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
 
           <div className="opacity-0 animate-[fadeInUp_1.2s_ease-out_0.6s_forwards]">
             <div className="backdrop-blur-md bg-black/75 border border-white/25 rounded-2xl p-8 sm:p-12 shadow-2xl">
+              <p
+                className="text-3xl sm:text-4xl tracking-wide text-white mb-8"
+                style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
+              >
+                <span className="tabular-nums">{years}</span> years of Bonding{' '}
+                <span className="text-gold">History</span> Together
+              </p>
               <div className="border-t border-white/20 pt-8">
                 <h2 className="text-lg sm:text-xl font-semibold text-white mb-4">
                   {isKo ? '회사 연혁' : 'Company History'}
