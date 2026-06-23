@@ -109,22 +109,7 @@
   },
   "history": {
     "title": "Company History",
-    "subtitle": "The 36-year growth story of Hansung Urethane",
-    "events": [
-      {"year": 1988, "event": "Founded Hansung Urethane"},
-      {"year": 1992, "event": "KS Certification (Urethane Adhesive)"},
-      {"year": 1996, "event": "Relocated to Paju factory, expanded production facilities"},
-      {"year": 2000, "event": "ISO 9001 Quality Management System Certification"},
-      {"year": 2003, "event": "Launched new urethane sealant product line"},
-      {"year": 2006, "event": "Venture Company Certification"},
-      {"year": 2010, "event": "Innobiz Certification / Annual revenue of 5 billion KRW"},
-      {"year": 2013, "event": "Urethane Waterproofing Patent (No. 10-1234567)"},
-      {"year": 2016, "event": "Started exports (Southeast Asia)"},
-      {"year": 2018, "event": "30th Anniversary / Production line automation completed"},
-      {"year": 2020, "event": "Developed eco-friendly low-VOC product line"},
-      {"year": 2022, "event": "Established R&D Center / Corporate research institute registration"},
-      {"year": 2024, "event": "36th Anniversary / Second factory expansion plan"}
-    ]
+    "subtitle": "The growth story of Hansung Urethane"
   },
   "resources": {
     "title": "Resources",
