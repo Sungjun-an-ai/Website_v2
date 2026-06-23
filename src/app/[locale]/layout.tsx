@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import PageViewTracker from '@/components/common/PageViewTracker'
 import { createClient } from '@/lib/supabase/server'
 import { getContactInfo } from '@/lib/site/settings'
 
@@ -38,6 +39,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
+      <PageViewTracker locale={locale} />
       <Header initialLogoUrl={logoUrl} />
       <main>{children}</main>
       <Footer contact={contact ?? undefined} />

@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Image, Package, Star, BarChart2, Info,
   FileText, Bell, Users, LogOut, MessageSquare, Layers, Type, Scale,
   FolderOpen, History, Trophy, Palette, ChevronDown, ChevronRight, Boxes,
-  MessagesSquare, Phone
+  MessagesSquare, Phone, Activity
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -64,6 +64,7 @@ const navGroups: NavGroup[] = [
   {
     label: '운영',
     items: [
+      { href: '/admin/analytics', label: '트래픽 분석', icon: Activity },
       { href: '/admin/leads', label: '문의 관리', icon: MessageSquare },
       { href: '/admin/site-settings', label: '연락처·푸터·카운터', icon: Phone },
       { href: '/admin/users', label: '사용자 관리', icon: Users },
