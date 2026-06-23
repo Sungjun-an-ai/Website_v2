@@ -12,29 +12,27 @@ export default function Footer({ contact }: { contact?: ContactInfo } = {}) {
   return (
     <footer className="snap-footer bg-navy-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="mb-8 flex flex-col items-end text-right">
           {/* Brand */}
-          <div>
-            <div className="mb-4">
-              <div className="text-xl font-bold text-white">
-                {locale === 'ko' ? '한성우레탄 주식회사' : 'Hansung Urethane Co., Ltd.'}
-              </div>
-              <div className="text-xs text-gold tracking-widest mt-1">HANSUNG URETHANE</div>
+          <div className="mb-4">
+            <div className="text-xl font-bold text-white">
+              {locale === 'ko' ? '한성우레탄 주식회사' : 'Hansung Urethane Co., Ltd.'}
             </div>
-            <p
-              className="leading-[1.05]"
-              style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif', fontSize: '36px' }}
-            >
-              <span className="block text-white">BONDING</span>
-              <span className="block text-gold">TOMORROW</span>
-              <span className="block text-white">TOGETHER</span>
-            </p>
+            <div className="text-xs text-gold tracking-widest mt-1">HANSUNG URETHANE CO., LTD</div>
           </div>
+          <p
+            className="leading-[1.05]"
+            style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif', fontSize: '36px' }}
+          >
+            <span className="block text-white">BONDING</span>
+            <span className="block text-gold">TOMORROW</span>
+            <span className="block text-white">TOGETHER</span>
+          </p>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">{t('quickLinks')}</h3>
-            <ul className="space-y-2 text-sm">
+          {/* Quick Links — below the motto, laid out horizontally */}
+          <div className="mt-6">
+            <h3 className="text-white font-semibold mb-3">{t('quickLinks')}</h3>
+            <ul className="flex flex-wrap justify-end gap-x-5 gap-y-2 text-sm">
               <li><Link href={`/${locale}/products`} className="hover:text-gold transition-colors">{nav('products')}</Link></li>
               <li><Link href={`/${locale}/about`} className="hover:text-gold transition-colors">{nav('about')}</Link></li>
               <li><Link href={`/${locale}/about/history`} className="hover:text-gold transition-colors">{nav('history')}</Link></li>
