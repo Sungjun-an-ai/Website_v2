@@ -64,13 +64,18 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
     }
   }, [])
 
-  // Ticker companies (unique clients)
-  const tickerClients = Array.from(
+  // Ticker projects (unique project names)
+  const tickerProjects = Array.from(
     new Map((records || []).map(r => [
-      r.client_name_ko,
-      { ko: r.client_name_ko, en: r.client_name_en }
+      r.project_ko,
+      { ko: r.project_ko, en: r.project_en }
     ])).values()
   )
+
+  // Scale animation duration to the number of items so the speed stays
+  // readable regardless of how many records are loaded.
+  const verticalDuration = Math.max(60, (records?.length ?? 0) * 1.4)
+  const tickerDuration = Math.max(40, tickerProjects.length * 2)
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -128,7 +133,7 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
                 {isKo ? '주요 납품 실적' : 'Major Projects'}
               </h2>
               <div className="h-48 overflow-hidden rounded-lg border border-white/20 bg-black/70">
-                <div className="animate-vertical-scroll">
+                <div className="animate-vertical-scroll" style={{ animationDuration: `${verticalDuration}s` }}>
                   {[...records, ...records].map((record, idx) => {
                     const cat = CATEGORY_LABELS[record.category ?? '']
                     return (
@@ -156,15 +161,15 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
       {/* Bottom Ticker */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent z-20 pt-8 pb-6">
         <div className="relative overflow-hidden">
-          <div className="flex gap-12 animate-scroll">
+          <div className="flex gap-12 animate-scroll" style={{ animationDuration: `${tickerDuration}s` }}>
             {[...Array(2)].map((_, setIdx) => (
               <React.Fragment key={setIdx}>
-                {tickerClients.map((client, idx) => (
+                {tickerProjects.map((project, idx) => (
                   <div
                     key={`${setIdx}-${idx}`}
                     className="text-white/60 text-sm sm:text-base font-medium flex-shrink-0 whitespace-nowrap hover:text-white/80 transition-colors"
                   >
-                    {client.ko}
+                    {isKo ? project.ko : project.en}
                   </div>
                 ))}
               </React.Fragment>
