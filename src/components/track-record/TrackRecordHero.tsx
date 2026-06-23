@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
+import ScrollResetOnMount from '@/components/common/ScrollResetOnMount'
 
 type StatItem = {
   value: string
@@ -33,41 +34,6 @@ interface TrackRecordHeroProps {
 
 export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHeroProps) {
   const [displayValues, setDisplayValues] = useState<Record<number, number>>({})
-
-  // Standalone full-screen page: make sure we land at the top instead of a
-  // restored or footer-snapped (snap-page) bottom position left over from the
-  // previous route. The global `scroll-behavior: smooth` turns scrollTo into an
-  // animated scroll that can get clamped to the bottom when arriving from a
-  // taller page, so we force an instant reset (and repeat it to beat the
-  // router's own scroll handling).
-  useEffect(() => {
-    const html = document.documentElement
-    html.classList.remove('snap-page')
-    const prevRestoration = history.scrollRestoration
-    try {
-      history.scrollRestoration = 'manual'
-    } catch {
-      /* not supported */
-    }
-
-    const prevBehavior = html.style.scrollBehavior
-    html.style.scrollBehavior = 'auto'
-    const scrollTop = () => window.scrollTo(0, 0)
-    scrollTop()
-    const raf = requestAnimationFrame(scrollTop)
-    const timeout = setTimeout(scrollTop, 120)
-
-    return () => {
-      cancelAnimationFrame(raf)
-      clearTimeout(timeout)
-      html.style.scrollBehavior = prevBehavior
-      try {
-        history.scrollRestoration = prevRestoration
-      } catch {
-        /* ignore */
-      }
-    }
-  }, [])
 
   // Extract numeric values for counting animation
   const numericStats = stats.map(s => ({
@@ -128,6 +94,7 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      <ScrollResetOnMount />
       {/* Hero Background with video */}
       <div className="absolute inset-0">
         <video

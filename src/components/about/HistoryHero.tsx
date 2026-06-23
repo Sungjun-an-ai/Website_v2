@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import ScrollResetOnMount from '@/components/common/ScrollResetOnMount'
 
 type HistoryEvent = {
   year: number
@@ -20,6 +21,7 @@ export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      <ScrollResetOnMount />
       <div className="absolute inset-0">
         <video
           autoPlay
