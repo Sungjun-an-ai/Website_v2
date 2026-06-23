@@ -1,4 +1,7 @@
 import { redirect } from 'next/navigation'
+import { getCatalog } from '@/lib/products/catalog-db'
+
+export const dynamic = 'force-dynamic'
 
 export default async function ProductsPage({
   params,
@@ -6,5 +9,7 @@ export default async function ProductsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  redirect(`/${locale}/products/ws-3000`)
+  const { catalog } = await getCatalog()
+  const first = catalog[0]?.slug ?? 'ws-3000'
+  redirect(`/${locale}/products/${first}`)
 }

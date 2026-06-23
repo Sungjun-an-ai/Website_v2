@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, Image, Package, Star, BarChart2, Info,
   FileText, Bell, Users, LogOut, MessageSquare, Layers, Type, Scale,
-  FolderOpen, History, Trophy, Palette, ChevronDown, ChevronRight
+  FolderOpen, History, Trophy, Palette, ChevronDown, ChevronRight, Boxes
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -33,6 +33,7 @@ const navGroups: NavGroup[] = [
     label: '페이지 관리',
     items: [
       { href: '/admin/hero', label: '히어로 슬라이드', icon: Image },
+      { href: '/admin/product-categories', label: '제품군 카테고리', icon: Boxes },
       { href: '/admin/products', label: '제품소개', icon: Package },
       { href: '/admin/about', label: '회사 소개', icon: Info },
       { href: '/admin/history', label: '연혁', icon: History },

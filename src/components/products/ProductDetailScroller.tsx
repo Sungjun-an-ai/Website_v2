@@ -85,11 +85,28 @@ export default function ProductDetailScroller({
   locale,
   isKo,
   product,
+  catalog: catalogProp,
+  categoryLabels: categoryLabelsProp,
+  heroVisuals: heroVisualsProp,
 }: {
   locale: string
   isKo: boolean
   product: ProductCatalogItem
+  catalog?: ProductCatalogItem[]
+  categoryLabels?: Record<string, { ko: string; en: string }>
+  heroVisuals?: Record<string, string>
 }) {
+  const catalog = catalogProp && catalogProp.length > 0 ? catalogProp : productCatalog
+  const categoryLabels: Record<string, { ko: string; en: string }> =
+    categoryLabelsProp ?? productCategoryLabels
+  const heroVisuals: Record<string, string> = heroVisualsProp ?? heroVisualByCategory
+  const labelFor = (category: string) =>
+    categoryLabels[category] ?? { ko: category, en: category }
+  const visualFor = (category: string) =>
+    heroVisuals[category] ||
+    heroVisualByCategory[category as keyof typeof heroVisualByCategory] ||
+    ''
+
   const scrollRootRef = useRef<HTMLDivElement>(null)
   const heroTrackRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -97,15 +114,15 @@ export default function ProductDetailScroller({
   const [heroPaused, setHeroPaused] = useState(false)
   const [activeProductSlug, setActiveProductSlug] = useState(product.slug)
 
-  const currentIndex = productCatalog.findIndex((item) => item.slug === product.slug)
+  const currentIndex = catalog.findIndex((item) => item.slug === product.slug)
   const orderedProducts = currentIndex >= 0
-    ? [...productCatalog.slice(currentIndex), ...productCatalog.slice(0, currentIndex)]
-    : productCatalog
+    ? [...catalog.slice(currentIndex), ...catalog.slice(0, currentIndex)]
+    : catalog
   const loopHeroProducts = [...orderedProducts, ...orderedProducts]
-  const activeProduct = productCatalog.find((item) => item.slug === activeProductSlug) ?? product
+  const activeProduct = catalog.find((item) => item.slug === activeProductSlug) ?? product
   const activeCategoryLabel = isKo
-    ? productCategoryLabels[activeProduct.category].ko
-    : productCategoryLabels[activeProduct.category].en
+    ? labelFor(activeProduct.category).ko
+    : labelFor(activeProduct.category).en
   const activeTitle = isKo ? activeProduct.nameKo : activeProduct.nameEn
   const activeSubtitle = isKo ? activeProduct.subtitleKo : activeProduct.subtitleEn
   const activeDescription = isKo ? activeProduct.descriptionKo : activeProduct.descriptionEn
@@ -188,8 +205,8 @@ export default function ProductDetailScroller({
               {loopHeroProducts.map((item, index) => {
                 const itemTitle = isKo ? item.nameKo : item.nameEn
                 const itemSubtitle = isKo ? item.subtitleKo : item.subtitleEn
-                const itemCategory = isKo ? productCategoryLabels[item.category].ko : productCategoryLabels[item.category].en
-                const visual = heroVisualByCategory[item.category]
+                const itemCategory = isKo ? labelFor(item.category).ko : labelFor(item.category).en
+                const visual = visualFor(item.category)
 
                 return (
                   <section
