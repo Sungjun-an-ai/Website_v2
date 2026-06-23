@@ -13,6 +13,16 @@ type TrackRecordRecord = {
   client_name_en: string
   project_ko: string
   project_en: string
+  category?: string
+}
+
+const CATEGORY_LABELS: Record<string, { ko: string; en: string }> = {
+  sealant: { ko: '지수제', en: 'Sealant' },
+  firedoor: { ko: '방화문', en: 'Fire Door' },
+  construction: { ko: '건설', en: 'Construction' },
+  civil: { ko: '토목', en: 'Civil' },
+  industrial: { ko: '산업', en: 'Industrial' },
+  other: { ko: '기타', en: 'Other' },
 }
 
 interface TrackRecordHeroProps {
@@ -119,19 +129,22 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
               </h2>
               <div className="h-48 overflow-hidden rounded-lg border border-white/20 bg-black/70">
                 <div className="animate-vertical-scroll">
-                  {[...records, ...records].map((record, idx) => (
+                  {[...records, ...records].map((record, idx) => {
+                    const cat = CATEGORY_LABELS[record.category ?? '']
+                    return (
                     <div
                       key={`${record.id ?? 'record'}-${idx}`}
                       className="flex items-center gap-3 border-b border-white/10 px-4 py-3 text-sm sm:text-base text-white/85 leading-relaxed"
                     >
-                      <span className="w-14 shrink-0 text-gold font-semibold">{record.year}</span>
+                      <span className="w-16 shrink-0 text-gold font-semibold">{cat ? (isKo ? cat.ko : cat.en) : ''}</span>
                       <span className="shrink-0 text-white font-medium">
                         {isKo ? record.client_name_ko : record.client_name_en}
                       </span>
                       <span className="text-white/50">|</span>
                       <span className="truncate">{isKo ? record.project_ko : record.project_en}</span>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </div>

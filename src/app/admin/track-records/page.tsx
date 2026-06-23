@@ -20,12 +20,10 @@ type TrackRecord = {
   order_index: number
 }
 
-const CATEGORIES = ['construction', 'civil', 'industrial', 'other']
+const CATEGORIES = ['sealant', 'firedoor']
 const CATEGORY_LABELS: Record<string, string> = {
-  construction: '건설',
-  civil: '토목',
-  industrial: '산업',
-  other: '기타',
+  sealant: '지수제',
+  firedoor: '방화문',
 }
 
 const emptyRecord: Omit<TrackRecord, 'id'> = {
@@ -33,8 +31,8 @@ const emptyRecord: Omit<TrackRecord, 'id'> = {
   client_name_en: '',
   project_ko: '',
   project_en: '',
-  year: new Date().getFullYear(),
-  category: 'construction',
+  year: 0,
+  category: 'sealant',
   order_index: 0,
 }
 
@@ -51,8 +49,7 @@ export default function AdminTrackRecordsPage() {
     const { data } = await supabase
       .from('track_records')
       .select('*')
-      .order('year', { ascending: false })
-      .order('order_index')
+      .order('order_index', { ascending: true })
     setRecords(data || [])
     setLoading(false)
   }
@@ -86,10 +83,8 @@ export default function AdminTrackRecordsPage() {
     setForm(p => ({ ...p, [k]: v }))
 
   const categoryColors: Record<string, string> = {
-    construction: 'bg-blue-100 text-blue-700',
-    civil: 'bg-green-100 text-green-700',
-    industrial: 'bg-orange-100 text-orange-700',
-    other: 'bg-gray-100 text-gray-700',
+    sealant: 'bg-blue-100 text-blue-700',
+    firedoor: 'bg-orange-100 text-orange-700',
   }
 
   return (
@@ -114,7 +109,7 @@ export default function AdminTrackRecordsPage() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['연도', '발주처', '프로젝트', '분야', '작업'].map(h => (
+                  {['발주처', '프로젝트', '분야', '작업'].map(h => (
                     <th key={h} className="text-left py-3 px-4 text-xs font-semibold text-gray-500">{h}</th>
                   ))}
                 </tr>
@@ -122,7 +117,6 @@ export default function AdminTrackRecordsPage() {
               <tbody>
                 {records.map(record => (
                   <tr key={record.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm font-medium text-navy">{record.year}</td>
                     <td className="py-3 px-4 text-sm font-medium">{record.client_name_ko}</td>
                     <td className="py-3 px-4 text-sm text-gray-600">{record.project_ko}</td>
                     <td className="py-3 px-4">
@@ -151,18 +145,7 @@ export default function AdminTrackRecordsPage() {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>{editing ? '실적 수정' : '실적 추가'}</DialogTitle></DialogHeader>
             <div className="grid grid-cols-2 gap-4 py-2">
-              <div className="space-y-1">
-                <Label>연도</Label>
-                <Input
-                  type="number"
-                  value={form.year}
-                  onChange={e => {
-                    const parsed = parseInt(e.target.value, 10)
-                    f('year', Number.isNaN(parsed) ? new Date().getFullYear() : parsed)
-                  }}
-                />
-              </div>
-              <div className="space-y-1">
+              <div className="space-y-1 col-span-2">
                 <Label>분야</Label>
                 <select
                   value={form.category}
