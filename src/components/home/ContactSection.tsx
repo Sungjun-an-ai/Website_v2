@@ -227,7 +227,7 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="relative aspect-[1/1.61] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
+            <div className="relative aspect-[1.61/1] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
               {/* Logo top-right */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
