@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Ablation is licensed for Personal Use only (via cdnfonts).
+ * Replace with a commercially-licensed copy before production use.
+ */
+@font-face {
+  font-family: 'Ablation';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Ablation'),
+    url('https://fonts.cdnfonts.com/s/71456/Ablation_PersonalUse.woff') format('woff');
+}
+
+/* Per-page document-level scroll snapping (e.g. About, Home, Product).
+   `mandatory` gives each full-screen section a firm "catch" and
+   `scroll-snap-stop: always` prevents skipping past a section in one fling.
+
+   IMPORTANT: the scroll container that hosts these sections must NOT establish
+   its own scroll context, or `scroll-snap-type` here is ignored. In particular
+   never use `overflow-x: hidden` on the wrapper (it forces `overflow-y: auto`);
+   use `overflow-x: clip` instead, which clips horizontally without creating a
+   scroller. */
+html.snap-page {
+  scroll-snap-type: y mandatory;
+}
+
+html.snap-page .snap-start {
+  scroll-snap-stop: always;
+}
+
+/* The shared footer sits below the last full-screen section. `align: end`
+   makes it a reachable snap target pinned to the bottom of the viewport so it
+   can be scrolled to under mandatory snapping. */
+html.snap-page .snap-footer {
+  scroll-snap-align: end;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

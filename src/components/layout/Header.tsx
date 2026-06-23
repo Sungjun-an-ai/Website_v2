@@ -54,8 +54,6 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
     }
   }, [initialLogoUrl])
 
-  const isMainPage = pathname === `/${locale}` || pathname === `/${locale}/`
-
   useEffect(() => {
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLElement | Document
@@ -82,8 +80,9 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
   const otherLocale = locale === 'ko' ? 'en' : 'ko'
   const localePath = pathname.replace(`/${locale}`, `/${otherLocale}`)
 
-  // Keep sub-page GNB transparent; only main page turns white after scroll.
-  const isWhiteHeader = isMainPage && isScrolled
+  // GNB stays transparent on every page (matching the product pages); only the
+  // logo box shrinks on scroll. Kept as a flag so text-color logic reads clearly.
+  const isWhiteHeader = false
   const isNavItemActive = (href: string) => {
     // Only highlight "about" on its exact page, not on history/track-record subpages.
     if (href === `/${locale}/about`) return pathname === href
