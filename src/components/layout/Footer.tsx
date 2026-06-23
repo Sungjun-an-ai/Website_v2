@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { useTranslations, useLocale } from 'next-intl'
 import { MapPin, Phone, Printer, Mail, Clock } from 'lucide-react'
 
-export default function Footer() {
+type ContactInfo = { address: string; phone: string; fax: string; email: string; hours: string }
+
+export default function Footer({ contact }: { contact?: ContactInfo } = {}) {
   const t = useTranslations('footer')
   const nav = useTranslations('nav')
   const locale = useLocale()
@@ -49,23 +51,23 @@ export default function Footer() {
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-2 text-sm">
             <li className="flex items-start gap-2">
               <MapPin className="h-4 w-4 text-gold mt-0.5 flex-shrink-0" />
-              <span>{t('address')}</span>
+              <span>{contact?.address || t('address')}</span>
             </li>
             <li className="flex items-center gap-2">
               <Phone className="h-4 w-4 text-gold flex-shrink-0" />
-              <a href={`tel:${t('phone')}`} className="hover:text-gold transition-colors">{t('phone')}</a>
+              <a href={`tel:${contact?.phone || t('phone')}`} className="hover:text-gold transition-colors">{contact?.phone || t('phone')}</a>
             </li>
             <li className="flex items-center gap-2">
               <Printer className="h-4 w-4 text-gold flex-shrink-0" />
-              <span>{t('fax')}</span>
+              <span>{contact?.fax || t('fax')}</span>
             </li>
             <li className="flex items-center gap-2">
               <Mail className="h-4 w-4 text-gold flex-shrink-0" />
-              <a href={`mailto:${t('email')}`} className="hover:text-gold transition-colors">{t('email')}</a>
+              <a href={`mailto:${contact?.email || t('email')}`} className="hover:text-gold transition-colors">{contact?.email || t('email')}</a>
             </li>
             <li className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-gold flex-shrink-0" />
-              <span>{locale === 'ko' ? '평일 09:00 - 18:00' : 'Mon-Fri 09:00 - 18:00 KST'}</span>
+              <span>{contact?.hours || (locale === 'ko' ? '평일 09:00 - 18:00' : 'Mon-Fri 09:00 - 18:00 KST')}</span>
             </li>
           </ul>
         </div>

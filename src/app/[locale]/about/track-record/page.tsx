@@ -1,6 +1,7 @@
 import { setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import TrackRecordHero from '@/components/track-record/TrackRecordHero'
+import { getSiteSettings, statsFromSettings } from '@/lib/site/settings'
 
 type TrackRecord = {
   id?: string | number
@@ -53,12 +54,11 @@ export default async function TrackRecordPage({
     // Use fallback data
   }
 
-  const stats = [
-    { value: '500+', label: isKo ? '납품 거래처' : 'Clients' },
-    { value: '1,000+', label: isKo ? '완료 프로젝트' : 'Completed Projects' },
-    { value: '30+', label: isKo ? '진행 중인 현장' : 'Active Sites' },
-    { value: '36+', label: isKo ? '년의 실적' : 'Years of Record' },
-  ]
+  const settings = await getSiteSettings()
+  const stats = statsFromSettings(settings).map((s) => ({
+    value: s.value,
+    label: isKo ? s.label_ko : s.label_en,
+  }))
 
   return (
     <TrackRecordHero stats={stats} records={trackRecords} isKo={isKo} />

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { useLocale } from 'next-intl'
 
-type Slide = {
+export type Slide = {
   customer: string
   hansung: string
   image: string
@@ -13,7 +13,7 @@ type Slide = {
   href: string
 }
 
-export default function ChatConversationSection() {
+export default function ChatConversationSection({ slides: slidesProp }: { slides?: Slide[] } = {}) {
   const locale = useLocale()
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -23,7 +23,7 @@ export default function ChatConversationSection() {
 
     const LOGO_SRC = '/assets/logo.png'
 
-    const slides: Slide[] = [
+    const slides: Slide[] = slidesProp && slidesProp.length > 0 ? slidesProp : [
       {
         customer: '시공 후 얼마 안 돼 누수가 재발합니다',
         hansung:
@@ -305,7 +305,7 @@ export default function ChatConversationSection() {
       nextBtn.removeEventListener('click', onNext)
       dotsWrap.innerHTML = ''
     }
-  }, [locale])
+  }, [locale, slidesProp])
 
   return (
     <section className="cc-section relative h-screen w-full flex-shrink-0 snap-start snap-always overflow-y-auto flex flex-col justify-center pt-24 pb-16 md:pt-28">

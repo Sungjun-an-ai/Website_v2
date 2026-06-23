@@ -7,7 +7,8 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, Image, Package, Star, BarChart2, Info,
   FileText, Bell, Users, LogOut, MessageSquare, Layers, Type, Scale,
-  FolderOpen, History, Trophy, Palette, ChevronDown, ChevronRight, Boxes
+  FolderOpen, History, Trophy, Palette, ChevronDown, ChevronRight, Boxes,
+  MessagesSquare, Phone
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -45,6 +46,7 @@ const navGroups: NavGroup[] = [
   {
     label: '콘텐츠',
     items: [
+      { href: '/admin/chat-messages', label: '메인 메시지 UI', icon: MessagesSquare },
       { href: '/admin/values', label: '핵심 가치', icon: Star },
       { href: '/admin/stats', label: '통계 수치', icon: BarChart2 },
       { href: '/admin/sections', label: '섹션 관리', icon: Layers },
@@ -63,6 +65,7 @@ const navGroups: NavGroup[] = [
     label: '운영',
     items: [
       { href: '/admin/leads', label: '문의 관리', icon: MessageSquare },
+      { href: '/admin/site-settings', label: '연락처·푸터·카운터', icon: Phone },
       { href: '/admin/users', label: '사용자 관리', icon: Users },
     ],
   },

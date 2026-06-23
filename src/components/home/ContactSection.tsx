@@ -8,7 +8,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { MapPin, Phone, Printer, Mail, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 
-export default function ContactSection() {
+type ContactInfo = { address: string; phone: string; fax: string; email: string; hours: string }
+
+export default function ContactSection({ contact }: { contact?: ContactInfo } = {}) {
   const t = useTranslations('contact')
   const locale = useLocale()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -188,27 +190,27 @@ export default function ContactSection() {
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-gold mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.address')}</span>
+                  <span className="text-gray-200">{contact?.address || t('info.address')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-gold flex-shrink-0" />
-                  <a href={`tel:${t('info.phone')}`} className="text-gray-200 hover:text-gold transition-colors">
-                    {t('info.phone')}
+                  <a href={`tel:${contact?.phone || t('info.phone')}`} className="text-gray-200 hover:text-gold transition-colors">
+                    {contact?.phone || t('info.phone')}
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <Printer className="h-5 w-5 text-gold flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.fax')}</span>
+                  <span className="text-gray-200">{contact?.fax || t('info.fax')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-gold flex-shrink-0" />
-                  <a href={`mailto:${t('info.email')}`} className="text-gray-200 hover:text-gold transition-colors">
-                    {t('info.email')}
+                  <a href={`mailto:${contact?.email || t('info.email')}`} className="text-gray-200 hover:text-gold transition-colors">
+                    {contact?.email || t('info.email')}
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <Clock className="h-5 w-5 text-gold flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.hours')}</span>
+                  <span className="text-gray-200">{contact?.hours || t('info.hours')}</span>
                 </li>
               </ul>
             </div>
