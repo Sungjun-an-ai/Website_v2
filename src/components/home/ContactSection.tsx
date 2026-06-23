@@ -227,30 +227,28 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="relative bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
+            <div className="relative aspect-[1/1.61] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
               {/* Logo top-right */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/assets/logo.png"
                 alt={isKo ? '한성우레탄' : 'Hansung Urethane'}
-                className="absolute top-6 right-6 h-9 w-auto"
+                className="absolute top-6 right-6 h-28 w-auto"
               />
               {/* Title top-left */}
-              <h3 className="text-xl font-bold text-navy mb-6">
+              <h3 className="text-3xl font-bold text-navy">
                 {isKo ? '한성우레탄 기술영업부' : 'Hansung Urethane Technical Sales'}
               </h3>
-              {/* Details */}
-              <ul className="space-y-2 text-sm text-black">
+              {/* Details bottom-left */}
+              <ul className="mt-auto space-y-1 text-sm text-black leading-tight">
                 <li>{contact?.address || t('info.address')}</li>
                 <li>
-                  Tel.{' '}
                   <a href={`tel:${contact?.phone || t('info.phone')}`} className="hover:text-navy transition-colors">
                     {contact?.phone || t('info.phone')}
                   </a>
                 </li>
-                <li>Fax. {contact?.fax || t('info.fax')}</li>
+                <li>{contact?.fax || t('info.fax')}</li>
                 <li>
-                  Email.{' '}
                   <a href={`mailto:${contact?.email || t('info.email')}`} className="hover:text-navy transition-colors">
                     {contact?.email || t('info.email')}
                   </a>
