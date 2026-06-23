@@ -236,11 +236,11 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
                 className="absolute top-6 right-6 h-28 w-auto"
               />
               {/* Title top-left */}
-              <h3 className="text-3xl font-bold text-navy">
-                {isKo ? '한성우레탄 기술영업부' : 'Hansung Urethane Technical Sales'}
+              <h3 className="text-3xl font-bold text-navy mt-[10pt]">
+                {isKo ? '한성우레탄' : 'Hansung Urethane'}
               </h3>
               {/* Details bottom-left */}
-              <ul className="mt-auto space-y-1 text-sm text-black leading-tight">
+              <ul className="mt-auto space-y-1 text-sm text-black leading-tight text-right">
                 <li>{contact?.address || t('info.address')}</li>
                 <li>
                   <a href={`tel:${contact?.phone || t('info.phone')}`} className="hover:text-navy transition-colors">
