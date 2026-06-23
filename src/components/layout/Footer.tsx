@@ -29,10 +29,10 @@ export default function Footer({ contact }: { contact?: ContactInfo } = {}) {
             <span className="block text-white">TOGETHER</span>
           </p>
 
-          {/* Quick Links — below the motto, laid out horizontally */}
-          <div className="mt-6">
+          {/* Quick Links — below the motto, laid out horizontally, left-aligned */}
+          <div className="mt-6 w-full text-left">
             <h3 className="text-white font-semibold mb-3">{t('quickLinks')}</h3>
-            <ul className="flex flex-wrap justify-end gap-x-5 gap-y-2 text-sm">
+            <ul className="flex flex-wrap justify-start gap-x-5 gap-y-2 text-sm">
               <li><Link href={`/${locale}/products`} className="hover:text-gold transition-colors">{nav('products')}</Link></li>
               <li><Link href={`/${locale}/about`} className="hover:text-gold transition-colors">{nav('about')}</Link></li>
               <li><Link href={`/${locale}/about/history`} className="hover:text-gold transition-colors">{nav('history')}</Link></li>
