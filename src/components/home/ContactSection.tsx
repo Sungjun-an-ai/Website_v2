@@ -71,8 +71,17 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
   }
 
   return (
-    <section id="contact" className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-gray-500/50 py-16">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="contact"
+      className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-cover bg-center py-16"
+      style={{
+        backgroundImage:
+          'url(https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png)',
+      }}
+    >
+      {/* Gray 50% overlay */}
+      <div className="absolute inset-0 bg-gray-500/50" />
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-12">
           <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Contact</div>
           <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">{t('title')}</h2>
@@ -227,15 +236,7 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div
-              className="relative aspect-[1.9/1] flex flex-col bg-white bg-cover bg-center shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8"
-              style={{
-                backgroundImage:
-                  'url(https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png)',
-              }}
-            >
-              {/* Legibility overlay */}
-              <div className="absolute inset-0 bg-white/70" />
+            <div className="relative aspect-[1.9/1] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
               {/* Logo top-right */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
