@@ -2,6 +2,8 @@ import { setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import AboutSections from '@/components/about/AboutSections'
 
+export const dynamic = 'force-dynamic'
+
 const sections = [
   {
     mainTitle: 'Technology',
@@ -73,13 +75,34 @@ export default async function AboutPage({
 }) {
   const { locale } = await params
   setRequestLocale(locale)
+  const isKo = locale === 'ko'
 
-  const supabase = await createClient()
-  await supabase
-    .from('about_sections')
-    .select('*')
-    .order('order_index')
+  let resolvedSections = sections
+  let heroImage: string | undefined
 
-  return <AboutSections sections={sections} />
+  try {
+    const supabase = await createClient()
+    const [{ data: rows }, { data: setting }] = await Promise.all([
+      supabase
+        .from('about_sections')
+        .select('title_ko, title_en, subtitle_ko, subtitle_en, content_ko, content_en, image_url, order_index, is_active')
+        .eq('is_active', true)
+        .order('order_index'),
+      supabase.from('site_settings').select('value').eq('key', 'about_hero_image_url').maybeSingle(),
+    ])
+    if (rows && rows.length > 0) {
+      resolvedSections = rows.map((r) => ({
+        mainTitle: isKo ? r.title_ko : r.title_en,
+        subtitle: isKo ? r.subtitle_ko : r.subtitle_en,
+        image: r.image_url || '',
+        body: isKo ? r.content_ko : r.content_en,
+      }))
+    }
+    if (setting?.value) heroImage = setting.value
+  } catch (err) {
+    console.error('About sections fetch error:', err)
+  }
+
+  return <AboutSections sections={resolvedSections} heroImage={heroImage} />
 }
 

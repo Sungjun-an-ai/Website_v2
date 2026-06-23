@@ -24,6 +24,7 @@ export type Resource = {
   name_en: string
   format: ResourceFormat
   size: number // bytes
+  file_url?: string
 }
 
 export const categoryLabels: Record<ResourceCategory, { ko: string; en: string }> = {

@@ -99,7 +99,7 @@ function AboutSection({ section }: { section: Section }) {
   )
 }
 
-function AboutHero() {
+function AboutHero({ heroImage }: { heroImage?: string }) {
   const ref = useRef<HTMLElement>(null)
   const [visible, setVisible] = useState(true)
 
@@ -135,7 +135,7 @@ function AboutHero() {
     <section ref={ref} className="relative snap-start h-screen overflow-hidden">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/about/Same_image_change_to_169_ratio_Nano_Banana_2_00205.png"
+        src={heroImage || "/about/Same_image_change_to_169_ratio_Nano_Banana_2_00205.png"}
         alt=""
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
@@ -172,11 +172,11 @@ function AboutHero() {
   )
 }
 
-export default function AboutSections({ sections }: { sections: Section[] }) {
+export default function AboutSections({ sections, heroImage }: { sections: Section[]; heroImage?: string }) {
   return (
     <div className="w-full">
       <SnapPageEffect />
-      <AboutHero />
+      <AboutHero heroImage={heroImage} />
       {sections.map((section, i) => (
         <AboutSection key={i} section={section} />
       ))}

@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Plus, Edit, Trash2, Download } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { formatFileSize } from '@/lib/utils'
+import UploadField from '@/components/admin/UploadField'
 
 type Resource = {
   id: string
@@ -19,13 +20,27 @@ type Resource = {
   file_url: string
   file_type: string
   file_size: number
+  category: string
+  group_key: string
+  product: string
   download_count: number
   is_active: boolean
 }
 
+const CATEGORY_OPTS: [string, string][] = [
+  ['company', '회사소개'], ['catalog', '카탈로그'], ['msds', 'MSDS'],
+  ['testReport', '시험성적서'], ['supplyApproval', '자재공급승인요청서'],
+]
+const GROUP_OPTS: [string, string][] = [
+  ['common', '공통'], ['sealant', '지수제'], ['fireDoor', '방화문 접착제'],
+  ['interiorDoor', '실내문 접착제'], ['general', '일반 접착제'], ['solution', '우레탄 솔루션'],
+]
+
 const emptyResource: Omit<Resource, 'id' | 'download_count'> = {
   title_ko: '', title_en: '', description_ko: '', description_en: '',
-  file_url: '', file_type: 'PDF', file_size: 0, is_active: true,
+  file_url: '', file_type: 'PDF', file_size: 0,
+  category: 'catalog', group_key: 'common', product: '',
+  is_active: true,
 }
 
 export default function AdminResourcesPage() {
@@ -48,7 +63,7 @@ export default function AdminResourcesPage() {
   const openAdd = () => { setEditing(null); setForm(emptyResource); setOpen(true) }
   const openEdit = (r: Resource) => {
     setEditing(r)
-    setForm({ title_ko: r.title_ko, title_en: r.title_en, description_ko: r.description_ko, description_en: r.description_en, file_url: r.file_url, file_type: r.file_type, file_size: r.file_size, is_active: r.is_active })
+    setForm({ title_ko: r.title_ko, title_en: r.title_en, description_ko: r.description_ko, description_en: r.description_en, file_url: r.file_url, file_type: r.file_type, file_size: r.file_size, category: r.category || 'catalog', group_key: r.group_key || 'common', product: r.product || '', is_active: r.is_active })
     setOpen(true)
   }
 
@@ -120,12 +135,44 @@ export default function AdminResourcesPage() {
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>{editing ? '자료 수정' : '자료 추가'}</DialogTitle></DialogHeader>
             <div className="grid grid-cols-2 gap-4 py-2">
-              {([['title_ko','제목 (한)'],['title_en','제목 (영)'],['file_url','파일 URL'],['file_type','파일 형식']] as [keyof typeof emptyResource, string][]).map(([key, label]) => (
+              {([['title_ko','제목 (한)'],['title_en','제목 (영)']] as [keyof typeof emptyResource, string][]).map(([key, label]) => (
                 <div key={key} className="space-y-1">
                   <Label>{label}</Label>
                   <Input value={form[key] as string} onChange={e => f(key, e.target.value)} />
                 </div>
               ))}
+              <div className="space-y-1">
+                <Label>카테고리</Label>
+                <select className="w-full border border-gray-200 rounded-lg p-2 text-sm" value={form.category} onChange={e => f('category', e.target.value)}>
+                  {CATEGORY_OPTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label>제품군</Label>
+                <select className="w-full border border-gray-200 rounded-lg p-2 text-sm" value={form.group_key} onChange={e => f('group_key', e.target.value)}>
+                  {GROUP_OPTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label>제품명/표기 (예: HS-200)</Label>
+                <Input value={form.product} onChange={e => f('product', e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <Label>파일 형식</Label>
+                <Input value={form.file_type} onChange={e => f('file_type', e.target.value)} />
+              </div>
+              <div className="col-span-2">
+                <UploadField
+                  label="파일 (PDF·DOCX·HWP 등)"
+                  value={form.file_url}
+                  onChange={v => f('file_url', v)}
+                  bucket="resources"
+                  folder="files"
+                  accept=".pdf,.doc,.docx,.hwp,.xls,.xlsx,.zip,application/pdf"
+                  preview={false}
+                  onUploaded={({ size, ext }) => { f('file_size', size); f('file_type', ext) }}
+                />
+              </div>
               <div className="space-y-1">
                 <Label>파일 크기 (bytes)</Label>
                 <Input type="number" value={form.file_size} onChange={e => f('file_size', parseInt(e.target.value, 10) || 0)} />
