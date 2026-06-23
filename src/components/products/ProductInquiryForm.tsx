@@ -1,6 +1,6 @@
 "use client"
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,9 +11,10 @@ type ProductInquiryFormProps = {
   locale: string
   productName: string
   isKo: boolean
+  productOptions?: string[]
 }
 
-export default function ProductInquiryForm({ locale, productName, isKo }: ProductInquiryFormProps) {
+export default function ProductInquiryForm({ locale, productName, isKo, productOptions = [] }: ProductInquiryFormProps) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [formData, setFormData] = useState({
     name: '',
@@ -23,6 +24,15 @@ export default function ProductInquiryForm({ locale, productName, isKo }: Produc
     productInterest: productName,
     message: '',
   })
+
+  // Keep the selected product in sync with the active product shown on the page.
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, productInterest: productName }))
+  }, [productName])
+
+  const options = Array.from(
+    new Set([productName, ...productOptions].filter(Boolean))
+  )
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -150,12 +160,11 @@ export default function ProductInquiryForm({ locale, productName, isKo }: Produc
               onChange={onChange}
               className="mt-1 flex h-10 w-full rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
             >
-              <option value={productName}>{productName}</option>
-              <option value="WS-3000">WS-3000</option>
-              <option value="WS-7000">WS-7000</option>
-              <option value="NFLV-친환경">NFLV-친환경</option>
-              <option value="하나로 P">하나로 P</option>
-              <option value="ID-비규제">ID-비규제</option>
+              {options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
               <option value="other">{isKo ? '기타' : 'Other'}</option>
             </select>
           </div>

@@ -59,6 +59,7 @@ function mapRowToItem(r: Record<string, unknown>): ProductCatalogItem {
     applicationsEn: asArr(r.applications_en),
     specs: (Array.isArray(r.specs) ? (r.specs as ProductSpec[]) : []),
     resources: (Array.isArray(r.related_resources) ? (r.related_resources as ProductResource[]) : []),
+    heroImage: (r.image_url as string) || undefined,
   }
 }
 

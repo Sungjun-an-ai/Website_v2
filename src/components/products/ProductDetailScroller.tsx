@@ -25,7 +25,7 @@ function parseProductTags(baseTag: string, detailTag?: string) {
 
 function fadeStyle(visible: boolean, delayMs = 0): React.CSSProperties {
   return visible
-    ? { animation: `hero-fade-up 1.1s cubic-bezier(0.2, 0.85, 0.2, 1) ${delayMs}ms forwards` }
+    ? { animation: `hero-fade-up 1.1s cubic-bezier(0.2, 0.85, 0.2, 1) ${delayMs}ms both` }
     : { opacity: 0, transform: 'translateY(18px)', filter: 'blur(5px)' }
 }
 
@@ -151,37 +151,46 @@ export default function ProductDetailScroller({
     const track = heroTrackRef.current
     if (!track || !heroActive || heroPaused) return
 
-    const loopWidth = track.scrollWidth / 2
+    const len = orderedProducts.length
+    if (len === 0) return
+
+    const cardWidth = () => track.clientWidth || 1
+    const loopWidth = () => cardWidth() * len
 
     const updateActiveProduct = () => {
-      const slideWidth = track.clientWidth || 1
-      const rawIndex = Math.round(track.scrollLeft / slideWidth)
-      const normalizedIndex = ((rawIndex % orderedProducts.length) + orderedProducts.length) % orderedProducts.length
+      const rawIndex = Math.round(track.scrollLeft / cardWidth())
+      const normalizedIndex = ((rawIndex % len) + len) % len
       const nextProduct = orderedProducts[normalizedIndex]
       if (nextProduct) setActiveProductSlug(nextProduct.slug)
     }
 
-    updateActiveProduct()
-
+    let idleTimer = 0
     const handleScroll = () => {
-      if (track.scrollLeft >= loopWidth) {
-        track.scrollTo({ left: track.scrollLeft - loopWidth, behavior: 'auto' })
-      } else if (track.scrollLeft < 0) {
-        track.scrollTo({ left: track.scrollLeft + loopWidth, behavior: 'auto' })
-      }
       updateActiveProduct()
+      window.clearTimeout(idleTimer)
+      idleTimer = window.setTimeout(() => {
+        // Once scrolling settles, silently rewind from the duplicate half back
+        // to its identical position in the first half (seamless infinite loop).
+        if (track.scrollLeft >= loopWidth()) {
+          const idx = Math.round(track.scrollLeft / cardWidth())
+          track.scrollTo({ left: (idx - len) * cardWidth(), behavior: 'auto' })
+        }
+      }, 360)
     }
 
     track.addEventListener('scroll', handleScroll, { passive: true })
 
     const interval = window.setInterval(() => {
-      const cardWidth = track.clientWidth
-      const next = track.scrollLeft + cardWidth
-      track.scrollTo({ left: next, behavior: 'smooth' })
+      const w = cardWidth()
+      const current = Math.round(track.scrollLeft / w)
+      track.scrollTo({ left: (current + 1) * w, behavior: 'smooth' })
     }, 3200)
+
+    updateActiveProduct()
 
     return () => {
       track.removeEventListener('scroll', handleScroll)
+      window.clearTimeout(idleTimer)
       window.clearInterval(interval)
     }
   }, [heroActive, heroPaused, orderedProducts])
@@ -206,7 +215,7 @@ export default function ProductDetailScroller({
                 const itemTitle = isKo ? item.nameKo : item.nameEn
                 const itemSubtitle = isKo ? item.subtitleKo : item.subtitleEn
                 const itemCategory = isKo ? labelFor(item.category).ko : labelFor(item.category).en
-                const visual = visualFor(item.category)
+                const visual = item.heroImage || visualFor(item.category)
 
                 return (
                   <section
@@ -411,7 +420,12 @@ export default function ProductDetailScroller({
               </p>
 
               <div style={fadeStyle(visible, 300)}>
-                <ProductInquiryForm locale={locale} productName={activeTitle} isKo={isKo} />
+                <ProductInquiryForm
+                  locale={locale}
+                  productName={activeTitle}
+                  productOptions={catalog.map((item) => (isKo ? item.nameKo : item.nameEn))}
+                  isKo={isKo}
+                />
               </div>
 
               <div className="mt-8 flex items-center gap-2 text-sm text-white/65" style={fadeStyle(visible, 420)}>
