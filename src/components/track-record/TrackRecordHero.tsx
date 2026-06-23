@@ -64,18 +64,32 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
     }
   }, [])
 
+  // Interleave categories (지수제/방화문) so they alternate instead of being
+  // grouped. Deterministic order keeps SSR and client markup in sync.
+  const sealantRecords = (records || []).filter(r => r.category === 'sealant')
+  const firedoorRecords = (records || []).filter(r => r.category === 'firedoor')
+  const otherRecords = (records || []).filter(
+    r => r.category !== 'sealant' && r.category !== 'firedoor'
+  )
+  const mixedRecords: TrackRecordRecord[] = []
+  const maxLen = Math.max(sealantRecords.length, firedoorRecords.length)
+  for (let i = 0; i < maxLen; i++) {
+    if (i < sealantRecords.length) mixedRecords.push(sealantRecords[i])
+    if (i < firedoorRecords.length) mixedRecords.push(firedoorRecords[i])
+  }
+  mixedRecords.push(...otherRecords)
+
   // Ticker projects (unique project names)
   const tickerProjects = Array.from(
-    new Map((records || []).map(r => [
+    new Map(mixedRecords.map(r => [
       r.project_ko,
       { ko: r.project_ko, en: r.project_en }
     ])).values()
   )
 
-  // Scale animation duration to the number of items so the speed stays
-  // readable regardless of how many records are loaded.
-  const verticalDuration = Math.max(60, (records?.length ?? 0) * 1.4)
-  const tickerDuration = Math.max(40, tickerProjects.length * 2)
+  // Scale the vertical list duration to the number of items so the speed
+  // stays readable regardless of how many records are loaded.
+  const verticalDuration = Math.max(60, mixedRecords.length * 1.4)
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -134,7 +148,7 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
               </h2>
               <div className="h-48 overflow-hidden rounded-lg border border-white/20 bg-black/70">
                 <div className="animate-vertical-scroll" style={{ animationDuration: `${verticalDuration}s` }}>
-                  {[...records, ...records].map((record, idx) => {
+                  {[...mixedRecords, ...mixedRecords].map((record, idx) => {
                     const cat = CATEGORY_LABELS[record.category ?? '']
                     return (
                     <div
@@ -161,7 +175,7 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
       {/* Bottom Ticker */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent z-20 pt-8 pb-6">
         <div className="relative overflow-hidden">
-          <div className="flex gap-12 animate-scroll" style={{ animationDuration: `${tickerDuration}s` }}>
+          <div className="flex gap-12 animate-scroll">
             {[...Array(2)].map((_, setIdx) => (
               <React.Fragment key={setIdx}>
                 {tickerProjects.map((project, idx) => (
