@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import ScrollResetOnMount from '@/components/common/ScrollResetOnMount'
+import HeroMedia from '@/components/common/HeroMedia'
+
+const FALLBACK_VIDEO = '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4'
 
 type HistoryEvent = {
   year: number
@@ -14,9 +17,11 @@ interface HistoryHeroProps {
   events: HistoryEvent[]
   isKo: boolean
   title: string
+  subtitle?: string
+  mediaUrl?: string
 }
 
-export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
+export default function HistoryHero({ events, isKo, title, subtitle, mediaUrl }: HistoryHeroProps) {
   const scrollEvents = [...events, ...events]
 
   // Count up to 36 as the glassmorphic card rises into view.
@@ -46,15 +51,7 @@ export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
     <div className="relative w-full h-screen overflow-hidden">
       <ScrollResetOnMount />
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4" type="video/mp4" />
-        </video>
+        <HeroMedia mediaUrl={mediaUrl} fallbackVideoSrc={FALLBACK_VIDEO} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/70 to-black/78" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_50%,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_40%)]" />
       </div>
@@ -68,6 +65,11 @@ export default function HistoryHero({ events, isKo, title }: HistoryHeroProps) {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
               {title}
             </h1>
+            {subtitle && (
+              <p className="mt-4 max-w-2xl text-base sm:text-lg text-white/75 leading-relaxed whitespace-pre-line">
+                {subtitle}
+              </p>
+            )}
           </div>
 
           <div className="opacity-0 animate-[fadeInUp_1.2s_ease-out_0.6s_forwards]">

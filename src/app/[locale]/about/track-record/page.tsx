@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import TrackRecordHero from '@/components/track-record/TrackRecordHero'
 import { getSiteSettings, statsFromSettings } from '@/lib/site/settings'
+import { getPageHero, resolvePageHero } from '@/lib/site/page-hero'
 
 type TrackRecord = {
   id?: string | number
@@ -53,8 +54,17 @@ export default async function TrackRecordPage({
     label: isKo ? s.label_ko : s.label_en,
   }))
 
+  const hero = resolvePageHero(await getPageHero('track_record'), isKo)
+
   return (
-    <TrackRecordHero stats={stats} records={trackRecords} isKo={isKo} />
+    <TrackRecordHero
+      stats={stats}
+      records={trackRecords}
+      isKo={isKo}
+      title={hero.title}
+      subtitle={hero.subtitle}
+      mediaUrl={hero.mediaUrl}
+    />
   )
 }
 

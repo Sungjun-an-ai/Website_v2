@@ -3,11 +3,17 @@
 import React, { useEffect, useState } from 'react'
 import { Pin, Eye, ArrowLeft, Calendar } from 'lucide-react'
 import type { Notice } from '@/data/notices'
+import HeroMedia from '@/components/common/HeroMedia'
+
+const FALLBACK_VIDEO = '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4'
 
 interface NoticeHeroProps {
   notices: Notice[]
   isKo: boolean
   locale: string
+  title?: string
+  subtitle?: string
+  mediaUrl?: string
 }
 
 function formatDate(value: string, isKo: boolean) {
@@ -28,7 +34,7 @@ function formatLongDate(value: string, isKo: boolean) {
   })
 }
 
-export default function NoticeHero({ notices, isKo, locale }: NoticeHeroProps) {
+export default function NoticeHero({ notices, isKo, locale, title, subtitle, mediaUrl }: NoticeHeroProps) {
   const [selected, setSelected] = useState<Notice | null>(null)
 
   const pinned = notices.filter((n) => n.is_pinned)
@@ -78,15 +84,7 @@ export default function NoticeHero({ notices, isKo, locale }: NoticeHeroProps) {
     <div className="relative w-full h-screen overflow-hidden">
       {/* Background video */}
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4" type="video/mp4" />
-        </video>
+        <HeroMedia mediaUrl={mediaUrl} fallbackVideoSrc={FALLBACK_VIDEO} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/78" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_50%,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_40%)]" />
       </div>
@@ -100,8 +98,13 @@ export default function NoticeHero({ notices, isKo, locale }: NoticeHeroProps) {
               NOTICE
             </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
-              {isKo ? '공지사항' : 'Notice Board'}
+              {title || (isKo ? '공지사항' : 'Notice Board')}
             </h1>
+            {subtitle && (
+              <p className="mt-4 max-w-2xl text-base sm:text-lg text-white/75 leading-relaxed whitespace-pre-line">
+                {subtitle}
+              </p>
+            )}
           </div>
 
           {/* Glass card */}

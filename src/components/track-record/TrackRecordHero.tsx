@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import ScrollResetOnMount from '@/components/common/ScrollResetOnMount'
+import HeroMedia from '@/components/common/HeroMedia'
+
+const FALLBACK_VIDEO = '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4'
 
 type StatItem = {
   value: string
@@ -30,9 +33,12 @@ interface TrackRecordHeroProps {
   stats: StatItem[]
   records: TrackRecordRecord[]
   isKo: boolean
+  title?: string
+  subtitle?: string
+  mediaUrl?: string
 }
 
-export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHeroProps) {
+export default function TrackRecordHero({ stats, records, isKo, title, subtitle, mediaUrl }: TrackRecordHeroProps) {
   const [displayValues, setDisplayValues] = useState<Record<number, number>>({})
 
   // Extract numeric values for counting animation
@@ -97,15 +103,7 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
       <ScrollResetOnMount />
       {/* Hero Background with video */}
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4" type="video/mp4" />
-        </video>
+        <HeroMedia mediaUrl={mediaUrl} fallbackVideoSrc={FALLBACK_VIDEO} />
         {/* Dark gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/78" />
         {/* Subtle radial light effect */}
@@ -121,8 +119,13 @@ export default function TrackRecordHero({ stats, records, isKo }: TrackRecordHer
             TRACK RECORD
           </div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
-            {isKo ? '납품사례' : 'Track Record'}
+            {title || (isKo ? '납품사례' : 'Track Record')}
           </h1>
+          {subtitle && (
+            <p className="mt-4 max-w-2xl text-base sm:text-lg text-white/75 leading-relaxed whitespace-pre-line">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* Glass Box Container */}

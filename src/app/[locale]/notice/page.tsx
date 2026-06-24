@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server'
 import NoticeHero from '@/components/notice/NoticeHero'
 import { createClient } from '@/lib/supabase/server'
 import { notices as fallbackNotices, type Notice } from '@/data/notices'
+import { getPageHero, resolvePageHero } from '@/lib/site/page-hero'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,5 +30,16 @@ export default async function NoticePage({
     console.error('Notices fetch error:', err)
   }
 
-  return <NoticeHero notices={notices} isKo={isKo} locale={locale} />
+  const hero = resolvePageHero(await getPageHero('notice'), isKo)
+
+  return (
+    <NoticeHero
+      notices={notices}
+      isKo={isKo}
+      locale={locale}
+      title={hero.title}
+      subtitle={hero.subtitle}
+      mediaUrl={hero.mediaUrl}
+    />
+  )
 }

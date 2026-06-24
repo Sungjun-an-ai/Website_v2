@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatFileSize } from '@/lib/utils'
+import HeroMedia from '@/components/common/HeroMedia'
 import {
   resources as fallbackResources,
   categoryOrder,
@@ -15,6 +16,8 @@ import {
   type Resource,
   type ResourceCategory,
 } from '@/data/resources'
+
+const FALLBACK_VIDEO = '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4'
 
 interface DownloadFormData {
   name: string
@@ -25,7 +28,14 @@ interface DownloadFormData {
 
 const formatBadge = 'bg-white/25 text-white'
 
-export default function ResourcesHero({ resources: resourcesProp }: { resources?: Resource[] } = {}) {
+type ResourcesHeroProps = {
+  resources?: Resource[]
+  title?: string
+  subtitle?: string
+  mediaUrl?: string
+}
+
+export default function ResourcesHero({ resources: resourcesProp, title, subtitle, mediaUrl }: ResourcesHeroProps = {}) {
   const resources = resourcesProp ?? fallbackResources
   const locale = useLocale()
   const t = useTranslations('resources')
@@ -129,15 +139,7 @@ export default function ResourcesHero({ resources: resourcesProp }: { resources?
     <div className="relative w-full min-h-screen overflow-hidden">
       {/* Background video */}
       <div className="absolute inset-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4" type="video/mp4" />
-        </video>
+        <HeroMedia mediaUrl={mediaUrl} fallbackVideoSrc={FALLBACK_VIDEO} />
         <div className="absolute inset-0 bg-gradient-to-r from-black/88 via-black/68 to-black/78" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_50%,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_40%)]" />
       </div>
@@ -151,9 +153,9 @@ export default function ResourcesHero({ resources: resourcesProp }: { resources?
               RESOURCES
             </div>
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white">
-              {isKo ? '자료실' : 'Resources'}
+              {title || (isKo ? '자료실' : 'Resources')}
             </h1>
-            <p className="text-white/70 text-sm sm:text-base mt-4 max-w-2xl">{t('subtitle')}</p>
+            <p className="text-white/70 text-sm sm:text-base mt-4 max-w-2xl whitespace-pre-line">{subtitle || t('subtitle')}</p>
           </div>
 
           {/* Glass card */}
