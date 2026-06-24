@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation'
-import { getCatalog } from '@/lib/products/catalog-db'
+import { setRequestLocale } from 'next-intl/server'
+import ProductsSection from '@/components/home/ProductsSection'
+import { getCategoryPanels } from '@/lib/products/catalog-db'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,7 +10,13 @@ export default async function ProductsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const { catalog } = await getCatalog()
-  const first = catalog[0]?.slug ?? 'ws-3000'
-  redirect(`/${locale}/products/${first}`)
+  setRequestLocale(locale)
+
+  const panels = await getCategoryPanels()
+
+  return (
+    <div className="bg-navy">
+      <ProductsSection panels={panels} />
+    </div>
+  )
 }

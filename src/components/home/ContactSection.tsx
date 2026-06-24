@@ -174,7 +174,7 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
                       {locale === 'ko' ? '제품 선택 (선택사항)' : 'Select Product (Optional)'}
                     </option>
                     <option value="HS-100">HS-100 {locale === 'ko' ? '우레탄 접착제' : 'Urethane Adhesive'}</option>
-                    <option value="HS-200">HS-200 {locale === 'ko' ? '지수제' : 'Sealant'}</option>
+                    <option value="HS-200">HS-200 {locale === 'ko' ? '지수제' : 'Water-stop Agent'}</option>
                     <option value="HS-300">HS-300 {locale === 'ko' ? '방수제' : 'Waterproofing'}</option>
                     <option value="HS-400">HS-400 {locale === 'ko' ? '그라우트' : 'Grout'}</option>
                     <option value="other">{locale === 'ko' ? '기타' : 'Other'}</option>

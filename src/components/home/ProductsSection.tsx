@@ -22,7 +22,7 @@ const defaultPanels: Panel[] = [
     media: '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4',
     isVideo: true,
     titleKo: '지수제',
-    titleEn: 'Sealing Agent',
+    titleEn: 'Water-stop Agent',
     taglineKo: '누수 차단의 밀착과 내구성을 동시에',
     taglineEn: 'Adhesion and durability for total leak blocking',
     placeholder: 'linear-gradient(135deg, #1A2B6B, #0D1220)',
@@ -82,6 +82,17 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   const trackRef = useRef<HTMLDivElement>(null)
   const draggedRef = useRef(false)
 
+  const PRODUCT_CATEGORIES = new Set([
+    'sealant',
+    'fire-door-adhesive',
+    'general-adhesive',
+    'interior-door-adhesive',
+  ])
+  const targetHref = (p: Panel) =>
+    PRODUCT_CATEGORIES.has(p.id)
+      ? `/${locale}/products/category/${p.id}`
+      : `/${locale}${p.href}`
+
   useEffect(() => {
     const viewport = viewportRef.current
     const track = trackRef.current
@@ -92,9 +103,11 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
 
     let raf = 0
     let paused = false
+    let pointerDown = false
     let dragging = false
     let startX = 0
     let startScroll = 0
+    let activePointerId = -1
     let setWidth = track.scrollWidth / 2
     let pos = viewport.scrollLeft // float accumulator (scrollLeft rounds to int)
 
@@ -111,7 +124,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
     const SPEED = 0.55 // px per frame
     const tick = () => {
       if (!setWidth) recompute()
-      if (!paused && !dragging && !mobile.matches && !reduced.matches) {
+      if (!paused && !pointerDown && !mobile.matches && !reduced.matches) {
         pos += SPEED
         wrapPos()
         viewport.scrollLeft = pos
@@ -129,29 +142,45 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
 
     const onPointerDown = (e: PointerEvent) => {
       if (mobile.matches) return
-      dragging = true
+      // Do NOT capture the pointer yet: capturing on pointerdown redirects
+      // the subsequent click away from child <a> links and breaks navigation.
+      pointerDown = true
+      dragging = false
       draggedRef.current = false
       startX = e.clientX
       startScroll = pos
-      viewport.classList.add('ps-dragging')
-      viewport.setPointerCapture(e.pointerId)
+      activePointerId = e.pointerId
     }
     const onPointerMove = (e: PointerEvent) => {
-      if (!dragging) return
+      if (!pointerDown) return
       const dx = e.clientX - startX
-      if (Math.abs(dx) > 5) draggedRef.current = true
+      if (!dragging) {
+        if (Math.abs(dx) <= 5) return
+        // Real drag started — now take pointer capture.
+        dragging = true
+        draggedRef.current = true
+        viewport.classList.add('ps-dragging')
+        try {
+          viewport.setPointerCapture(activePointerId)
+        } catch {
+          /* noop */
+        }
+      }
       pos = startScroll - dx
       wrapPos()
       viewport.scrollLeft = pos
     }
     const endDrag = (e: PointerEvent) => {
-      if (!dragging) return
-      dragging = false
-      viewport.classList.remove('ps-dragging')
-      try {
-        viewport.releasePointerCapture(e.pointerId)
-      } catch {
-        /* noop */
+      if (!pointerDown) return
+      pointerDown = false
+      if (dragging) {
+        dragging = false
+        viewport.classList.remove('ps-dragging')
+        try {
+          viewport.releasePointerCapture(e.pointerId)
+        } catch {
+          /* noop */
+        }
       }
     }
 
@@ -191,7 +220,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   const renderSlat = (p: Panel, clone: boolean) => (
     <Link
       key={`${clone ? 'clone-' : ''}${p.id}`}
-      href={`/${locale}${p.href}`}
+      href={targetHref(p)}
       className={`ps-slat${clone ? ' ps-clone' : ''}`}
       aria-label={isKo ? p.titleKo : p.titleEn}
       aria-hidden={clone || undefined}
@@ -243,8 +272,8 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
         <h2 className="ps-title">{isKo ? '한성우레탄 제품군' : 'Our Product Lineup'}</h2>
         <p className="ps-subtitle">
           {isKo
-            ? '각 제품군을 클릭하면 상세 정보를 확인할 수 있습니다.'
-            : 'Click each category to view its details.'}
+            ? '각 제품군을 클릭하면 해당 제품 목록을 확인할 수 있습니다.'
+            : 'Click each category to browse its products.'}
         </p>
       </div>
 

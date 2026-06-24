@@ -45,7 +45,7 @@ export const categoryOrder: ResourceCategory[] = [
 
 export const groupLabels: Record<ResourceGroup, { ko: string; en: string }> = {
   common: { ko: '공통', en: 'Common' },
-  sealant: { ko: '지수제', en: 'Sealing Agent' },
+  sealant: { ko: '지수제', en: 'Water-stop Agent' },
   fireDoor: { ko: '방화문 접착제', en: 'Fire Door Adhesive' },
   interiorDoor: { ko: '실내문 접착제', en: 'Interior Door Adhesive' },
   general: { ko: '일반 접착제', en: 'General Adhesive' },

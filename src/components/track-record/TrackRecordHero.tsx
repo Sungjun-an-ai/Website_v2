@@ -18,7 +18,7 @@ type TrackRecordRecord = {
 }
 
 const CATEGORY_LABELS: Record<string, { ko: string; en: string }> = {
-  sealant: { ko: '지수제', en: 'Sealant' },
+  sealant: { ko: '지수제', en: 'Water-stop Agent' },
   firedoor: { ko: '방화문', en: 'Fire Door' },
   construction: { ko: '건설', en: 'Construction' },
   civil: { ko: '토목', en: 'Civil' },
