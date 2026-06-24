@@ -205,7 +205,7 @@ export default function ProductListByCategory({
         .pb-spacer {
           flex: 0 0 auto;
           width: 100%;
-          height: clamp(170px, 26vh, 230px);
+          height: 320px;
           pointer-events: none;
         }
 
@@ -337,14 +337,14 @@ export default function ProductListByCategory({
           top: 0;
           left: 0;
           right: 0;
-          height: 230px;
+          height: 320px;
           z-index: 4;
           pointer-events: none;
           background: linear-gradient(
             to bottom,
             rgba(8, 16, 40, 0.96) 0%,
-            rgba(8, 16, 40, 0.85) 45%,
-            rgba(8, 16, 40, 0.4) 78%,
+            rgba(8, 16, 40, 0.92) 55%,
+            rgba(8, 16, 40, 0.5) 82%,
             transparent 100%
           );
         }
@@ -354,7 +354,7 @@ export default function ProductListByCategory({
           left: 0;
           right: 0;
           z-index: 5;
-          padding: 104px clamp(24px, 6vw, 96px) 0;
+          padding: 196px clamp(24px, 6vw, 96px) 0;
           padding-left: var(--logo-left);
           pointer-events: none;
         }
@@ -402,8 +402,14 @@ export default function ProductListByCategory({
           .pb-band-cta {
             display: none;
           }
+          .pb-head {
+            padding-top: 134px;
+          }
+          .pb-spacer {
+            height: 240px;
+          }
           .pb-topfade {
-            height: 188px;
+            height: 240px;
           }
         }
       `}</style>
