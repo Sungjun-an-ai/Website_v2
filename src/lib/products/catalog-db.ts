@@ -27,7 +27,7 @@ const fallbackHeroVisuals: Record<string, string> = {
 }
 
 const fallbackPanels: CategoryPanel[] = [
-  { id: 'sealant', media: fallbackHeroVisuals.sealant, isVideo: true, titleKo: '지수제', titleEn: 'Sealing Agent', taglineKo: '누수 차단의 밀착과 내구성을 동시에', taglineEn: 'Adhesion and durability for total leak blocking', href: '/products/ws-3000', placeholder: 'linear-gradient(135deg, #1A2B6B, #0D1220)' },
+  { id: 'sealant', media: fallbackHeroVisuals.sealant, isVideo: true, titleKo: '지수제', titleEn: 'Water-stop Agent', taglineKo: '누수 차단의 밀착과 내구성을 동시에', taglineEn: 'Adhesion and durability for total leak blocking', href: '/products/ws-3000', placeholder: 'linear-gradient(135deg, #1A2B6B, #0D1220)' },
   { id: 'fire-door-adhesive', media: '/about/A_photorealistic_hero_image_on_Nano_Banana_2_74206.png', isVideo: false, titleKo: '방화문 접착제', titleEn: 'Fire Door Adhesive', taglineKo: '방화 성능과 강력 접착의 완벽한 균형', taglineEn: 'A perfect balance of fire performance and strong adhesion', href: '/products/nflv-eco', placeholder: 'linear-gradient(135deg, #1E3A5F, #0D1B3E)' },
   { id: 'interior-door-adhesive', media: '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4', isVideo: true, titleKo: '실내문 접착제', titleEn: 'Interior Door Adhesive', taglineKo: '저VOC · 강한 초기 접착력', taglineEn: 'Low VOC with strong initial adhesion', href: '/products/id', placeholder: 'linear-gradient(135deg, #162D4A, #091525)' },
   { id: 'general-adhesive', media: '/about/An_extreme_macro_close-up_of_u_Nano_Banana_Pro_81286.png', isVideo: false, titleKo: '일반 접착제', titleEn: 'General Adhesive', taglineKo: '다양한 공정에 적용 가능한 범용 우레탄 접착', taglineEn: 'Versatile urethane adhesion for diverse processes', href: '/products/hanaro-p', placeholder: 'linear-gradient(135deg, #243B55, #141E30)' },

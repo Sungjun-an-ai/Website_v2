@@ -20,6 +20,7 @@ export default function ProductListByCategory({
   categoryId,
   categoryLabel,
   products,
+  heroVisual,
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const setRef = useRef<HTMLDivElement>(null)
@@ -107,6 +108,8 @@ export default function ProductListByCategory({
     const subtitle = isKo ? p.subtitleKo : p.subtitleEn
     const tag = isKo ? p.tagKo : p.tagEn
     const animate = !clone && revealed
+    const media = p.heroImage || heroVisual || ''
+    const isVideo = !!media && /\.(mp4|webm|ogg)(?:\?.*)?$/i.test(media)
     return (
       <Link
         key={`${clone ? 'c-' : ''}${p.slug}`}
@@ -117,9 +120,13 @@ export default function ProductListByCategory({
         tabIndex={clone ? -1 : undefined}
       >
         <div className="pb-band-bg">
-          {p.heroImage ? (
+          {isVideo ? (
+            <video className="pb-band-media" autoPlay muted loop playsInline preload="metadata">
+              <source src={media} type="video/mp4" />
+            </video>
+          ) : media ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="pb-band-media" src={p.heroImage} alt="" draggable={false} />
+            <img className="pb-band-media" src={media} alt="" draggable={false} />
           ) : (
             <div className="pb-band-fallback" />
           )}
@@ -139,10 +146,12 @@ export default function ProductListByCategory({
     <section className="pb-section">
       <div className="pb-viewport" ref={viewportRef}>
         <div className="pb-stack" ref={setRef}>
+          <div className="pb-spacer" aria-hidden />
           {products.map((p, i) => renderBand(p, i, false))}
         </div>
         {looping && (
           <div className="pb-stack" aria-hidden>
+            <div className="pb-spacer" aria-hidden />
             {products.map((p, i) => renderBand(p, i, true))}
           </div>
         )}
@@ -181,6 +190,12 @@ export default function ProductListByCategory({
         .pb-stack {
           display: flex;
           flex-direction: column;
+        }
+        .pb-spacer {
+          flex: 0 0 auto;
+          width: 100%;
+          height: clamp(170px, 26vh, 230px);
+          pointer-events: none;
         }
 
         .pb-band {
@@ -366,7 +381,7 @@ export default function ProductListByCategory({
           .pb-viewport {
             position: static;
             overflow-y: visible;
-            padding-top: 188px;
+            padding-top: 0;
           }
           .pb-band {
             height: 200px;

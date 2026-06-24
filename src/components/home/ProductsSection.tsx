@@ -22,7 +22,7 @@ const defaultPanels: Panel[] = [
     media: '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4',
     isVideo: true,
     titleKo: '지수제',
-    titleEn: 'Sealing Agent',
+    titleEn: 'Water-stop Agent',
     taglineKo: '누수 차단의 밀착과 내구성을 동시에',
     taglineEn: 'Adhesion and durability for total leak blocking',
     placeholder: 'linear-gradient(135deg, #1A2B6B, #0D1220)',

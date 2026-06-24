@@ -37,7 +37,7 @@ export interface ProductCatalogItem {
 }
 
 export const productCategoryLabels: Record<ProductCategory, { ko: string; en: string }> = {
-  sealant: { ko: '지수제', en: 'Sealing Agent' },
+  sealant: { ko: '지수제', en: 'Water-stop Agent' },
   'fire-door-adhesive': { ko: '방화문 접착제', en: 'Fire Door Adhesive' },
   'general-adhesive': { ko: '일반 접착제', en: 'General Adhesive' },
   'interior-door-adhesive': { ko: '실내도어 접착제', en: 'Interior Door Adhesive' },
