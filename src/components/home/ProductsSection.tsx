@@ -155,7 +155,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
       if (!pointerDown) return
       const dx = e.clientX - startX
       if (!dragging) {
-        if (Math.abs(dx) <= 5) return
+        if (Math.abs(dx) <= 10) return
         // Real drag started — now take pointer capture.
         dragging = true
         draggedRef.current = true
@@ -184,15 +184,6 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
       }
     }
 
-    // Suppress click navigation right after a drag
-    const onClickCapture = (e: MouseEvent) => {
-      if (draggedRef.current) {
-        e.preventDefault()
-        e.stopPropagation()
-        draggedRef.current = false
-      }
-    }
-
     const onResize = () => recompute()
 
     viewport.addEventListener('mouseenter', onEnter)
@@ -201,7 +192,6 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
     viewport.addEventListener('pointermove', onPointerMove)
     viewport.addEventListener('pointerup', endDrag)
     viewport.addEventListener('pointercancel', endDrag)
-    viewport.addEventListener('click', onClickCapture, true)
     window.addEventListener('resize', onResize)
 
     return () => {
@@ -212,7 +202,6 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
       viewport.removeEventListener('pointermove', onPointerMove)
       viewport.removeEventListener('pointerup', endDrag)
       viewport.removeEventListener('pointercancel', endDrag)
-      viewport.removeEventListener('click', onClickCapture, true)
       window.removeEventListener('resize', onResize)
     }
   }, [])
@@ -226,6 +215,13 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
       aria-hidden={clone || undefined}
       tabIndex={clone ? -1 : undefined}
       draggable={false}
+      onClick={(e) => {
+        // Block navigation only when the press turned into a drag-scroll.
+        if (draggedRef.current) {
+          e.preventDefault()
+          draggedRef.current = false
+        }
+      }}
     >
       <div className="ps-bg" style={{ background: p.placeholder }}>
         {p.isVideo ? (
