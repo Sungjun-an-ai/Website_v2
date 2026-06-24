@@ -52,7 +52,7 @@ export default async function ValuesSection() {
         <div className="w-16 h-1 bg-gold mx-auto" />
       </div>
 
-      <div className="flex-grow flex flex-col h-full w-full group pt-20 pb-8 md:pt-36">
+      <div className="flex-grow flex flex-col h-full w-full group pt-32 pb-8 md:pt-36">
         {values.map((value, idx) => {
           const Icon: LucideIcon = iconMap[value.icon] ?? Award
           const bgImg = bgImages[idx % bgImages.length]
