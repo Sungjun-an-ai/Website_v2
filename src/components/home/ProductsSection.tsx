@@ -82,6 +82,17 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   const trackRef = useRef<HTMLDivElement>(null)
   const draggedRef = useRef(false)
 
+  const PRODUCT_CATEGORIES = new Set([
+    'sealant',
+    'fire-door-adhesive',
+    'general-adhesive',
+    'interior-door-adhesive',
+  ])
+  const targetHref = (p: Panel) =>
+    PRODUCT_CATEGORIES.has(p.id)
+      ? `/${locale}/products/category/${p.id}`
+      : `/${locale}${p.href}`
+
   useEffect(() => {
     const viewport = viewportRef.current
     const track = trackRef.current
@@ -191,7 +202,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   const renderSlat = (p: Panel, clone: boolean) => (
     <Link
       key={`${clone ? 'clone-' : ''}${p.id}`}
-      href={`/${locale}${p.href}`}
+      href={targetHref(p)}
       className={`ps-slat${clone ? ' ps-clone' : ''}`}
       aria-label={isKo ? p.titleKo : p.titleEn}
       aria-hidden={clone || undefined}
@@ -243,8 +254,8 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
         <h2 className="ps-title">{isKo ? '한성우레탄 제품군' : 'Our Product Lineup'}</h2>
         <p className="ps-subtitle">
           {isKo
-            ? '각 제품군을 클릭하면 상세 정보를 확인할 수 있습니다.'
-            : 'Click each category to view its details.'}
+            ? '각 제품군을 클릭하면 해당 제품 목록을 확인할 수 있습니다.'
+            : 'Click each category to browse its products.'}
         </p>
       </div>
 
