@@ -17,7 +17,6 @@ type Props = {
 export default function ProductListByCategory({
   locale,
   isKo,
-  categoryId,
   categoryLabel,
   products,
   heroVisual,
@@ -164,7 +163,7 @@ export default function ProductListByCategory({
           <ArrowLeft size={16} />
           <span>{isKo ? '제품군' : 'Products'}</span>
         </Link>
-        <div className="pb-eyebrow">{categoryId.toUpperCase()}</div>
+        <div className="pb-eyebrow">{categoryLabel.en.toUpperCase()}</div>
         <h1 className="pb-title">{title}</h1>
       </div>
 
@@ -176,6 +175,18 @@ export default function ProductListByCategory({
           background: #0b1228;
           font-family: 'Noto Sans KR', var(--font-pretendard), sans-serif;
           overflow: hidden;
+          /* Left edge of the GNB logo: centered max-w-7xl (1280px) + px-4 */
+          --logo-left: calc(max(0px, (100vw - 1280px) / 2) + 16px);
+        }
+        @media (min-width: 640px) {
+          .pb-section {
+            --logo-left: calc(max(0px, (100vw - 1280px) / 2) + 24px);
+          }
+        }
+        @media (min-width: 1024px) {
+          .pb-section {
+            --logo-left: calc(max(0px, (100vw - 1280px) / 2) + 32px);
+          }
         }
         .pb-viewport {
           position: absolute;
@@ -277,7 +288,8 @@ export default function ProductListByCategory({
           align-items: flex-start;
           text-align: left;
           padding: 0 clamp(24px, 6vw, 96px);
-          max-width: 760px;
+          padding-left: var(--logo-left);
+          max-width: calc(760px + var(--logo-left));
         }
         .pb-band-tag {
           display: inline-block;
@@ -343,6 +355,7 @@ export default function ProductListByCategory({
           right: 0;
           z-index: 5;
           padding: 104px clamp(24px, 6vw, 96px) 0;
+          padding-left: var(--logo-left);
           pointer-events: none;
         }
         .pb-back {
