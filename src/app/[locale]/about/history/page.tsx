@@ -2,6 +2,7 @@ import { setRequestLocale } from 'next-intl/server'
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import HistoryHero from '@/components/about/HistoryHero'
+import { getPageHero, resolvePageHero } from '@/lib/site/page-hero'
 
 const fallbackHistoryEvents = [
   { year: 1991, month: 3, event_ko: '한성우레탄 설립', event_en: 'Founded Hansung Urethane' },
@@ -76,9 +77,16 @@ export default async function HistoryPage({
     // Use fallback data
   }
 
-  const title = t('title')
+  const hero = resolvePageHero(await getPageHero('history'), isKo)
+  const title = hero.title || t('title')
 
   return (
-    <HistoryHero events={historyEvents} isKo={isKo} title={title} />
+    <HistoryHero
+      events={historyEvents}
+      isKo={isKo}
+      title={title}
+      subtitle={hero.subtitle}
+      mediaUrl={hero.mediaUrl}
+    />
   )
 }
