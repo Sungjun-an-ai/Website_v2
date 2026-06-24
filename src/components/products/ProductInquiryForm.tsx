@@ -6,6 +6,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Toast, useToast } from '@/components/ui/toast'
 
 type ProductInquiryFormProps = {
   locale: string
@@ -15,7 +23,10 @@ type ProductInquiryFormProps = {
 }
 
 export default function ProductInquiryForm({ locale, productName, isKo, productOptions = [] }: ProductInquiryFormProps) {
+  const { toast, showToast, hideToast } = useToast()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [agreed, setAgreed] = useState(false)
+  const [showConsent, setShowConsent] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -36,6 +47,15 @@ export default function ProductInquiryForm({ locale, productName, isKo, productO
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!agreed) {
+      showToast(
+        isKo
+          ? '문의 처리를 위한 개인정보 수집 동의가 필요합니다'
+          : 'Please agree to the collection of personal information to submit your inquiry.',
+        'error',
+      )
+      return
+    }
     setStatus('sending')
 
     try {
@@ -51,6 +71,7 @@ export default function ProductInquiryForm({ locale, productName, isKo, productO
       if (!res.ok) throw new Error('failed')
 
       setStatus('success')
+      setAgreed(false)
       setFormData({
         name: '',
         company: '',
@@ -200,8 +221,73 @@ export default function ProductInquiryForm({ locale, productName, isKo, productO
           >
             {status === 'sending' ? (isKo ? '전송 중...' : 'Sending...') : (isKo ? '문의 보내기' : 'Send Inquiry')}
           </Button>
+
+          <label className="flex items-start gap-2 cursor-pointer text-sm text-slate-200 select-none">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={() => {
+                if (agreed) {
+                  setAgreed(false)
+                } else {
+                  setShowConsent(true)
+                }
+              }}
+              className="mt-0.5 h-4 w-4 accent-gold cursor-pointer"
+            />
+            <span>
+              {isKo
+                ? '개인정보 수집 및 이용에 관한 동의'
+                : 'I agree to the collection and use of personal information'}
+            </span>
+          </label>
         </form>
       )}
+
+      {/* Personal information consent modal */}
+      <Dialog open={showConsent} onOpenChange={setShowConsent}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base leading-snug">
+              {isKo
+                ? '[안내] 문의 접수를 위한 개인정보 수집·이용 동의'
+                : '[Notice] Consent to Collection and Use of Personal Information'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+            {isKo
+              ? `빠른 문의 처리 및 회신을 위해 아래와 같이 개인정보를 수집합니다.
+
+- 수집 목적 : 문의 접수 및 답변 제공
+- 수집 항목 : 이름, 회사명, 연락처, 이메일
+- 보유 기간 : 목적 달성 후 즉시 파기 (또는 3년)
+
+동의를 거부하실 수 있으며, 거부 시 문의 접수가 제한됩니다.`
+              : `We collect the following personal information for prompt handling of and replies to your inquiry.
+
+- Purpose : Receiving inquiries and providing answers
+- Items : Name, company, contact number, email
+- Retention : Destroyed immediately after the purpose is fulfilled (or 3 years)
+
+You may decline consent; declining will restrict your inquiry submission.`}
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowConsent(false)}>
+              {isKo ? '취소' : 'Cancel'}
+            </Button>
+            <Button
+              onClick={() => {
+                setAgreed(true)
+                setShowConsent(false)
+              }}
+            >
+              {isKo ? '동의하고 접수 완료' : 'Agree & Complete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </>
   )
 }

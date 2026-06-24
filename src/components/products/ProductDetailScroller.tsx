@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowLeft, Download, FileText, ShieldCheck } from 'lucide-react'
+import { ArrowDown, ArrowLeft, Download, FileText } from 'lucide-react'
 import ProductInquiryForm from '@/components/products/ProductInquiryForm'
 import SnapPageEffect from '@/components/common/SnapPageEffect'
 import { ProductCatalogItem, productCatalog, productCategoryLabels } from '@/lib/products/catalog'
@@ -426,13 +426,6 @@ export default function ProductDetailScroller({
                   productOptions={catalog.map((item) => (isKo ? item.nameKo : item.nameEn))}
                   isKo={isKo}
                 />
-              </div>
-
-              <div className="mt-8 flex items-center gap-2 text-sm text-white/65" style={fadeStyle(visible, 420)}>
-                <ShieldCheck className="h-4 w-4 text-gold" />
-                {isKo
-                  ? '문의 내용은 안전하게 전송되며, Supabase 리드 데이터로 연동 가능합니다.'
-                  : 'Inquiry data is sent securely and ready for Supabase lead integration.'}
               </div>
             </div>
           </div>
