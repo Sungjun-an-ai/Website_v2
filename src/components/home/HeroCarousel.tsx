@@ -79,19 +79,26 @@ const fallbackHeroSlides: HeroSlide[] = [
   },
 ]
 
-export default function HeroCarousel() {
+export default function HeroCarousel({
+  initialSlides = [],
+  initialStats = [],
+}: {
+  initialSlides?: HeroSlide[]
+  initialStats?: Stat[]
+} = {}) {
   const locale = useLocale()
   const swiperRef = useRef<HTMLDivElement>(null)
   const tickerContainerRef = useRef<HTMLDivElement>(null)
   const tickerKpiStartRef = useRef<HTMLDivElement>(null)
-  const [slides, setSlides] = useState<HeroSlide[]>([])
-  const [stats, setStats] = useState<Stat[]>([])
+  const [slides, setSlides] = useState<HeroSlide[]>(initialSlides)
+  const [stats, setStats] = useState<Stat[]>(initialStats)
   const [showTicker, setShowTicker] = useState(false)
   const [startMarquee, setStartMarquee] = useState(false)
   const [tickerStartOffset, setTickerStartOffset] = useState(0)
   const displaySlides = slides.length > 0 ? slides : fallbackHeroSlides
 
   useEffect(() => {
+    if (initialSlides.length > 0) return
     const supabase = createClient()
     supabase
       .from('hero_slides')
@@ -102,9 +109,10 @@ export default function HeroCarousel() {
         if (error) console.error('[HeroCarousel] fetch error:', error)
         setSlides(data || [])
       })
-  }, [])
+  }, [initialSlides.length])
 
   useEffect(() => {
+    if (initialStats.length > 0) return
     const supabase = createClient()
     supabase
       .from('stats')
@@ -115,7 +123,7 @@ export default function HeroCarousel() {
         if (error) console.error('[HeroCarousel] stats fetch error:', error)
         setStats(data || [])
       })
-  }, [])
+  }, [initialStats.length])
 
   useEffect(() => {
     const initSwiper = async () => {
@@ -260,7 +268,7 @@ export default function HeroCarousel() {
       <div ref={swiperRef} className="swiper h-full">
         <div className="swiper-wrapper">
           {displaySlides.map((slide) => (
-            <div key={slide.id} className="swiper-slide relative h-full w-full">
+            <div key={slide.id} className="swiper-slide relative h-full w-full bg-navy">
               {/* Background Media */}
               {slide.image_url?.match(/\.(mp4|webm|ogg)(?:\?.*)?$/i) ? (
                 <video
@@ -269,6 +277,7 @@ export default function HeroCarousel() {
                   loop
                   muted
                   playsInline
+                  preload="auto"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               ) : (

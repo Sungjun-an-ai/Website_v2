@@ -378,7 +378,8 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
       <style jsx global>{`
         .cc-section {
           font-family: 'Noto Sans KR', var(--font-pretendard), sans-serif;
-          background-image: linear-gradient(rgba(27, 42, 107, 0.3), rgba(27, 42, 107, 0.3)), url('/assets/section-bg.jpg');
+          background-image: linear-gradient(rgba(27, 42, 107, 0.3), rgba(27, 42, 107, 0.3)), image-set(url('/assets/section-bg.webp') type('image/webp'), url('/assets/section-bg.jpg') type('image/jpeg'));
+          background-color: #1b2a6b;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
