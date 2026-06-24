@@ -281,7 +281,7 @@ You may decline consent; declining will restrict your inquiry submission.`}
                 setShowConsent(false)
               }}
             >
-              {isKo ? '동의하고 접수 완료' : 'Agree & Complete'}
+              {isKo ? '동의' : 'Agree'}
             </Button>
           </DialogFooter>
         </DialogContent>

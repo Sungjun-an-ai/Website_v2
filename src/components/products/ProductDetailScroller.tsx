@@ -147,9 +147,12 @@ export default function ProductDetailScroller({
     return () => observer.disconnect()
   }, [])
 
+  // Always keep the active product in sync with the centered hero slide, even
+  // when the hero is scrolled out of view, so the lower sections (specs,
+  // resources, inquiry) mirror whatever product the carousel last showed.
   useEffect(() => {
     const track = heroTrackRef.current
-    if (!track || !heroActive || heroPaused) return
+    if (!track) return
 
     const len = orderedProducts.length
     if (len === 0) return
@@ -179,20 +182,27 @@ export default function ProductDetailScroller({
     }
 
     track.addEventListener('scroll', handleScroll, { passive: true })
-
-    const interval = window.setInterval(() => {
-      const w = cardWidth()
-      const current = Math.round(track.scrollLeft / w)
-      track.scrollTo({ left: (current + 1) * w, behavior: 'smooth' })
-    }, 3200)
-
     updateActiveProduct()
 
     return () => {
       track.removeEventListener('scroll', handleScroll)
       window.clearTimeout(idleTimer)
-      window.clearInterval(interval)
     }
+  }, [orderedProducts])
+
+  // Auto-advance the carousel only while the hero is visible and not hovered.
+  useEffect(() => {
+    const track = heroTrackRef.current
+    if (!track || !heroActive || heroPaused) return
+    if (orderedProducts.length === 0) return
+
+    const interval = window.setInterval(() => {
+      const w = track.clientWidth || 1
+      const current = Math.round(track.scrollLeft / w)
+      track.scrollTo({ left: (current + 1) * w, behavior: 'smooth' })
+    }, 3200)
+
+    return () => window.clearInterval(interval)
   }, [heroActive, heroPaused, orderedProducts])
 
   return (
