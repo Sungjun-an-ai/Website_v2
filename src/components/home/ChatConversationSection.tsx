@@ -71,7 +71,6 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
     const nextBtn = $('#cc-nextBtn')!
 
     let current = 0
-    let hovered = false
 
     // Hansung avatar: use logo image (fallback to "H")
     const avatarEl = $('#cc-hansungAvatar')!
@@ -93,7 +92,6 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
     // pause-aware scheduler
     type Task = { cb: () => void; remaining: number; start: number; id: number; done: boolean }
     let timers: Task[] = []
-    let paused = false
 
     const schedule = (cb: () => void, delay: number) => {
       const task: Task = { cb, remaining: delay, start: Date.now(), id: 0, done: false }
@@ -106,30 +104,6 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
     const clearTimers = () => {
       timers.forEach((t) => clearTimeout(t.id))
       timers = []
-      paused = false
-    }
-    const pauseTimers = () => {
-      if (paused) return
-      paused = true
-      const now = Date.now()
-      timers.forEach((t) => {
-        if (t.done) return
-        clearTimeout(t.id)
-        t.remaining = t.remaining - (now - t.start)
-      })
-    }
-    const resumeTimers = () => {
-      if (!paused) return
-      paused = false
-      const now = Date.now()
-      timers.forEach((t) => {
-        if (t.done) return
-        t.start = now
-        t.id = window.setTimeout(() => {
-          t.done = true
-          t.cb()
-        }, Math.max(0, t.remaining))
-      })
     }
 
     // character-by-character typewriter (pause-aware via scheduler)
@@ -240,8 +214,6 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
       }, revealStart)
 
       schedule(() => goTo(current + 1), nextStart)
-
-      if (hovered) pauseTimers()
     }
 
     // build dots
@@ -256,19 +228,9 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
       dotsWrap.appendChild(b)
     })
 
-    const onEnter = () => {
-      hovered = true
-      pauseTimers()
-    }
-    const onLeave = () => {
-      hovered = false
-      resumeTimers()
-    }
     const onPrev = () => goTo(current - 1)
     const onNext = () => goTo(current + 1)
 
-    card.addEventListener('mouseenter', onEnter)
-    card.addEventListener('mouseleave', onLeave)
     prevBtn.addEventListener('click', onPrev)
     nextBtn.addEventListener('click', onNext)
 
@@ -299,8 +261,6 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
       clearTimers()
       clearTimeout(startTimer)
       io.disconnect()
-      card.removeEventListener('mouseenter', onEnter)
-      card.removeEventListener('mouseleave', onLeave)
       prevBtn.removeEventListener('click', onPrev)
       nextBtn.removeEventListener('click', onNext)
       dotsWrap.innerHTML = ''

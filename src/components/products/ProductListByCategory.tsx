@@ -29,6 +29,12 @@ export default function ProductListByCategory({
 
   const title = isKo ? categoryLabel.ko : categoryLabel.en
 
+  // Land at the top of this page even when arriving from a scrolled-down
+  // section (the previous page may leave the window scrolled past the fold).
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior })
+  }, [])
+
   // Trigger the staggered right-to-left wipe shortly after mount
   useEffect(() => {
     const t = window.setTimeout(() => setRevealed(true), 120)
