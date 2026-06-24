@@ -8,63 +8,76 @@ type Panel = {
   id: string
   media: string
   isVideo: boolean
-  title: string
-  tagline: string
+  titleKo: string
+  titleEn: string
+  taglineKo: string
+  taglineEn: string
   placeholder: string
-  href: (locale: string) => string
+  href: string
 }
 
-const panels: Panel[] = [
+const defaultPanels: Panel[] = [
   {
     id: 'sealant',
     media: '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4',
     isVideo: true,
-    title: '지수제',
-    tagline: '누수 차단의 밀착과 내구성을 동시에',
+    titleKo: '지수제',
+    titleEn: 'Sealing Agent',
+    taglineKo: '누수 차단의 밀착과 내구성을 동시에',
+    taglineEn: 'Adhesion and durability for total leak blocking',
     placeholder: 'linear-gradient(135deg, #1A2B6B, #0D1220)',
-    href: (l) => `/${l}/products/ws-3000`,
+    href: '/products/ws-3000',
   },
   {
     id: 'fire-door-adhesive',
     media: '/about/A_photorealistic_hero_image_on_Nano_Banana_2_74206.png',
     isVideo: false,
-    title: '방화문 접착제',
-    tagline: '방화 성능과 강력 접착의 완벽한 균형',
+    titleKo: '방화문 접착제',
+    titleEn: 'Fire Door Adhesive',
+    taglineKo: '방화 성능과 강력 접착의 완벽한 균형',
+    taglineEn: 'A perfect balance of fire performance and strong adhesion',
     placeholder: 'linear-gradient(135deg, #1E3A5F, #0D1B3E)',
-    href: (l) => `/${l}/products/nflv-eco`,
+    href: '/products/nflv-eco',
   },
   {
     id: 'interior-door-adhesive',
     media: '/about/Aerial_timelapse_of_Seoul_at_g_Kling_30__41996.mp4',
     isVideo: true,
-    title: '실내문 접착제',
-    tagline: '저VOC · 강한 초기 접착력',
+    titleKo: '실내문 접착제',
+    titleEn: 'Interior Door Adhesive',
+    taglineKo: '저VOC · 강한 초기 접착력',
+    taglineEn: 'Low VOC with strong initial adhesion',
     placeholder: 'linear-gradient(135deg, #162D4A, #091525)',
-    href: (l) => `/${l}/products/id`,
+    href: '/products/id',
   },
   {
     id: 'general-adhesive',
     media: '/about/An_extreme_macro_close-up_of_u_Nano_Banana_Pro_81286.png',
     isVideo: false,
-    title: '일반 접착제',
-    tagline: '다양한 공정에 적용 가능한 범용 우레탄 접착',
+    titleKo: '일반 접착제',
+    titleEn: 'General Adhesive',
+    taglineKo: '다양한 공정에 적용 가능한 범용 우레탄 접착',
+    taglineEn: 'Versatile urethane adhesion for diverse processes',
     placeholder: 'linear-gradient(135deg, #243B55, #141E30)',
-    href: (l) => `/${l}/products/hanaro-p`,
+    href: '/products/hanaro-p',
   },
   {
     id: 'urethane-solution',
     media: '/about/A_photorealistic_hero_image_se_Nano_Banana_Pro_42629.png',
     isVideo: false,
-    title: '우레탄 솔루션',
-    tagline: '제품을 넘어 공정 전체를 함께 설계하는 파트너십',
+    titleKo: '우레탄 솔루션',
+    titleEn: 'Urethane Solution',
+    taglineKo: '제품을 넘어 공정 전체를 함께 설계하는 파트너십',
+    taglineEn: 'A partnership designing your entire process, beyond products',
     placeholder: 'linear-gradient(135deg, #1A2B6B, #243B55)',
-    href: (l) => `/${l}/about`,
+    href: '/about',
   },
 ]
 
-export default function ProductsSection() {
+export default function ProductsSection({ panels: panelsProp }: { panels?: Panel[] } = {}) {
   const locale = useLocale()
   const isKo = locale === 'ko'
+  const panels = panelsProp && panelsProp.length > 0 ? panelsProp : defaultPanels
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const draggedRef = useRef(false)
@@ -178,9 +191,9 @@ export default function ProductsSection() {
   const renderSlat = (p: Panel, clone: boolean) => (
     <Link
       key={`${clone ? 'clone-' : ''}${p.id}`}
-      href={p.href(locale)}
+      href={`/${locale}${p.href}`}
       className={`ps-slat${clone ? ' ps-clone' : ''}`}
-      aria-label={p.title}
+      aria-label={isKo ? p.titleKo : p.titleEn}
       aria-hidden={clone || undefined}
       tabIndex={clone ? -1 : undefined}
       draggable={false}
@@ -204,8 +217,8 @@ export default function ProductsSection() {
       </div>
       <div className="ps-overlay" />
       <div className="ps-content">
-        <h3 className="ps-name">{p.title}</h3>
-        <p className="ps-tagline">{p.tagline}</p>
+        <h3 className="ps-name">{isKo ? p.titleKo : p.titleEn}</h3>
+        <p className="ps-tagline">{isKo ? p.taglineKo : p.taglineEn}</p>
         <span className="ps-cta">{isKo ? '자세히 보기 →' : 'View details →'}</span>
       </div>
     </Link>

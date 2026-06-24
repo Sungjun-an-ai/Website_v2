@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,12 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('denied')) {
+      setError('관리자 권한이 없는 계정입니다. 시스템 담당자에게 문의하세요.')
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,8 +36,14 @@ export default function AdminLoginPage() {
       if (authError) {
         setError('이메일 또는 비밀번호가 올바르지 않습니다.')
       } else {
-        router.push('/admin/dashboard')
-        router.refresh()
+        const { data: isAdmin } = await supabase.rpc('is_admin')
+        if (!isAdmin) {
+          await supabase.auth.signOut()
+          setError('관리자 권한이 없는 계정입니다. 시스템 담당자에게 문의하세요.')
+        } else {
+          router.push('/admin/dashboard')
+          router.refresh()
+        }
       }
     } catch {
       setError('로그인 중 오류가 발생했습니다.')

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowLeft, Download, FileText, ShieldCheck } from 'lucide-react'
+import { ArrowDown, ArrowLeft, Download, FileText } from 'lucide-react'
 import ProductInquiryForm from '@/components/products/ProductInquiryForm'
 import SnapPageEffect from '@/components/common/SnapPageEffect'
 import { ProductCatalogItem, productCatalog, productCategoryLabels } from '@/lib/products/catalog'
@@ -25,7 +25,7 @@ function parseProductTags(baseTag: string, detailTag?: string) {
 
 function fadeStyle(visible: boolean, delayMs = 0): React.CSSProperties {
   return visible
-    ? { animation: `hero-fade-up 1.1s cubic-bezier(0.2, 0.85, 0.2, 1) ${delayMs}ms forwards` }
+    ? { animation: `hero-fade-up 1.1s cubic-bezier(0.2, 0.85, 0.2, 1) ${delayMs}ms both` }
     : { opacity: 0, transform: 'translateY(18px)', filter: 'blur(5px)' }
 }
 
@@ -85,11 +85,28 @@ export default function ProductDetailScroller({
   locale,
   isKo,
   product,
+  catalog: catalogProp,
+  categoryLabels: categoryLabelsProp,
+  heroVisuals: heroVisualsProp,
 }: {
   locale: string
   isKo: boolean
   product: ProductCatalogItem
+  catalog?: ProductCatalogItem[]
+  categoryLabels?: Record<string, { ko: string; en: string }>
+  heroVisuals?: Record<string, string>
 }) {
+  const catalog = catalogProp && catalogProp.length > 0 ? catalogProp : productCatalog
+  const categoryLabels: Record<string, { ko: string; en: string }> =
+    categoryLabelsProp ?? productCategoryLabels
+  const heroVisuals: Record<string, string> = heroVisualsProp ?? heroVisualByCategory
+  const labelFor = (category: string) =>
+    categoryLabels[category] ?? { ko: category, en: category }
+  const visualFor = (category: string) =>
+    heroVisuals[category] ||
+    heroVisualByCategory[category as keyof typeof heroVisualByCategory] ||
+    ''
+
   const scrollRootRef = useRef<HTMLDivElement>(null)
   const heroTrackRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -97,15 +114,15 @@ export default function ProductDetailScroller({
   const [heroPaused, setHeroPaused] = useState(false)
   const [activeProductSlug, setActiveProductSlug] = useState(product.slug)
 
-  const currentIndex = productCatalog.findIndex((item) => item.slug === product.slug)
+  const currentIndex = catalog.findIndex((item) => item.slug === product.slug)
   const orderedProducts = currentIndex >= 0
-    ? [...productCatalog.slice(currentIndex), ...productCatalog.slice(0, currentIndex)]
-    : productCatalog
+    ? [...catalog.slice(currentIndex), ...catalog.slice(0, currentIndex)]
+    : catalog
   const loopHeroProducts = [...orderedProducts, ...orderedProducts]
-  const activeProduct = productCatalog.find((item) => item.slug === activeProductSlug) ?? product
+  const activeProduct = catalog.find((item) => item.slug === activeProductSlug) ?? product
   const activeCategoryLabel = isKo
-    ? productCategoryLabels[activeProduct.category].ko
-    : productCategoryLabels[activeProduct.category].en
+    ? labelFor(activeProduct.category).ko
+    : labelFor(activeProduct.category).en
   const activeTitle = isKo ? activeProduct.nameKo : activeProduct.nameEn
   const activeSubtitle = isKo ? activeProduct.subtitleKo : activeProduct.subtitleEn
   const activeDescription = isKo ? activeProduct.descriptionKo : activeProduct.descriptionEn
@@ -130,43 +147,62 @@ export default function ProductDetailScroller({
     return () => observer.disconnect()
   }, [])
 
+  // Always keep the active product in sync with the centered hero slide, even
+  // when the hero is scrolled out of view, so the lower sections (specs,
+  // resources, inquiry) mirror whatever product the carousel last showed.
   useEffect(() => {
     const track = heroTrackRef.current
-    if (!track || !heroActive || heroPaused) return
+    if (!track) return
 
-    const loopWidth = track.scrollWidth / 2
+    const len = orderedProducts.length
+    if (len === 0) return
+
+    const cardWidth = () => track.clientWidth || 1
+    const loopWidth = () => cardWidth() * len
 
     const updateActiveProduct = () => {
-      const slideWidth = track.clientWidth || 1
-      const rawIndex = Math.round(track.scrollLeft / slideWidth)
-      const normalizedIndex = ((rawIndex % orderedProducts.length) + orderedProducts.length) % orderedProducts.length
+      const rawIndex = Math.round(track.scrollLeft / cardWidth())
+      const normalizedIndex = ((rawIndex % len) + len) % len
       const nextProduct = orderedProducts[normalizedIndex]
       if (nextProduct) setActiveProductSlug(nextProduct.slug)
     }
 
-    updateActiveProduct()
-
+    let idleTimer = 0
     const handleScroll = () => {
-      if (track.scrollLeft >= loopWidth) {
-        track.scrollTo({ left: track.scrollLeft - loopWidth, behavior: 'auto' })
-      } else if (track.scrollLeft < 0) {
-        track.scrollTo({ left: track.scrollLeft + loopWidth, behavior: 'auto' })
-      }
       updateActiveProduct()
+      window.clearTimeout(idleTimer)
+      idleTimer = window.setTimeout(() => {
+        // Once scrolling settles, silently rewind from the duplicate half back
+        // to its identical position in the first half (seamless infinite loop).
+        if (track.scrollLeft >= loopWidth()) {
+          const idx = Math.round(track.scrollLeft / cardWidth())
+          track.scrollTo({ left: (idx - len) * cardWidth(), behavior: 'auto' })
+        }
+      }, 360)
     }
 
     track.addEventListener('scroll', handleScroll, { passive: true })
-
-    const interval = window.setInterval(() => {
-      const cardWidth = track.clientWidth
-      const next = track.scrollLeft + cardWidth
-      track.scrollTo({ left: next, behavior: 'smooth' })
-    }, 3200)
+    updateActiveProduct()
 
     return () => {
       track.removeEventListener('scroll', handleScroll)
-      window.clearInterval(interval)
+      window.clearTimeout(idleTimer)
     }
+  }, [orderedProducts])
+
+  // Auto-advance the carousel only while the hero is visible and not hovered.
+  useEffect(() => {
+    const track = heroTrackRef.current
+    if (!track || !heroActive || heroPaused) return
+    if (orderedProducts.length === 0) return
+
+    const interval = window.setInterval(() => {
+      const w = track.clientWidth || 1
+      const current = Math.round(track.scrollLeft / w)
+      track.scrollTo({ left: (current + 1) * w, behavior: 'smooth' })
+    }, 3200)
+
+    return () => window.clearInterval(interval)
   }, [heroActive, heroPaused, orderedProducts])
 
   return (
@@ -188,8 +224,8 @@ export default function ProductDetailScroller({
               {loopHeroProducts.map((item, index) => {
                 const itemTitle = isKo ? item.nameKo : item.nameEn
                 const itemSubtitle = isKo ? item.subtitleKo : item.subtitleEn
-                const itemCategory = isKo ? productCategoryLabels[item.category].ko : productCategoryLabels[item.category].en
-                const visual = heroVisualByCategory[item.category]
+                const itemCategory = isKo ? labelFor(item.category).ko : labelFor(item.category).en
+                const visual = item.heroImage || visualFor(item.category)
 
                 return (
                   <section
@@ -394,14 +430,12 @@ export default function ProductDetailScroller({
               </p>
 
               <div style={fadeStyle(visible, 300)}>
-                <ProductInquiryForm locale={locale} productName={activeTitle} isKo={isKo} />
-              </div>
-
-              <div className="mt-8 flex items-center gap-2 text-sm text-white/65" style={fadeStyle(visible, 420)}>
-                <ShieldCheck className="h-4 w-4 text-gold" />
-                {isKo
-                  ? '문의 내용은 안전하게 전송되며, Supabase 리드 데이터로 연동 가능합니다.'
-                  : 'Inquiry data is sent securely and ready for Supabase lead integration.'}
+                <ProductInquiryForm
+                  locale={locale}
+                  productName={activeTitle}
+                  productOptions={catalog.map((item) => (isKo ? item.nameKo : item.nameEn))}
+                  isKo={isKo}
+                />
               </div>
             </div>
           </div>

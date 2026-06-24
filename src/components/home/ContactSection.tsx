@@ -6,12 +6,26 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { MapPin, Phone, Printer, Mail, Clock, CheckCircle, AlertCircle } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Toast, useToast } from '@/components/ui/toast'
+import { CheckCircle, AlertCircle } from 'lucide-react'
 
-export default function ContactSection() {
+type ContactInfo = { address: string; phone: string; fax: string; email: string; hours: string }
+
+export default function ContactSection({ contact }: { contact?: ContactInfo } = {}) {
   const t = useTranslations('contact')
   const locale = useLocale()
+  const isKo = locale === 'ko'
+  const { toast, showToast, hideToast } = useToast()
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [agreed, setAgreed] = useState(false)
+  const [showConsent, setShowConsent] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -23,6 +37,15 @@ export default function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!agreed) {
+      showToast(
+        isKo
+          ? '문의 처리를 위한 개인정보 수집 동의가 필요합니다'
+          : 'Please agree to the collection of personal information to submit your inquiry.',
+        'error',
+      )
+      return
+    }
     setStatus('sending')
     try {
       const res = await fetch('/api/inquiry', {
@@ -33,6 +56,7 @@ export default function ContactSection() {
       if (res.ok) {
         setStatus('success')
         setFormData({ name: '', company: '', email: '', phone: '', productInterest: '', message: '' })
+        setAgreed(false)
       } else {
         setStatus('error')
       }
@@ -47,8 +71,17 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-gray-50 py-16">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      id="contact"
+      className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-cover bg-center py-16"
+      style={{
+        backgroundImage:
+          'url(https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png)',
+      }}
+    >
+      {/* Gray 50% overlay */}
+      <div className="absolute inset-0 bg-gray-500/50" />
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-12">
           <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Contact</div>
           <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">{t('title')}</h2>
@@ -177,40 +210,69 @@ export default function ContactSection() {
                 >
                   {status === 'sending' ? t('form.sending') : t('form.submit')}
                 </Button>
+
+                <label className="flex items-start gap-2 cursor-pointer text-sm text-gray-700 select-none">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={() => {
+                      if (agreed) {
+                        setAgreed(false)
+                      } else {
+                        setShowConsent(true)
+                      }
+                    }}
+                    className="mt-0.5 h-4 w-4 accent-navy cursor-pointer"
+                  />
+                  <span>
+                    {isKo
+                      ? '개인정보 수집 및 이용에 관한 동의'
+                      : 'I agree to the collection and use of personal information'}
+                  </span>
+                </label>
               </form>
             )}
           </div>
 
           {/* Contact Info */}
           <div className="space-y-6">
-            <div className="bg-navy rounded-2xl p-8 text-white">
-              <h3 className="text-xl font-semibold mb-6">{locale === 'ko' ? '연락처 정보' : 'Contact Information'}</h3>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <MapPin className="h-5 w-5 text-gold mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.address')}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Phone className="h-5 w-5 text-gold flex-shrink-0" />
-                  <a href={`tel:${t('info.phone')}`} className="text-gray-200 hover:text-gold transition-colors">
-                    {t('info.phone')}
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Printer className="h-5 w-5 text-gold flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.fax')}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-gold flex-shrink-0" />
-                  <a href={`mailto:${t('info.email')}`} className="text-gray-200 hover:text-gold transition-colors">
-                    {t('info.email')}
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Clock className="h-5 w-5 text-gold flex-shrink-0" />
-                  <span className="text-gray-200">{t('info.hours')}</span>
-                </li>
-              </ul>
+            <div className="relative aspect-[1.9/1] flex flex-col bg-white shadow-[0_0_5px_rgba(0,0,0,0.25)] p-8">
+              {/* Logo top-right */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/assets/logo.png"
+                alt={isKo ? '한성우레탄' : 'Hansung Urethane'}
+                className="absolute top-6 right-6 z-10 h-28 w-auto"
+              />
+              {/* Title top-left */}
+              <h3 className="relative z-10 text-3xl font-bold text-navy mt-[15pt]">
+                {isKo ? '한성우레탄' : 'Hansung Urethane'}
+              </h3>
+              {/* Bottom row: motto (left) + details (right), same vertical span */}
+              <div className="relative z-10 mt-auto flex items-stretch justify-between gap-4">
+                <div
+                  className="flex flex-col justify-between font-bold leading-none text-2xl"
+                  style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
+                >
+                  <span className="text-navy">BONDING</span>
+                  <span className="text-gold">TOMORROW</span>
+                  <span className="text-navy">TOGETHER</span>
+                </div>
+                <ul className="space-y-1 text-sm text-black leading-tight text-right">
+                  <li>{contact?.address || t('info.address')}</li>
+                  <li>
+                    <a href={`tel:${contact?.phone || t('info.phone')}`} className="hover:text-navy transition-colors">
+                      {contact?.phone || t('info.phone')}
+                    </a>
+                  </li>
+                  <li>{contact?.fax || t('info.fax')}</li>
+                  <li>
+                    <a href={`mailto:${contact?.email || t('info.email')}`} className="hover:text-navy transition-colors">
+                      {contact?.email || t('info.email')}
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             {/* Map */}
@@ -231,6 +293,51 @@ export default function ContactSection() {
           </div>
         </div>
       </div>
+
+      {/* Personal information consent modal */}
+      <Dialog open={showConsent} onOpenChange={setShowConsent}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-base leading-snug">
+              {isKo
+                ? '[안내] 문의 접수를 위한 개인정보 수집·이용 동의'
+                : '[Notice] Consent to Collection and Use of Personal Information'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+            {isKo
+              ? `빠른 문의 처리 및 회신을 위해 아래와 같이 개인정보를 수집합니다.
+
+- 수집 목적 : 문의 접수 및 답변 제공
+- 수집 항목 : 이름, 회사명, 연락처, 이메일
+- 보유 기간 : 목적 달성 후 즉시 파기 (또는 3년)
+
+동의를 거부하실 수 있으며, 거부 시 문의 접수가 제한됩니다.`
+              : `We collect the following personal information for prompt handling of and replies to your inquiry.
+
+- Purpose : Receiving inquiries and providing answers
+- Items : Name, company, contact number, email
+- Retention : Destroyed immediately after the purpose is fulfilled (or 3 years)
+
+You may decline consent; declining will restrict your inquiry submission.`}
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowConsent(false)}>
+              {isKo ? '취소' : 'Cancel'}
+            </Button>
+            <Button
+              onClick={() => {
+                setAgreed(true)
+                setShowConsent(false)
+              }}
+            >
+              {isKo ? '동의' : 'Agree'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
     </section>
   )
 }

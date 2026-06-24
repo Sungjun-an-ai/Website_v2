@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatFileSize } from '@/lib/utils'
 import {
-  resources,
+  resources as fallbackResources,
   categoryOrder,
   categoryLabels,
   groupLabels,
@@ -25,7 +25,8 @@ interface DownloadFormData {
 
 const formatBadge = 'bg-white/25 text-white'
 
-export default function ResourcesHero() {
+export default function ResourcesHero({ resources: resourcesProp }: { resources?: Resource[] } = {}) {
+  const resources = resourcesProp ?? fallbackResources
   const locale = useLocale()
   const t = useTranslations('resources')
   const isKo = locale === 'ko'
@@ -37,7 +38,7 @@ export default function ResourcesHero() {
 
   const filtered = useMemo(
     () => (activeCat === 'all' ? resources : resources.filter((r) => r.category === activeCat)),
-    [activeCat],
+    [activeCat, resources],
   )
 
   // Build a seamless marquee unit (repeat short lists so the loop fills the row).
@@ -91,7 +92,7 @@ export default function ResourcesHero() {
       {/* Top: category (left) + format (right) */}
       <div className="relative flex items-start justify-between gap-2 mb-4">
         <span className="bg-gold text-navy text-[11px] px-2.5 py-1 rounded-full font-bold whitespace-nowrap">
-          {isKo ? categoryLabels[r.category].ko : categoryLabels[r.category].en}
+          {(categoryLabels[r.category] ? (isKo ? categoryLabels[r.category].ko : categoryLabels[r.category].en) : r.category)}
         </span>
         <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${formatBadge}`}>
           {r.format}
@@ -101,7 +102,7 @@ export default function ResourcesHero() {
       {/* Bottom-right aligned: product / resource name */}
       <div className="relative mt-auto flex flex-col items-end text-right">
         <div className="text-white/55 text-xs font-medium">
-          {isKo ? groupLabels[r.group].ko : groupLabels[r.group].en}
+          {(groupLabels[r.group] ? (isKo ? groupLabels[r.group].ko : groupLabels[r.group].en) : r.group)}
         </div>
         <div className="text-white/80 text-sm font-semibold mb-2">{r.product}</div>
         <h3 className="text-white font-bold text-base sm:text-lg leading-snug">

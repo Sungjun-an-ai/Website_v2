@@ -4,7 +4,9 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import PageViewTracker from '@/components/common/PageViewTracker'
 import { createClient } from '@/lib/supabase/server'
+import { getContactInfo } from '@/lib/site/settings'
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -33,11 +35,14 @@ export default async function LocaleLayout({
     console.error('[Layout] Failed to fetch logo:', error)
   }
 
+  const contact = await getContactInfo(locale === 'ko')
+
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
+      <PageViewTracker locale={locale} />
       <Header initialLogoUrl={logoUrl} />
       <main>{children}</main>
-      <Footer />
+      <Footer contact={contact ?? undefined} />
     </NextIntlClientProvider>
   )
 }

@@ -28,7 +28,7 @@
   "stats": {
     "title": "Hansung Urethane in Numbers",
     "founded": "Established",
-    "foundedValue": "1988",
+    "foundedValue": "1991",
     "experience": "Years of Experience",
     "experienceValue": "36+",
     "products": "Product Types",
@@ -90,8 +90,8 @@
   },
   "about": {
     "title": "About Us",
-    "subtitle": "Growing as a urethane specialist company for 36 years since our founding in 1988",
-    "overview": "Since its founding in 1988, Hansung Urethane has grown into a specialized manufacturer of urethane adhesives and sealants. From our own factory in Paju, Gyeonggi Province, we produce high-quality urethane products that comply with KS standards, supplying to hundreds of companies in the construction, civil engineering, and industrial sectors.",
+    "subtitle": "Growing as a urethane specialist company for 36 years since our founding in 1991",
+    "overview": "Since its founding in 1991, Hansung Urethane has grown into a specialized manufacturer of urethane adhesives and sealants. From our own factory in Paju, Gyeonggi Province, we produce high-quality urethane products that comply with KS standards, supplying to hundreds of companies in the construction, civil engineering, and industrial sectors.",
     "missionTitle": "Mission",
     "mission": "We contribute to creating a safer and more sustainable construction environment through urethane technology innovation.",
     "visionTitle": "Vision",
@@ -109,22 +109,7 @@
   },
   "history": {
     "title": "Company History",
-    "subtitle": "The 36-year growth story of Hansung Urethane",
-    "events": [
-      {"year": 1988, "event": "Founded Hansung Urethane"},
-      {"year": 1992, "event": "KS Certification (Urethane Adhesive)"},
-      {"year": 1996, "event": "Relocated to Paju factory, expanded production facilities"},
-      {"year": 2000, "event": "ISO 9001 Quality Management System Certification"},
-      {"year": 2003, "event": "Launched new urethane sealant product line"},
-      {"year": 2006, "event": "Venture Company Certification"},
-      {"year": 2010, "event": "Innobiz Certification / Annual revenue of 5 billion KRW"},
-      {"year": 2013, "event": "Urethane Waterproofing Patent (No. 10-1234567)"},
-      {"year": 2016, "event": "Started exports (Southeast Asia)"},
-      {"year": 2018, "event": "30th Anniversary / Production line automation completed"},
-      {"year": 2020, "event": "Developed eco-friendly low-VOC product line"},
-      {"year": 2022, "event": "Established R&D Center / Corporate research institute registration"},
-      {"year": 2024, "event": "36th Anniversary / Second factory expansion plan"}
-    ]
+    "subtitle": "The growth story of Hansung Urethane"
   },
   "resources": {
     "title": "Resources",

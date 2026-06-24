@@ -33,6 +33,7 @@ export interface ProductCatalogItem {
   applicationsEn: string[]
   specs: ProductSpec[]
   resources: ProductResource[]
+  heroImage?: string
 }
 
 export const productCategoryLabels: Record<ProductCategory, { ko: string; en: string }> = {

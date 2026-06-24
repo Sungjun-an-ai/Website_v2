@@ -1,11 +1,9 @@
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import ProductDetailScroller from '@/components/products/ProductDetailScroller'
-import { getProductBySlug, productCatalog } from '@/lib/products/catalog'
+import { getCatalog } from '@/lib/products/catalog-db'
 
-export function generateStaticParams() {
-  return productCatalog.map((item) => ({ slug: item.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export default async function ProductDetailPage({
   params,
@@ -16,10 +14,18 @@ export default async function ProductDetailPage({
   setRequestLocale(locale)
 
   const isKo = locale === 'ko'
-  const product = getProductBySlug(slug)
+  const { catalog, categoryLabels, heroVisuals } = await getCatalog()
+  const product = catalog.find((item) => item.slug === slug)
   if (!product) notFound()
 
   return (
-    <ProductDetailScroller locale={locale} isKo={isKo} product={product} />
+    <ProductDetailScroller
+      locale={locale}
+      isKo={isKo}
+      product={product}
+      catalog={catalog}
+      categoryLabels={categoryLabels}
+      heroVisuals={heroVisuals}
+    />
   )
 }

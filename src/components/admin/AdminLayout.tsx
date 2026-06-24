@@ -29,6 +29,14 @@ export default function AdminDashboardLayout({
         router.push('/admin/login')
         return
       }
+
+      // Authenticated, but is this user on the admin allowlist?
+      const { data: isAdmin } = await supabase.rpc('is_admin')
+      if (!isAdmin) {
+        await supabase.auth.signOut()
+        router.push('/admin/login?denied=1')
+        return
+      }
       setLoading(false)
     }
     checkAuth()
