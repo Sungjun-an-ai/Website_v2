@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { isSupabaseConfigured, isResendConfigured } from '@/lib/utils'
+import { isResendConfigured } from '@/lib/utils'
 
 export async function POST(request: Request) {
   try {
@@ -10,33 +10,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    // Save to Supabase if configured
-    if (isSupabaseConfigured()) {
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      )
-      await supabase.from('leads').insert({
-        name,
-        company: company || null,
-        email,
-        phone: phone || null,
-        product_interest: productInterest || null,
-        message,
-        locale: locale || 'ko',
-        status: 'new',
-      })
+    // Privacy: do not persist personal data. Forward the inquiry straight to the
+    // company inbox so nothing is stored in the database.
+    if (!isResendConfigured()) {
+      console.error('Inquiry not delivered: email service (Resend) is not configured')
+      return NextResponse.json({ error: 'Email service is not configured' }, { status: 500 })
     }
 
-    // Send email if Resend is configured
-    if (isResendConfigured()) {
-      const { sendInquiryEmail, sendAutoReplyEmail } = await import('@/lib/email')
-      await Promise.allSettled([
-        sendInquiryEmail({ name, company, email, phone, productInterest, message, locale }),
-        sendAutoReplyEmail({ name, company, email, phone, productInterest, message, locale }),
-      ])
-    }
+    const { sendInquiryEmail, sendAutoReplyEmail } = await import('@/lib/email')
+
+    // The notification to the company is the system of record — if it cannot be
+    // delivered we must fail loudly so the submitter knows to retry or call.
+    await sendInquiryEmail({ name, company, email, phone, productInterest, message, locale })
+
+    // The customer auto-reply is best-effort and must never block the submission.
+    await sendAutoReplyEmail({ name, company, email, phone, productInterest, message, locale }).catch(
+      (err) => console.error('Auto-reply email failed:', err),
+    )
 
     return NextResponse.json({ success: true })
   } catch (error) {
