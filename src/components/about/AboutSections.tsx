@@ -145,7 +145,7 @@ function AboutHero({ heroImage }: { heroImage?: string }) {
       <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end justify-end pb-24 sm:pb-28">
         <h1
           className="text-right text-white leading-[1.02] tracking-wide"
-          style={{ fontFamily: "'Ablation', 'Impact', sans-serif", fontSize: '40px' }}
+          style={{ fontFamily: "'Ablation', var(--font-display), 'Impact', sans-serif", fontSize: '40px' }}
         >
           {words.map((word, i) => (
             <span key={word} className="block" style={lineStyle(`${i * 0.5}s`)}>
