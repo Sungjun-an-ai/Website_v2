@@ -129,7 +129,7 @@ function AboutHero({ heroImage }: { heroImage?: string }) {
     ? { animation: `hero-fade-up 1s ${delayMs} cubic-bezier(0.2, 0.85, 0.2, 1) both` }
     : { opacity: 0 }
 
-  const words = ['ABOUT', 'HANSUNG', 'URETHANE']
+  const words = ['ABOUT', 'HANSUNG', 'URETHANE', 'CO., LTD.']
 
   return (
     <section ref={ref} className="relative snap-start h-screen overflow-hidden">
