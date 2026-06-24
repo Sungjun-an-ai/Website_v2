@@ -256,14 +256,12 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
               </h3>
               {/* Bottom row: motto (left) + details (right), same vertical span */}
               <div className="relative z-10 mt-auto flex items-stretch justify-between gap-4">
-                <div
-                  className="flex flex-col justify-between font-bold leading-none text-2xl"
-                  style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", var(--font-display), sans-serif' }}
-                >
-                  <span className="text-navy">BONDING</span>
-                  <span className="text-gold">TOMORROW</span>
-                  <span className="text-navy">TOGETHER</span>
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/brand/motto-contact.svg"
+                  alt="BONDING TOMORROW TOGETHER"
+                  className="h-16 sm:h-24 w-auto self-end object-contain object-left"
+                />
                 <ul className="space-y-1 text-sm text-black leading-tight text-right">
                   <li>{contact?.address || t('info.address')}</li>
                   <li>

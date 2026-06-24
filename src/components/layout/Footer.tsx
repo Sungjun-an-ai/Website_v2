@@ -20,14 +20,12 @@ export default function Footer({ contact }: { contact?: ContactInfo } = {}) {
             </div>
             <div className="text-xs text-gold tracking-widest mt-1">HANSUNG URETHANE CO., LTD</div>
           </div>
-          <p
-            className="leading-[1.05]"
-            style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", var(--font-display), sans-serif', fontSize: '36px' }}
-          >
-            <span className="block text-white">BONDING</span>
-            <span className="block text-gold">TOMORROW</span>
-            <span className="block text-white">TOGETHER</span>
-          </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/motto-footer.svg"
+            alt="BONDING TOMORROW TOGETHER"
+            className="h-28 w-auto"
+          />
 
           {/* Quick Links — below the motto, laid out horizontally, left-aligned */}
           <div className="mt-6 w-full text-left">
