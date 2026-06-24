@@ -329,16 +329,16 @@ export default function HeroCarousel({
                     <p className="hero-fade-in hero-fade-delay-3 text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
                       {locale === 'ko' ? slide.subtitle_ko : slide.subtitle_en}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-row flex-wrap gap-3 sm:gap-4">
                       <Link
                         href={slide.cta_href}
-                        className="hero-fade-in hero-fade-delay-4 inline-flex items-center justify-center px-8 py-4 bg-gold text-white font-semibold rounded-lg hover:bg-gold-dark transition-colors text-lg"
+                        className="hero-fade-in hero-fade-delay-4 inline-flex items-center justify-center px-4 py-2 text-sm sm:px-8 sm:py-4 sm:text-lg bg-gold text-white font-semibold rounded-lg hover:bg-gold-dark transition-colors"
                       >
                         {locale === 'ko' ? slide.cta_text_ko : slide.cta_text_en}
                       </Link>
                       <Link
                         href={`/${locale}#contact`}
-                        className="hero-fade-in hero-fade-delay-5 inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-navy transition-colors text-lg"
+                        className="hero-fade-in hero-fade-delay-5 inline-flex items-center justify-center px-4 py-2 text-sm sm:px-8 sm:py-4 sm:text-lg border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-navy transition-colors"
                       >
                         {locale === 'ko' ? '문의하기' : 'Contact Us'}
                       </Link>
