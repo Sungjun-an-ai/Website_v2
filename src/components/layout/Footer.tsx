@@ -22,7 +22,7 @@ export default function Footer({ contact }: { contact?: ContactInfo } = {}) {
           </div>
           <p
             className="leading-[1.05]"
-            style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif', fontSize: '36px' }}
+            style={{ fontFamily: 'var(--font-display), Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif', fontSize: '36px' }}
           >
             <span className="block text-white">BONDING</span>
             <span className="block text-gold">TOMORROW</span>

@@ -1,5 +1,22 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  display: "swap",
+  weight: "100 900",
+  variable: "--font-pretendard",
+  fallback: ["Apple SD Gothic Neo", "Noto Sans KR", "sans-serif"],
+});
+
+const anton = localFont({
+  src: "./fonts/Anton-Regular.woff2",
+  display: "swap",
+  weight: "400",
+  variable: "--font-display",
+  fallback: ["Impact", "Arial Narrow Bold", "sans-serif"],
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   let favicon = '/favicon.svg'
@@ -33,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html suppressHydrationWarning>
+    <html lang="ko" className={`${pretendard.variable} ${anton.variable}`} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

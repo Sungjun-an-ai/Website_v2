@@ -258,7 +258,7 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
               <div className="relative z-10 mt-auto flex items-stretch justify-between gap-4">
                 <div
                   className="flex flex-col justify-between font-bold leading-none text-2xl"
-                  style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
+                  style={{ fontFamily: 'var(--font-display), Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
                 >
                   <span className="text-navy">BONDING</span>
                   <span className="text-gold">TOMORROW</span>
