@@ -79,6 +79,23 @@ const fallbackHeroSlides: HeroSlide[] = [
   },
 ]
 
+function activateSlideMedia(slideEl: Element | undefined) {
+  if (!slideEl) return
+  const video = slideEl.querySelector('video')
+  if (video) {
+    const play = (video as HTMLVideoElement).play()
+    if (play && typeof play.catch === 'function') play.catch(() => {})
+  }
+  const bg = slideEl.querySelector<HTMLElement>('[data-hero-bg]')
+  if (bg) {
+    const url = bg.getAttribute('data-hero-bg')
+    if (url) {
+      bg.style.backgroundImage = `url(${url})`
+      bg.removeAttribute('data-hero-bg')
+    }
+  }
+}
+
 export default function HeroCarousel({
   initialSlides = [],
   initialStats = [],
@@ -153,6 +170,10 @@ export default function HeroCarousel({
           navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
+          },
+          on: {
+            init: (sw) => activateSlideMedia(sw.slides[sw.activeIndex]),
+            slideChangeTransitionStart: (sw) => activateSlideMedia(sw.slides[sw.activeIndex]),
           },
         })
       }
@@ -267,23 +288,29 @@ export default function HeroCarousel({
     <section className="relative h-screen w-full flex-shrink-0 snap-start">
       <div ref={swiperRef} className="swiper h-full">
         <div className="swiper-wrapper">
-          {displaySlides.map((slide) => (
+          {displaySlides.map((slide, slideIndex) => (
             <div key={slide.id} className="swiper-slide relative h-full w-full bg-navy">
-              {/* Background Media */}
+              {/* Background Media — only the first slide loads eagerly; the rest
+                  load when their slide is first shown (see Swiper handlers). */}
               {slide.image_url?.match(/\.(mp4|webm|ogg)(?:\?.*)?$/i) ? (
                 <video
                   src={slide.image_url}
-                  autoPlay
+                  autoPlay={slideIndex === 0}
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload={slideIndex === 0 ? 'auto' : 'none'}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               ) : (
                 <div
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                  style={slide.image_url ? { backgroundImage: `url(${slide.image_url})` } : undefined}
+                  data-hero-bg={slideIndex === 0 ? undefined : slide.image_url || undefined}
+                  style={
+                    slide.image_url && slideIndex === 0
+                      ? { backgroundImage: `url(${slide.image_url})` }
+                      : undefined
+                  }
                 />
               )}
               {/* Overlay */}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useLocale } from 'next-intl'
 
@@ -81,6 +81,8 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const draggedRef = useRef(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const [mediaVisible, setMediaVisible] = useState(false)
 
   const PRODUCT_CATEGORIES = new Set([
     'sealant',
@@ -92,6 +94,23 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
     PRODUCT_CATEGORIES.has(p.id)
       ? `/${locale}/products/category/${p.id}`
       : `/${locale}${p.href}`
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
+    if (mediaVisible) return
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setMediaVisible(true)
+          io.disconnect()
+        }
+      },
+      { rootMargin: '400px' },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [mediaVisible])
 
   useEffect(() => {
     const viewport = viewportRef.current
@@ -224,7 +243,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
       }}
     >
       <div className="ps-bg" style={{ background: p.placeholder }}>
-        {p.isVideo ? (
+        {!mediaVisible ? null : p.isVideo ? (
           <video
             className="ps-media"
             autoPlay
@@ -237,7 +256,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
           </video>
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="ps-media" src={p.media} alt="" draggable={false} />
+          <img className="ps-media" src={p.media} alt="" draggable={false} loading="lazy" />
         )}
       </div>
       <div className="ps-overlay" />
@@ -250,7 +269,7 @@ export default function ProductsSection({ panels: panelsProp }: { panels?: Panel
   )
 
   return (
-    <section className="ps-section relative h-screen w-full flex-shrink-0 snap-start snap-always overflow-hidden">
+    <section ref={sectionRef} className="ps-section relative h-screen w-full flex-shrink-0 snap-start snap-always overflow-hidden">
       {/* Auto-scrolling, draggable slats fill the whole section */}
       <div className="ps-viewport" ref={viewportRef}>
         <div className="ps-track" ref={trackRef}>

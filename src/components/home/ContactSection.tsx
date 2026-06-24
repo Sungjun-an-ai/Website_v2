@@ -73,12 +73,18 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
   return (
     <section
       id="contact"
-      className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-cover bg-center py-16"
-      style={{
-        backgroundImage:
-          'url(https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png)',
-      }}
+      className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-navy py-16"
     >
+      {/* Background image — lazy-loaded so it doesn't block the initial page load
+          (this is the last section on the home page). */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png"
+        alt=""
+        loading="lazy"
+        aria-hidden="true"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       {/* Gray 50% overlay */}
       <div className="absolute inset-0 bg-gray-500/50" />
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
