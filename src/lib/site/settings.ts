@@ -102,3 +102,55 @@ export async function getChatSlides(locale: string): Promise<ChatSlide[] | null>
     return null
   }
 }
+
+export type HeroSlideRow = {
+  id: string
+  title_ko: string
+  title_en: string
+  subtitle_ko: string
+  subtitle_en: string
+  image_url: string
+  cta_text_ko: string
+  cta_text_en: string
+  cta_href: string
+  order_index: number
+  is_active: boolean
+}
+
+export type HeroStatRow = {
+  id: string
+  label_ko: string
+  label_en: string
+  value: string
+  suffix: string
+  order_index: number
+  is_active: boolean
+}
+
+export async function getHeroSlides(): Promise<HeroSlideRow[]> {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('hero_slides')
+      .select('*')
+      .eq('is_active', true)
+      .order('order_index')
+    return (data as HeroSlideRow[]) || []
+  } catch {
+    return []
+  }
+}
+
+export async function getHeroStats(): Promise<HeroStatRow[]> {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('stats')
+      .select('*')
+      .eq('is_active', true)
+      .order('order_index')
+    return (data as HeroStatRow[]) || []
+  } catch {
+    return []
+  }
+}

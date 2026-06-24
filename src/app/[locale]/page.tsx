@@ -6,7 +6,7 @@ import ValuesSection from '@/components/home/ValuesSection'
 import ContactSection from '@/components/home/ContactSection'
 import SnapPageEffect from '@/components/common/SnapPageEffect'
 import { getCategoryPanels } from '@/lib/products/catalog-db'
-import { getChatSlides, getContactInfo } from '@/lib/site/settings'
+import { getChatSlides, getContactInfo, getHeroSlides, getHeroStats } from '@/lib/site/settings'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,16 +14,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [panels, chatSlides, contact] = await Promise.all([
+  const [panels, chatSlides, contact, heroSlides, heroStats] = await Promise.all([
     getCategoryPanels(),
     getChatSlides(locale),
     getContactInfo(locale === 'ko'),
+    getHeroSlides(),
+    getHeroStats(),
   ])
 
   return (
     <main className="w-full overflow-x-clip bg-navy" id="main-scroll-container">
       <SnapPageEffect />
-      <HeroCarousel />
+      <HeroCarousel initialSlides={heroSlides} initialStats={heroStats} />
       <ChatConversationSection slides={chatSlides ?? undefined} />
       <ProductsSection panels={panels} />
       <ValuesSection />
