@@ -23,6 +23,7 @@ export default function ProductListByCategory({
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const setRef = useRef<HTMLDivElement>(null)
+  const headRef = useRef<HTMLDivElement>(null)
   const [revealed, setRevealed] = useState(false)
   const [looping, setLooping] = useState(false)
 
@@ -61,10 +62,12 @@ export default function ProductListByCategory({
     let paused = false
     let pos = viewport.scrollTop
     let setHeight = set.scrollHeight
+    let headHeight = headRef.current?.offsetHeight ?? 0
     const SPEED = 0.45
 
     const recompute = () => {
       setHeight = set.scrollHeight
+      headHeight = headRef.current?.offsetHeight ?? 0
     }
     const onEnter = () => {
       paused = true
@@ -79,7 +82,9 @@ export default function ProductListByCategory({
     const tick = () => {
       if (!paused) {
         pos += SPEED
-        if (setHeight > 0 && pos >= setHeight) pos -= setHeight
+        // Loop only the band region: the title intro (headHeight) scrolls
+        // away once and never returns.
+        if (setHeight > 0 && pos >= headHeight + setHeight) pos -= setHeight
         viewport.scrollTop = pos
       }
       raf = window.requestAnimationFrame(tick)
@@ -144,28 +149,26 @@ export default function ProductListByCategory({
   return (
     <section className="pb-section">
       <div className="pb-viewport" ref={viewportRef}>
+        <div className="pb-head" ref={headRef}>
+          <Link href={`/${locale}/products`} className="pb-back">
+            <ArrowLeft size={16} />
+            <span>{isKo ? '제품군' : 'Products'}</span>
+          </Link>
+          <div className="pb-eyebrow">{categoryLabel.en.toUpperCase()}</div>
+          <h1 className="pb-title">{title}</h1>
+        </div>
         <div className="pb-stack" ref={setRef}>
-          <div className="pb-spacer" aria-hidden />
           {products.map((p, i) => renderBand(p, i, false))}
         </div>
         {looping && (
           <div className="pb-stack" aria-hidden>
-            <div className="pb-spacer" aria-hidden />
             {products.map((p, i) => renderBand(p, i, true))}
           </div>
         )}
       </div>
 
-      {/* Top gradient + title */}
+      {/* Fixed top gradient keeps the transparent GNB legible over bands */}
       <div className="pb-topfade" />
-      <div className="pb-head">
-        <Link href={`/${locale}/products`} className="pb-back">
-          <ArrowLeft size={16} />
-          <span>{isKo ? '제품군' : 'Products'}</span>
-        </Link>
-        <div className="pb-eyebrow">{categoryLabel.en.toUpperCase()}</div>
-        <h1 className="pb-title">{title}</h1>
-      </div>
 
       <style jsx global>{`
         .pb-section {
@@ -201,12 +204,6 @@ export default function ProductListByCategory({
         .pb-stack {
           display: flex;
           flex-direction: column;
-        }
-        .pb-spacer {
-          flex: 0 0 auto;
-          width: 100%;
-          height: 320px;
-          pointer-events: none;
         }
 
         .pb-band {
@@ -332,31 +329,27 @@ export default function ProductListByCategory({
         }
 
         /* Top gradient for title legibility */
+        /* Fixed short gradient behind the transparent GNB for legibility */
         .pb-topfade {
           position: absolute;
           top: 0;
           left: 0;
           right: 0;
-          height: 320px;
+          height: 150px;
           z-index: 4;
           pointer-events: none;
           background: linear-gradient(
             to bottom,
-            rgba(8, 16, 40, 0.96) 0%,
-            rgba(8, 16, 40, 0.92) 55%,
-            rgba(8, 16, 40, 0.5) 82%,
+            rgba(8, 16, 40, 0.9) 0%,
+            rgba(8, 16, 40, 0.5) 55%,
             transparent 100%
           );
         }
         .pb-head {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          z-index: 5;
-          padding: 196px clamp(24px, 6vw, 96px) 0;
+          position: relative;
+          z-index: 2;
+          padding: 196px clamp(24px, 6vw, 96px) 28px;
           padding-left: var(--logo-left);
-          pointer-events: none;
         }
         .pb-back {
           pointer-events: auto;
@@ -404,12 +397,10 @@ export default function ProductListByCategory({
           }
           .pb-head {
             padding-top: 134px;
-          }
-          .pb-spacer {
-            height: 240px;
+            padding-bottom: 24px;
           }
           .pb-topfade {
-            height: 240px;
+            height: 120px;
           }
         }
       `}</style>
