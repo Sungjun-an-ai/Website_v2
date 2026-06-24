@@ -40,7 +40,7 @@ function RevealSection({
   className: string
   children: (visible: boolean) => React.ReactNode
 }) {
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLElement | null>(null)
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
