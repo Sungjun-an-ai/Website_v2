@@ -76,7 +76,7 @@ export default function HistoryHero({ events, isKo, title, subtitle, mediaUrl }:
             <div className="backdrop-blur-md bg-black/75 border border-white/25 rounded-2xl p-8 sm:p-12 shadow-2xl">
               <p
                 className="text-3xl sm:text-4xl tracking-wide text-white mb-8"
-                style={{ fontFamily: 'var(--font-display), Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif' }}
+                style={{ fontFamily: 'Impact, "Haettenschweiler", "Arial Narrow Bold", var(--font-display), sans-serif' }}
               >
                 <span className="tabular-nums">{years}</span> years of Bonding{' '}
                 <span className="text-gold">History</span> Together
