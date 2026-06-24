@@ -1,5 +1,5 @@
 import { setRequestLocale } from 'next-intl/server'
-import CategoryOverview from '@/components/products/CategoryOverview'
+import ProductsSection from '@/components/home/ProductsSection'
 import { getCategoryPanels } from '@/lib/products/catalog-db'
 
 export const dynamic = 'force-dynamic'
@@ -14,5 +14,9 @@ export default async function ProductsPage({
 
   const panels = await getCategoryPanels()
 
-  return <CategoryOverview panels={panels} />
+  return (
+    <div className="bg-navy">
+      <ProductsSection panels={panels} />
+    </div>
+  )
 }

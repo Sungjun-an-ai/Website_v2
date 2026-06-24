@@ -20,38 +20,21 @@ export default function ProductListByCategory({
   categoryId,
   categoryLabel,
   products,
-  heroVisual,
 }: Props) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const setRef = useRef<HTMLDivElement>(null)
   const [revealed, setRevealed] = useState(false)
   const [looping, setLooping] = useState(false)
-  const [openId, setOpenId] = useState<string | null>(null)
 
-  const isVideo = !!heroVisual && /\.(mp4|webm|ogg)(?:\?.*)?$/i.test(heroVisual)
   const title = isKo ? categoryLabel.ko : categoryLabel.en
 
-  // Reveal (RTL wipe) once the grid enters the viewport
+  // Trigger the staggered right-to-left wipe shortly after mount
   useEffect(() => {
-    const el = setRef.current
-    if (!el) {
-      setRevealed(true)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setRevealed(true)
-          io.disconnect()
-        }
-      },
-      { threshold: 0.15 }
-    )
-    io.observe(el)
-    return () => io.disconnect()
+    const t = window.setTimeout(() => setRevealed(true), 120)
+    return () => window.clearTimeout(t)
   }, [])
 
-  // Decide whether to enable the seamless downward auto-scroll loop
+  // Enable the seamless downward auto-scroll only when the stack overflows
   useEffect(() => {
     const decide = () => {
       const viewport = viewportRef.current
@@ -67,7 +50,7 @@ export default function ProductListByCategory({
     return () => window.removeEventListener('resize', decide)
   }, [products.length])
 
-  // Downward auto-scroll marquee (only when looping is enabled)
+  // Downward marquee
   useEffect(() => {
     if (!looping) return
     const viewport = viewportRef.current
@@ -78,7 +61,7 @@ export default function ProductListByCategory({
     let paused = false
     let pos = viewport.scrollTop
     let setHeight = set.scrollHeight
-    const SPEED = 0.4
+    const SPEED = 0.45
 
     const recompute = () => {
       setHeight = set.scrollHeight
@@ -119,340 +102,280 @@ export default function ProductListByCategory({
     }
   }, [looping])
 
-  const renderCard = (p: ProductCatalogItem, index: number, clone: boolean) => {
+  const renderBand = (p: ProductCatalogItem, index: number, clone: boolean) => {
     const name = isKo ? p.nameKo : p.nameEn
     const subtitle = isKo ? p.subtitleKo : p.subtitleEn
-    const description = isKo ? p.descriptionKo : p.descriptionEn
     const tag = isKo ? p.tagKo : p.tagEn
-    const open = openId === p.slug
+    const animate = !clone && revealed
     return (
       <Link
         key={`${clone ? 'c-' : ''}${p.slug}`}
         href={`/${locale}/products/${p.slug}`}
-        className={`pl-card${revealed ? ' is-revealed' : ''}${open ? ' is-open' : ''}`}
-        style={{ animationDelay: `${(index % products.length) * 90}ms` }}
+        className={`pb-band${clone ? ' is-clone' : animate ? ' is-revealed' : ''}`}
+        style={!clone ? { animationDelay: `${index * 140}ms` } : undefined}
         aria-hidden={clone || undefined}
         tabIndex={clone ? -1 : undefined}
-        onClick={(e) => {
-          // On touch devices first tap toggles, second navigates
-          if (window.matchMedia('(hover: none)').matches && !open) {
-            e.preventDefault()
-            setOpenId(p.slug)
-          }
-        }}
       >
-        <div className="pl-card-bg">
+        <div className="pb-band-bg">
           {p.heroImage ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="pl-card-media" src={p.heroImage} alt="" draggable={false} />
+            <img className="pb-band-media" src={p.heroImage} alt="" draggable={false} />
           ) : (
-            <div className="pl-card-fallback" />
+            <div className="pb-band-fallback" />
           )}
         </div>
-        <div className="pl-card-overlay" />
-        <div className="pl-card-content">
-          {tag && <span className="pl-card-tag">{tag}</span>}
-          <h3 className="pl-card-name">{name}</h3>
-          <p className="pl-card-sub">{subtitle}</p>
-          <p className="pl-card-desc">{description}</p>
-          <span className="pl-card-cta">{isKo ? '자세히 보기 →' : 'View details →'}</span>
+        <div className="pb-band-overlay" />
+        <div className="pb-band-content">
+          {tag && <span className="pb-band-tag">{tag}</span>}
+          <h3 className="pb-band-name">{name}</h3>
+          <p className="pb-band-sub">{subtitle}</p>
         </div>
+        <span className="pb-band-cta">{isKo ? '자세히 보기 →' : 'View details →'}</span>
       </Link>
     )
   }
 
   return (
-    <section className="pl-section">
-      <div className="pl-bg-layer">
-        {isVideo ? (
-          <video className="pl-bg-media" autoPlay muted loop playsInline preload="metadata">
-            <source src={heroVisual} type="video/mp4" />
-          </video>
-        ) : heroVisual ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="pl-bg-media" src={heroVisual} alt="" />
-        ) : null}
-        <div className="pl-bg-tint" />
-      </div>
-
-      <div className="pl-head">
-        <Link href={`/${locale}/products`} className="pl-back">
-          <ArrowLeft size={16} />
-          <span>{isKo ? '제품군' : 'Products'}</span>
-        </Link>
-        <div className="pl-eyebrow">{categoryId.toUpperCase()}</div>
-        <h1 className="pl-title">{title}</h1>
-        <p className="pl-count">
-          {products.length}
-          {isKo ? '개 제품' : ' products'}
-        </p>
-      </div>
-
-      <div className="pl-viewport" ref={viewportRef}>
-        <div className="pl-grid" ref={setRef}>
-          {products.map((p, i) => renderCard(p, i, false))}
+    <section className="pb-section">
+      <div className="pb-viewport" ref={viewportRef}>
+        <div className="pb-stack" ref={setRef}>
+          {products.map((p, i) => renderBand(p, i, false))}
         </div>
         {looping && (
-          <div className="pl-grid" aria-hidden>
-            {products.map((p, i) => renderCard(p, i, true))}
+          <div className="pb-stack" aria-hidden>
+            {products.map((p, i) => renderBand(p, i, true))}
           </div>
         )}
       </div>
 
+      {/* Top gradient + title */}
+      <div className="pb-topfade" />
+      <div className="pb-head">
+        <Link href={`/${locale}/products`} className="pb-back">
+          <ArrowLeft size={16} />
+          <span>{isKo ? '제품군' : 'Products'}</span>
+        </Link>
+        <div className="pb-eyebrow">{categoryId.toUpperCase()}</div>
+        <h1 className="pb-title">{title}</h1>
+      </div>
+
       <style jsx global>{`
-        .pl-section {
+        .pb-section {
           position: relative;
-          min-height: 100vh;
+          height: 100vh;
+          width: 100%;
           background: #0b1228;
           font-family: 'Noto Sans KR', var(--font-pretendard), sans-serif;
-          padding-top: 96px;
-          display: flex;
-          flex-direction: column;
           overflow: hidden;
         }
-        .pl-bg-layer {
+        .pb-viewport {
           position: absolute;
           inset: 0;
-          z-index: 0;
+          overflow-y: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
         }
-        .pl-bg-media {
+        .pb-viewport::-webkit-scrollbar {
+          display: none;
+        }
+        .pb-stack {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .pb-band {
+          position: relative;
+          display: block;
+          width: 100%;
+          height: clamp(170px, 24vh, 260px);
+          overflow: hidden;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          clip-path: inset(0 0 0 100%);
+        }
+        .pb-band.is-clone {
+          clip-path: inset(0 0 0 0);
+        }
+        .pb-band.is-revealed {
+          animation: pbWipeFromRight 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes pbWipeFromRight {
+          from {
+            clip-path: inset(0 0 0 100%);
+          }
+          to {
+            clip-path: inset(0 0 0 0);
+          }
+        }
+
+        .pb-band-bg {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+        .pb-band-media {
           position: absolute;
           inset: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
-          opacity: 0.25;
+          object-position: center;
+          transition: transform 0.6s ease;
         }
-        .pl-bg-tint {
+        .pb-band-fallback {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, rgba(11, 18, 40, 0.82) 0%, rgba(11, 18, 40, 0.95) 60%, #0b1228 100%);
+          background: linear-gradient(120deg, #1a2b6b 0%, #0d1220 100%);
+        }
+        .pb-band:hover .pb-band-media {
+          transform: scale(1.05);
+        }
+        .pb-band-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            to right,
+            rgba(8, 14, 33, 0.92) 0%,
+            rgba(8, 14, 33, 0.7) 38%,
+            rgba(8, 14, 33, 0.3) 70%,
+            rgba(8, 14, 33, 0.15) 100%
+          );
+          transition: background 0.4s ease;
+        }
+        .pb-band:hover .pb-band-overlay {
+          background: linear-gradient(
+            to right,
+            rgba(8, 14, 33, 0.85) 0%,
+            rgba(8, 14, 33, 0.5) 55%,
+            rgba(8, 14, 33, 0.2) 100%
+          );
         }
 
-        .pl-head {
-          position: relative;
+        .pb-band-content {
+          position: absolute;
           z-index: 2;
-          max-width: 1280px;
-          width: 100%;
-          margin: 0 auto;
-          padding: 32px 32px 24px;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
           text-align: left;
+          padding: 0 clamp(24px, 6vw, 96px);
+          max-width: 760px;
         }
-        .pl-back {
+        .pb-band-tag {
+          display: inline-block;
+          background: rgba(201, 162, 39, 0.15);
+          color: #e7c75a;
+          border: 1px solid rgba(201, 162, 39, 0.4);
+          font-size: 0.72rem;
+          font-weight: 700;
+          padding: 3px 12px;
+          border-radius: 999px;
+          margin-bottom: 12px;
+        }
+        .pb-band-name {
+          color: #fff;
+          font-size: clamp(1.5rem, 3vw, 2.4rem);
+          font-weight: 800;
+          line-height: 1.15;
+        }
+        .pb-band-sub {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+          margin-top: 10px;
+          line-height: 1.5;
+        }
+        .pb-band-cta {
+          position: absolute;
+          z-index: 2;
+          right: clamp(24px, 6vw, 96px);
+          top: 50%;
+          transform: translateY(-50%) translateX(10px);
+          color: #c9a227;
+          font-size: 0.9rem;
+          font-weight: 700;
+          opacity: 0;
+          transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .pb-band:hover .pb-band-cta {
+          opacity: 1;
+          transform: translateY(-50%) translateX(0);
+        }
+
+        /* Top gradient for title legibility */
+        .pb-topfade {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 230px;
+          z-index: 4;
+          pointer-events: none;
+          background: linear-gradient(
+            to bottom,
+            rgba(8, 16, 40, 0.96) 0%,
+            rgba(8, 16, 40, 0.85) 45%,
+            rgba(8, 16, 40, 0.4) 78%,
+            transparent 100%
+          );
+        }
+        .pb-head {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 5;
+          padding: 104px clamp(24px, 6vw, 96px) 0;
+          pointer-events: none;
+        }
+        .pb-back {
+          pointer-events: auto;
           display: inline-flex;
           align-items: center;
           gap: 6px;
           color: rgba(255, 255, 255, 0.7);
           font-size: 0.85rem;
           font-weight: 600;
-          margin-bottom: 18px;
+          margin-bottom: 14px;
           transition: color 0.2s ease;
         }
-        .pl-back:hover {
+        .pb-back:hover {
           color: #c9a227;
         }
-        .pl-eyebrow {
+        .pb-eyebrow {
           color: #c9a227;
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.2em;
-          margin-bottom: 10px;
+          margin-bottom: 8px;
         }
-        .pl-title {
+        .pb-title {
           color: #fff;
-          font-size: 2.4rem;
+          font-size: clamp(1.9rem, 3.6vw, 2.8rem);
           font-weight: 800;
-          line-height: 1.15;
-        }
-        .pl-count {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 0.95rem;
-          margin-top: 8px;
+          line-height: 1.1;
         }
 
-        .pl-viewport {
-          position: relative;
-          z-index: 1;
-          flex: 1;
-          width: 100%;
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 32px 48px;
-          overflow-y: auto;
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .pl-viewport::-webkit-scrollbar {
-          display: none;
-        }
-        .pl-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 18px;
-        }
-        .pl-grid + .pl-grid {
-          margin-top: 18px;
-        }
-
-        .pl-card {
-          position: relative;
-          display: block;
-          min-height: 320px;
-          border-radius: 12px;
-          overflow: hidden;
-          background: #111c3a;
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          clip-path: inset(0 0 0 100%);
-          opacity: 0;
-        }
-        .pl-card.is-revealed {
-          animation: plWipeRTL 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-        @keyframes plWipeRTL {
-          from {
-            clip-path: inset(0 0 0 100%);
-            opacity: 0;
-          }
-          to {
-            clip-path: inset(0 0 0 0);
-            opacity: 1;
-          }
-        }
-
-        .pl-card-bg {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-        }
-        .pl-card-media {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.5s ease;
-        }
-        .pl-card-fallback {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(150deg, #1a2b6b 0%, #0d1220 100%);
-        }
-        .pl-card:hover .pl-card-media,
-        .pl-card.is-open .pl-card-media {
-          transform: scale(1.06);
-        }
-        .pl-card-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(8, 14, 33, 0.95) 18%, rgba(8, 14, 33, 0.45) 55%, rgba(8, 14, 33, 0.15) 100%);
-          transition: background 0.4s ease;
-        }
-        .pl-card:hover .pl-card-overlay,
-        .pl-card.is-open .pl-card-overlay {
-          background: linear-gradient(to top, rgba(8, 14, 33, 0.97) 35%, rgba(8, 14, 33, 0.6) 75%, rgba(8, 14, 33, 0.3) 100%);
-        }
-
-        .pl-card-content {
-          position: absolute;
-          inset: 0;
-          z-index: 2;
-          padding: 22px;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          align-items: flex-start;
-          text-align: left;
-        }
-        .pl-card-tag {
-          display: inline-block;
-          background: rgba(201, 162, 39, 0.15);
-          color: #e7c75a;
-          border: 1px solid rgba(201, 162, 39, 0.4);
-          font-size: 0.68rem;
-          font-weight: 700;
-          padding: 3px 10px;
-          border-radius: 999px;
-          margin-bottom: 10px;
-        }
-        .pl-card-name {
-          color: #fff;
-          font-size: 1.35rem;
-          font-weight: 800;
-          line-height: 1.2;
-        }
-        .pl-card-sub {
-          color: rgba(255, 255, 255, 0.78);
-          font-size: 0.82rem;
-          margin-top: 8px;
-          line-height: 1.45;
-        }
-        .pl-card-desc {
-          color: rgba(255, 255, 255, 0.65);
-          font-size: 0.78rem;
-          line-height: 1.5;
-          margin-top: 10px;
-          max-height: 0;
-          opacity: 0;
-          overflow: hidden;
-          transition: max-height 0.45s ease, opacity 0.35s ease, margin-top 0.35s ease;
-          display: -webkit-box;
-          -webkit-line-clamp: 4;
-          -webkit-box-orient: vertical;
-        }
-        .pl-card:hover .pl-card-desc,
-        .pl-card.is-open .pl-card-desc {
-          max-height: 140px;
-          opacity: 1;
-        }
-        .pl-card-cta {
-          color: #c9a227;
-          font-size: 0.8rem;
-          font-weight: 700;
-          margin-top: 14px;
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-        .pl-card:hover .pl-card-cta,
-        .pl-card.is-open .pl-card-cta {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        @media (max-width: 1023px) {
-          .pl-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
         @media (max-width: 767px) {
-          .pl-section {
-            padding-top: 80px;
+          .pb-section {
+            height: auto;
+            min-height: 100vh;
           }
-          .pl-head {
-            padding: 24px 18px 16px;
-          }
-          .pl-title {
-            font-size: 1.8rem;
-          }
-          .pl-viewport {
-            padding: 0 18px 36px;
+          .pb-viewport {
+            position: static;
             overflow-y: visible;
+            padding-top: 188px;
           }
-          .pl-grid {
-            grid-template-columns: 1fr;
-            gap: 14px;
+          .pb-band {
+            height: 200px;
           }
-          .pl-card {
-            min-height: 240px;
+          .pb-band-cta {
+            display: none;
           }
-          .pl-card-desc {
-            max-height: 140px;
-            opacity: 1;
-            margin-top: 10px;
-          }
-          .pl-card-cta {
-            opacity: 1;
-            transform: none;
+          .pb-topfade {
+            height: 188px;
           }
         }
       `}</style>
