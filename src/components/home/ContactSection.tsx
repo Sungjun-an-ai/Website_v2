@@ -90,7 +90,7 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 md:mb-12">
           <div className="text-gold text-sm font-semibold tracking-widest uppercase mb-2">Contact</div>
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">{t('title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">{t('title')}</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">{t('subtitle')}</p>
           <div className="w-16 h-1 bg-gold mx-auto mt-4" />
         </div>
