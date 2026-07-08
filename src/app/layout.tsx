@@ -20,6 +20,9 @@ const anton = localFont({
 
 export async function generateMetadata(): Promise<Metadata> {
   let favicon = '/favicon.svg'
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.hsurethane.com').replace(/\/$/, '')
+  const title = '한성우레탄 - BONDING TOMORROW TOGETHER'
+  const description = '36년 우레탄 접착제·지수제 전문 제조기업 한성우레탄'
 
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
@@ -39,11 +42,26 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: "한성우레탄 - BONDING TOMORROW TOGETHER",
-    description: "36년 우레탄 접착제·지수제 전문 제조기업 한성우레탄",
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
     icons: {
       icon: favicon,
       shortcut: favicon,
+    },
+    openGraph: {
+      type: 'website',
+      url: siteUrl,
+      siteName: 'Hansung Urethane',
+      title,
+      description,
+      locale: 'ko_KR',
+      alternateLocale: 'en_US',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
     },
   }
 }
