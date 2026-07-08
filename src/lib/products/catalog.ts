@@ -10,6 +10,106 @@ export interface ProductSpec {
   result: string
 }
 
+/** A single row in a product's official test-report highlights table. */
+export interface TestReportRow {
+  labelKo: string
+  labelEn: string
+  unit: string
+  value: string
+}
+
+/**
+ * Official test-report highlights, keyed by product slug. Only rows relevant to
+ * each product are listed. Source: certification reports CT26-00736x series.
+ */
+export const productTestReports: Record<string, TestReportRow[]> = {
+  'hd-6000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007366K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '이액형 고강도우레탄' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '396' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '6' },
+    { labelKo: '접착 강도 – 표준 조건', labelEn: 'Adhesion – Standard', unit: 'N/㎟', value: '6.6' },
+    { labelKo: '인장 강도 – 표준 조건', labelEn: 'Tensile Strength – Standard', unit: 'N/㎟', value: '46.9' },
+    { labelKo: '인장 파괴 시 신장률', labelEn: 'Elongation at Break', unit: '%', value: '2' },
+    { labelKo: '경화 수축률', labelEn: 'Cure Shrinkage', unit: '%', value: '2' },
+  ],
+  'hs-1000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007363K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '연질발포지수제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '134' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.04' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '1,545' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '4' },
+  ],
+  'ws-3000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007361K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '반경질발포지수제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '124' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.05' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '1,562' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '6' },
+  ],
+  'ws-4000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007360K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '경질발포지수제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '189' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.10' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '1,158' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '6' },
+  ],
+  'ws-5000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007362K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '경질발포지수제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '165' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.12' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '1,447' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '6' },
+  ],
+  'ws-6000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007365K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '경질발포지수제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '521' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.23' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '2,417' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '5' },
+  ],
+  'ws-7000': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'CT26-007364K' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '무용제 경질지수발포제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '778' },
+    { labelKo: '비중', labelEn: 'Specific Gravity', unit: '—', value: '1.24' },
+    { labelKo: '팽창률', labelEn: 'Expansion Ratio', unit: '%', value: '2,717' },
+    { labelKo: '인장 전단 접착 강도 (금속)', labelEn: 'Tensile Shear Adhesion (Metal)', unit: 'N/㎟', value: '7' },
+  ],
+  'id': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'TAK-2026-012252' },
+    { labelKo: '시험기관', labelEn: 'Test Lab', unit: '—', value: 'KTR 울산 (KOLAS 국제공인)' },
+    { labelKo: '접수일', labelEn: 'Received', unit: '—', value: '2026.01.20' },
+    { labelKo: '완료일', labelEn: 'Completed', unit: '—', value: '2026.02.04' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '폴리우레탄 접착제' },
+    { labelKo: '점도', labelEn: 'Viscosity', unit: 'mPa·s', value: '350' },
+    { labelKo: '밀도', labelEn: 'Density', unit: 'g/cm³', value: '1.16' },
+    { labelKo: '불휘발분', labelEn: 'Non-Volatile Content', unit: '%', value: '70.0' },
+  ],
+  'id-non-reg': [
+    { labelKo: '성적서번호', labelEn: 'Report No.', unit: '—', value: 'TAK-2026-012253' },
+    { labelKo: '시험기관', labelEn: 'Test Lab', unit: '—', value: 'KTR 경기 과천' },
+    { labelKo: '접수일', labelEn: 'Received', unit: '—', value: '2026.01.20' },
+    { labelKo: '완료일', labelEn: 'Completed', unit: '—', value: '2026.02.04' },
+    { labelKo: '제품 분류', labelEn: 'Classification', unit: '—', value: '폴리우레탄 접착제 (비규제)' },
+    { labelKo: 'Toluene', labelEn: 'Toluene', unit: '—', value: '불검출 (<0.01 wt.%)' },
+    { labelKo: 'Methyl ethyl ketone', labelEn: 'Methyl ethyl ketone', unit: '—', value: '불검출 (<0.01 wt.%)' },
+    { labelKo: 'N,N-Dimethylformamide', labelEn: 'N,N-Dimethylformamide', unit: '—', value: '불검출 (<0.01 wt.%)' },
+  ],
+  'nflv-v': [
+    { labelKo: '시험기관', labelEn: 'Test Lab', unit: '—', value: '한국화재보험협회 방재시험연구원 (KOLAS)' },
+    { labelKo: '총 방출 열량', labelEn: 'Total Heat Release', unit: 'MJ/㎡', value: '1.5 / 0.5 / 1.0 (기준 8 이하) ✅' },
+    { labelKo: '200 kW/㎡ 초과 시간', labelEn: 'Time Exceeding 200 kW/㎡', unit: 's', value: '0 / 0 / 0 (연속 초과 없음) ✅' },
+    { labelKo: '방화상 유해한 균열·구멍·용융', labelEn: 'Harmful Cracks·Holes·Melting', unit: '—', value: '없음 ✅' },
+    { labelKo: '흰 쥐 평균 행동정지 시간', labelEn: 'Avg. Incapacitation Time (Rat)', unit: 'min:s', value: '14:32 / 14:43 (기준 9분 이상) ✅' },
+  ],
+}
+
 export interface ProductResource {
   labelKo: string
   labelEn: string

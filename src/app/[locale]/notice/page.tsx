@@ -24,7 +24,14 @@ export default async function NoticePage({
       .eq('is_active', true)
       .order('created_at', { ascending: false })
     if (data && data.length > 0) {
-      notices = data as Notice[]
+      const unique = new Map<string, Notice>()
+      for (const row of data as Notice[]) {
+        const key = row.id
+        if (!unique.has(key)) {
+          unique.set(key, row)
+        }
+      }
+      notices = Array.from(unique.values())
     }
   } catch (err) {
     console.error('Notices fetch error:', err)

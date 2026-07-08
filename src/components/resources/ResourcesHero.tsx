@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label'
 import { formatFileSize } from '@/lib/utils'
 import HeroMedia from '@/components/common/HeroMedia'
 import {
-  resources as fallbackResources,
   categoryOrder,
   categoryLabels,
   groupLabels,
@@ -36,7 +35,7 @@ type ResourcesHeroProps = {
 }
 
 export default function ResourcesHero({ resources: resourcesProp, title, subtitle, mediaUrl }: ResourcesHeroProps = {}) {
-  const resources = resourcesProp ?? fallbackResources
+  const resources = resourcesProp ?? []
   const locale = useLocale()
   const t = useTranslations('resources')
   const isKo = locale === 'ko'
@@ -192,15 +191,23 @@ export default function ResourcesHero({ resources: resourcesProp, title, subtitl
 
               {/* Auto-scrolling card strip */}
               <div className="relative overflow-hidden">
-                <div
-                  className="flex gap-5 animate-scroll w-max hover:[animation-play-state:paused]"
-                  style={{ animationDuration: '44s' }}
-                >
-                  {strip.map((r, idx) => renderCard(r, `${r.id}-${idx}`))}
-                </div>
-                {/* edge fades */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/70 to-transparent" />
-                <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/70 to-transparent" />
+                {strip.length === 0 ? (
+                  <div className="rounded-xl border border-white/20 bg-white/5 p-8 text-center text-white/70">
+                    {isKo ? '등록된 자료가 없습니다.' : 'No resources available.'}
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className="flex gap-5 animate-scroll w-max hover:[animation-play-state:paused]"
+                      style={{ animationDuration: '44s' }}
+                    >
+                      {strip.map((r, idx) => renderCard(r, `${r.id}-${idx}`))}
+                    </div>
+                    {/* edge fades */}
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/70 to-transparent" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/70 to-transparent" />
+                  </>
+                )}
               </div>
             </div>
           </div>

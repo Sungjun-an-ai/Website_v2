@@ -227,6 +227,9 @@ export default function HeroCarousel({
     animatedKpi: boolean
   ) => {
     if (item.type === 'kpi') {
+      // Drop Korean-only suffixes (e.g. "년") when rendering the English locale.
+      const rawSuffix = item.stat.suffix || ''
+      const suffix = locale === 'ko' ? rawSuffix : rawSuffix.replace(/[가-힣]/g, '')
       return (
         <div key={key} className="inline-flex items-center gap-2 md:gap-3 px-5 md:px-7">
           <span className="text-gold font-semibold text-xs md:text-sm tracking-wide whitespace-nowrap">
@@ -234,9 +237,9 @@ export default function HeroCarousel({
           </span>
           <span className="text-white font-bold text-sm md:text-base whitespace-nowrap">
             {animatedKpi ? (
-              <CountUp end={parseValue(item.stat.value)} suffix={item.stat.suffix} started={showTicker} />
+              <CountUp end={parseValue(item.stat.value)} suffix={suffix} started={showTicker} />
             ) : (
-              <>{parseValue(item.stat.value).toLocaleString()}{item.stat.suffix}</>
+              <>{parseValue(item.stat.value).toLocaleString()}{suffix}</>
             )}
           </span>
           <span className="text-white/35">•</span>

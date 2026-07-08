@@ -26,7 +26,10 @@ export default function EnterPage() {
       if (res.ok) {
         const params = new URLSearchParams(window.location.search)
         const next = params.get('next') || '/'
-        window.location.href = next.startsWith('/') ? next : '/'
+        // Only allow same-site absolute paths; block protocol-relative (//host)
+        // and absolute URLs to prevent open redirect.
+        const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/'
+        window.location.href = safeNext
       } else {
         setError('암호가 올바르지 않습니다.')
       }

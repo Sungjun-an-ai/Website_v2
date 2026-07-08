@@ -15,6 +15,7 @@ export type Slide = {
 
 export default function ChatConversationSection({ slides: slidesProp }: { slides?: Slide[] } = {}) {
   const locale = useLocale()
+  const isKo = locale === 'ko'
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -273,8 +274,8 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
         {/* Section head — left aligned */}
         <div className="cc-head">
           <div className="cc-eyebrow">Field Conversations</div>
-          <h2>현장의 대화에서 시작되는 솔루션</h2>
-          <p>현장에서 자주 듣는 질문에, 한성우레탄이 어떻게 답하는지 확인해 보세요.</p>
+          <h2>{isKo ? '현장의 대화에서 시작되는 솔루션' : 'Solutions that start from real field conversations'}</h2>
+          <p>{isKo ? '현장에서 자주 듣는 질문에, 한성우레탄이 어떻게 답하는지 확인해 보세요.' : 'See how Hansung Urethane answers the questions we hear most often on site.'}</p>
         </div>
 
         <div className="cc-carousel">
@@ -298,7 +299,7 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
                         <path d="M4 20c0-4.418 3.582-7 8-7s8 2.582 8 7" fill="#9CA3AF" />
                       </svg>
                     </div>
-                    <div className="cc-avatar-label">현장 담당자</div>
+                    <div className="cc-avatar-label">{isKo ? '현장 담당자' : 'Site Manager'}</div>
                   </div>
                   <div className="cc-bubble cc-bubble-customer" id="cc-customerBubble" />
                 </div>
@@ -310,7 +311,7 @@ export default function ChatConversationSection({ slides: slidesProp }: { slides
                     <div className="cc-avatar cc-hansung-avatar" id="cc-hansungAvatar">
                       H
                     </div>
-                    <div className="cc-avatar-label">한성우레탄</div>
+                    <div className="cc-avatar-label">{isKo ? '한성우레탄' : 'Hansung Urethane'}</div>
                   </div>
                 </div>
               </div>

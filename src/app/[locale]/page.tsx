@@ -5,7 +5,7 @@ import ProductsSection from '@/components/home/ProductsSection'
 import ValuesSection from '@/components/home/ValuesSection'
 import ContactSection from '@/components/home/ContactSection'
 import SnapPageEffect from '@/components/common/SnapPageEffect'
-import { getCategoryPanels } from '@/lib/products/catalog-db'
+import { getCatalog, getCategoryPanels } from '@/lib/products/catalog-db'
 import { getChatSlides, getContactInfo, getHeroSlides, getHeroStats } from '@/lib/site/settings'
 
 export const dynamic = 'force-dynamic'
@@ -14,13 +14,18 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
 
-  const [panels, chatSlides, contact, heroSlides, heroStats] = await Promise.all([
+  const [panels, catalogData, chatSlides, contact, heroSlides, heroStats] = await Promise.all([
     getCategoryPanels(),
+    getCatalog(),
     getChatSlides(locale),
     getContactInfo(locale === 'ko'),
     getHeroSlides(),
     getHeroStats(),
   ])
+
+  const productNames = catalogData.catalog.map((item) =>
+    locale === 'ko' ? item.nameKo : item.nameEn,
+  )
 
   return (
     <main className="w-full overflow-x-clip bg-navy" id="main-scroll-container">
@@ -29,7 +34,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <ChatConversationSection slides={chatSlides ?? undefined} />
       <ProductsSection panels={panels} />
       <ValuesSection />
-      <ContactSection contact={contact ?? undefined} />
+      <ContactSection contact={contact ?? undefined} productOptions={productNames} />
     </main>
   )
 }

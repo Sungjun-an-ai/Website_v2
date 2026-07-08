@@ -1,4 +1,5 @@
 import { Award, Lightbulb, Handshake, type LucideIcon } from 'lucide-react'
+import Link from 'next/link'
 import { getLocale } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 
@@ -58,8 +59,10 @@ export default async function ValuesSection() {
           const bgImg = bgImages[idx % bgImages.length]
 
           return (
-            <div
+            <Link
               key={value.id}
+              href={`/${locale}/about`}
+              aria-label={isKo ? '회사소개로 이동' : 'Go to About'}
               className="group/item flex-1 hover:flex-[1.5] transition-all duration-700 ease-out relative flex items-center justify-center overflow-hidden border-b border-white/5 last:border-b-0 cursor-pointer"
             >
               {/* Background Image & Overlay */}
@@ -93,7 +96,7 @@ export default async function ValuesSection() {
                   </p>
                 </div>
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>

@@ -157,15 +157,9 @@ export default function NoticeHero({ notices, isKo, locale, title, subtitle, med
                       {isKo ? '중요 공지사항' : 'Important Notices'}
                     </h2>
 
-                    <div className="relative overflow-hidden rounded-lg border border-white/15 bg-black/50 py-3">
-                      <div className="flex gap-8 animate-group-strip-left w-max">
-                        {[...Array(2)].map((_, setIdx) => (
-                          <React.Fragment key={setIdx}>
-                            {tickerSource.map((n, idx) =>
-                              renderTickerItem(n, `l-${setIdx}-${idx}`),
-                            )}
-                          </React.Fragment>
-                        ))}
+                    <div className="relative overflow-x-auto rounded-lg border border-white/15 bg-black/50 py-3">
+                      <div className="flex gap-8 w-max px-3">
+                        {tickerSource.map((n, idx) => renderTickerItem(n, `l-${idx}`))}
                       </div>
                     </div>
                   </div>
@@ -176,9 +170,9 @@ export default function NoticeHero({ notices, isKo, locale, title, subtitle, med
                     <h2 className="text-lg sm:text-xl font-semibold text-white mb-4">
                       {isKo ? '전체 공지사항' : 'All Notices'}
                     </h2>
-                    <div className="h-80 overflow-hidden rounded-lg border border-white/20 bg-black/70">
-                      <div className="animate-vertical-scroll">
-                        {[...board, ...board].map((notice, idx) => (
+                    <div className="h-80 overflow-y-auto rounded-lg border border-white/20 bg-black/70">
+                      <div>
+                        {board.map((notice, idx) => (
                           <a
                             key={`${notice.id}-${idx}`}
                             href={`/${locale}/notice/${notice.id}`}
@@ -214,19 +208,15 @@ export default function NoticeHero({ notices, isKo, locale, title, subtitle, med
 
       {/* Bottom ticker */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent z-20 pt-8 pb-6">
-        <div className="relative overflow-hidden">
-          <div className="flex gap-12 animate-scroll w-max">
-            {[...Array(2)].map((_, setIdx) => (
-              <React.Fragment key={setIdx}>
-                {board.map((notice, idx) => (
-                  <div
-                    key={`${setIdx}-${idx}`}
-                    className="text-white/60 text-sm sm:text-base font-medium flex-shrink-0 whitespace-nowrap hover:text-white/80 transition-colors"
-                  >
-                    {isKo ? notice.title_ko : notice.title_en}
-                  </div>
-                ))}
-              </React.Fragment>
+        <div className="relative overflow-x-auto">
+          <div className="flex gap-12 w-max px-4">
+            {board.map((notice, idx) => (
+              <div
+                key={idx}
+                className="text-white/60 text-sm sm:text-base font-medium flex-shrink-0 whitespace-nowrap hover:text-white/80 transition-colors"
+              >
+                {isKo ? notice.title_ko : notice.title_en}
+              </div>
             ))}
           </div>
         </div>

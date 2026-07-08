@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { escapeHtml } from '@/lib/security'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -37,30 +38,30 @@ export async function sendInquiryEmail(data: InquiryEmailData) {
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 8px; font-weight: bold; width: 120px; color: #1B2A6B;">이름 / Name</td>
-            <td style="padding: 8px;">${data.name}</td>
+            <td style="padding: 8px;">${escapeHtml(data.name)}</td>
           </tr>
           ${data.company ? `
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">회사 / Company</td>
-            <td style="padding: 8px;">${data.company}</td>
+            <td style="padding: 8px;">${escapeHtml(data.company)}</td>
           </tr>` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">이메일 / Email</td>
-            <td style="padding: 8px;"><a href="mailto:${data.email}">${data.email}</a></td>
+            <td style="padding: 8px;"><a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a></td>
           </tr>
           ${data.phone ? `
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">전화 / Phone</td>
-            <td style="padding: 8px;">${data.phone}</td>
+            <td style="padding: 8px;">${escapeHtml(data.phone)}</td>
           </tr>` : ''}
           ${data.productInterest ? `
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">관심제품 / Product</td>
-            <td style="padding: 8px;">${data.productInterest}</td>
+            <td style="padding: 8px;">${escapeHtml(data.productInterest)}</td>
           </tr>` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B; vertical-align: top;">메시지 / Message</td>
-            <td style="padding: 8px; white-space: pre-wrap;">${data.message}</td>
+            <td style="padding: 8px; white-space: pre-wrap;">${escapeHtml(data.message)}</td>
           </tr>
         </table>
       </div>
@@ -95,25 +96,25 @@ export async function sendCatalogEmail(data: CatalogRequestData) {
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 8px; font-weight: bold; width: 120px; color: #1B2A6B;">이름 / Name</td>
-            <td style="padding: 8px;">${data.name}</td>
+            <td style="padding: 8px;">${escapeHtml(data.name)}</td>
           </tr>
           ${data.company ? `
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">회사 / Company</td>
-            <td style="padding: 8px;">${data.company}</td>
+            <td style="padding: 8px;">${escapeHtml(data.company)}</td>
           </tr>` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">이메일 / Email</td>
-            <td style="padding: 8px;"><a href="mailto:${data.email}">${data.email}</a></td>
+            <td style="padding: 8px;"><a href="mailto:${escapeHtml(data.email)}">${escapeHtml(data.email)}</a></td>
           </tr>
           ${data.phone ? `
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">전화 / Phone</td>
-            <td style="padding: 8px;">${data.phone}</td>
+            <td style="padding: 8px;">${escapeHtml(data.phone)}</td>
           </tr>` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold; color: #1B2A6B;">요청 자료</td>
-            <td style="padding: 8px;">${data.resourceTitle}</td>
+            <td style="padding: 8px;">${escapeHtml(data.resourceTitle)}</td>
           </tr>
         </table>
       </div>
@@ -144,7 +145,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData) {
         <p style="margin: 5px 0 0; color: #D4A843;">BONDING TOMORROW TOGETHER</p>
       </div>
       <div style="padding: 30px; border: 1px solid #eee; border-radius: 0 0 8px 8px;">
-        <p>${data.name}님, 안녕하세요.</p>
+        <p>${escapeHtml(data.name)}님, 안녕하세요.</p>
         <p>한성우레탄에 문의해 주셔서 감사합니다.<br>
         접수된 문의는 검토 후 빠른 시일 내에 답변 드리겠습니다.</p>
         <p style="color: #666;">
@@ -162,7 +163,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData) {
         <p style="margin: 5px 0 0; color: #D4A843;">BONDING TOMORROW TOGETHER</p>
       </div>
       <div style="padding: 30px; border: 1px solid #eee; border-radius: 0 0 8px 8px;">
-        <p>Dear ${data.name},</p>
+        <p>Dear ${escapeHtml(data.name)},</p>
         <p>Thank you for contacting Hansung Urethane Co., Ltd.<br>
         We have received your inquiry and will respond as soon as possible.</p>
         <p style="color: #666;">

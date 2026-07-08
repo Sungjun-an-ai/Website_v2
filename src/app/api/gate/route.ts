@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getClientIp, rateLimit } from '@/lib/security'
 
 export async function POST(request: NextRequest) {
+  // Throttle password attempts to mitigate brute-force.
+  const ip = getClientIp(request)
+  const rl = rateLimit(`gate:${ip}`, 10, 5 * 60_000)
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { ok: false },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfter) } },
+    )
+  }
+
   let password = ''
   try {
     const body = await request.json()

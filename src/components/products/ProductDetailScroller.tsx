@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ArrowDown, ArrowLeft, Download, FileText } from 'lucide-react'
 import ProductInquiryForm from '@/components/products/ProductInquiryForm'
 import SnapPageEffect from '@/components/common/SnapPageEffect'
-import { ProductCatalogItem, productCatalog, productCategoryLabels } from '@/lib/products/catalog'
+import { ProductCatalogItem, productCatalog, productCategoryLabels, productTestReports } from '@/lib/products/catalog'
 
 const heroVisualByCategory = {
   sealant: '/about/Aerial_timelapse_of_subway_con_Kling_30__16770.mp4',
@@ -128,6 +128,7 @@ export default function ProductDetailScroller({
   const activeDescription = isKo ? activeProduct.descriptionKo : activeProduct.descriptionEn
   const activeFeatures = isKo ? activeProduct.featuresKo : activeProduct.featuresEn
   const activeApplications = isKo ? activeProduct.applicationsKo : activeProduct.applicationsEn
+  const activeTestReport = productTestReports[activeProduct.slug] ?? []
 
   useEffect(() => {
     const hero = heroSectionRef.current
@@ -344,23 +345,27 @@ export default function ProductDetailScroller({
 
               <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-md" style={fadeStyle(visible, 460)}>
                 <h3 className="mb-5 text-xl font-semibold text-gold">{isKo ? '시험 규격 하이라이트' : 'Standard Highlights'}</h3>
-                <div className="space-y-3">
-                  {activeProduct.specs.map((spec, index) => (
-                    <div
-                      key={`${spec.item}-${spec.method}`}
-                      className={`rounded-xl border p-4 ${
-                        spec.method.includes('ASTM D3674')
-                          ? 'border-gold/40 bg-gold/10'
-                          : 'border-white/10 bg-slate-900/50'
-                      }`}
-                      style={fadeStyle(visible, 560 + index * 70)}
-                    >
-                      <p className="text-xs uppercase tracking-[0.12em] text-gold/95">{spec.method}</p>
-                      <p className="mt-1 text-sm text-white/80">{spec.item}</p>
-                      <p className="mt-2 text-sm font-semibold text-white">{spec.result}</p>
-                    </div>
-                  ))}
-                </div>
+                {activeTestReport.length > 0 ? (
+                  <ul className="divide-y divide-white/10">
+                    {activeTestReport.map((row, index) => (
+                      <li
+                        key={row.labelKo}
+                        className="flex items-start justify-between gap-4 py-3"
+                        style={fadeStyle(visible, 540 + index * 60)}
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-white/90">{isKo ? row.labelKo : row.labelEn}</p>
+                          {row.unit !== '—' && (
+                            <p className="text-xs text-white/45">{row.unit}</p>
+                          )}
+                        </div>
+                        <p className="shrink-0 text-right text-sm font-semibold text-gold">{row.value}</p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="h-16" />
+                )}
               </div>
             </div>
           </div>

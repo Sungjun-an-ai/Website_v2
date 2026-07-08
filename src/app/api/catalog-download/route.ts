@@ -1,13 +1,34 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseConfigured, isResendConfigured } from '@/lib/utils'
+import { getClientIp, isValidEmail, rateLimit, sanitizeString } from '@/lib/security'
 
 export async function POST(request: Request) {
   try {
+    // Rate limit public submissions per IP.
+    const ip = getClientIp(request)
+    const rl = rateLimit(`catalog:${ip}`, 10, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfter) } },
+      )
+    }
+
     const body = await request.json()
-    const { name, company, email, phone, resourceId, resourceTitle, locale } = body
+
+    const name = sanitizeString(body?.name, 100)
+    const company = sanitizeString(body?.company, 150)
+    const email = sanitizeString(body?.email, 254)
+    const phone = sanitizeString(body?.phone, 40)
+    const resourceId = sanitizeString(body?.resourceId, 100)
+    const resourceTitle = sanitizeString(body?.resourceTitle, 200)
+    const locale = sanitizeString(body?.locale, 8) || 'ko'
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
     // Save to Supabase if configured
@@ -23,7 +44,7 @@ export async function POST(request: Request) {
         email,
         phone: phone || null,
         resource_id: resourceId || null,
-        locale: locale || 'ko',
+        locale,
       })
     }
 

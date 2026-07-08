@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { getClientIp, rateLimit } from '@/lib/security'
 
 export const runtime = 'nodejs'
 
@@ -13,6 +14,13 @@ function detectDevice(ua: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    // Throttle analytics writes per IP to prevent DB spam.
+    const ip = getClientIp(request)
+    const rl = rateLimit(`track:${ip}`, 60, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false }, { status: 429 })
+    }
+
     const body = await request.json().catch(() => ({}))
     const path = typeof body.path === 'string' ? body.path.slice(0, 512) : ''
     const referrer = typeof body.referrer === 'string' ? body.referrer.slice(0, 512) : ''

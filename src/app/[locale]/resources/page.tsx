@@ -1,6 +1,6 @@
 import ResourcesHero from '@/components/resources/ResourcesHero'
 import { createClient } from '@/lib/supabase/server'
-import { resources as fallbackResources, type Resource } from '@/data/resources'
+import type { Resource } from '@/data/resources'
 import { getPageHero, resolvePageHero } from '@/lib/site/page-hero'
 
 export const dynamic = 'force-dynamic'
@@ -12,16 +12,27 @@ export default async function ResourcesPage({
 }) {
   const { locale } = await params
   const isKo = locale === 'ko'
-  let resources: Resource[] = fallbackResources
+  let resources: Resource[] = []
   try {
     const supabase = await createClient()
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('resources')
       .select('*')
-      .eq('is_active', true)
-      .order('order_index')
-    if (data && data.length > 0) {
-      resources = data.map((r) => ({
+    if (error) {
+      throw error
+    }
+
+    if (data) {
+      const visibleRows = data.filter((r: any) => r.is_active !== false)
+
+      const sortedRows = [...visibleRows].sort((a: any, b: any) => {
+        const aOrder = typeof a.order_index === 'number' ? a.order_index : Number.MAX_SAFE_INTEGER
+        const bOrder = typeof b.order_index === 'number' ? b.order_index : Number.MAX_SAFE_INTEGER
+        if (aOrder !== bOrder) return aOrder - bOrder
+        return 0
+      })
+
+      resources = sortedRows.map((r: any) => ({
         id: r.id,
         category: r.category,
         group: r.group_key,

@@ -1,13 +1,34 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseConfigured, isResendConfigured } from '@/lib/utils'
+import { getClientIp, isValidEmail, rateLimit, sanitizeString } from '@/lib/security'
 
 export async function POST(request: Request) {
   try {
+    // Rate limit public submissions per IP.
+    const ip = getClientIp(request)
+    const rl = rateLimit(`inquiry:${ip}`, 5, 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': String(rl.retryAfter) } },
+      )
+    }
+
     const body = await request.json()
-    const { name, company, email, phone, productInterest, message, locale } = body
+
+    const name = sanitizeString(body?.name, 100)
+    const company = sanitizeString(body?.company, 150)
+    const email = sanitizeString(body?.email, 254)
+    const phone = sanitizeString(body?.phone, 40)
+    const productInterest = sanitizeString(body?.productInterest, 100)
+    const message = sanitizeString(body?.message, 5000)
+    const locale = sanitizeString(body?.locale, 8) || 'ko'
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+    }
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
     // Save to Supabase if configured
@@ -24,7 +45,7 @@ export async function POST(request: Request) {
         phone: phone || null,
         product_interest: productInterest || null,
         message,
-        locale: locale || 'ko',
+        locale,
         status: 'new',
       })
     }

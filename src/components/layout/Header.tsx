@@ -79,6 +79,7 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
 
   const otherLocale = locale === 'ko' ? 'en' : 'ko'
   const localePath = pathname.replace(`/${locale}`, `/${otherLocale}`)
+  const mobileMenuTopClass = isScrolled ? 'top-16' : 'top-[110px]'
 
   // GNB stays transparent on every page (matching the product pages); only the
   // logo box shrinks on scroll. Kept as a flag so text-color logic reads clearly.
@@ -175,23 +176,44 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
       </div>
 
       {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
-          <div className="px-4 py-4 space-y-2">
+      <div
+        className={cn(
+          'md:hidden fixed inset-0 z-40 transition-opacity duration-300',
+          isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        )}
+      >
+        <button
+          type="button"
+          aria-label="Close mobile menu"
+          className="absolute inset-0 w-full h-full bg-gradient-to-l from-white/50 via-white/20 to-transparent"
+          onClick={() => setIsMenuOpen(false)}
+        />
+
+        <div
+          className={cn(
+            'absolute right-0 bottom-0 w-[82%] max-w-sm border-l border-white/40 shadow-2xl backdrop-blur-md',
+            'bg-gradient-to-l from-white/95 via-white/85 to-white/55',
+            'transform transition-transform duration-300 ease-out',
+            mobileMenuTopClass,
+            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="px-5 py-5 space-y-3">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block py-2 text-gray-700 hover:text-navy font-medium"
+                className="block py-2 text-gray-800 hover:text-navy font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-2 border-t border-gray-200 flex items-center justify-between">
+            <div className="pt-3 border-t border-gray-200/70 flex items-center justify-between">
               <Link
                 href={localePath}
-                className="flex items-center gap-1 text-sm text-gray-600 hover:text-navy"
+                className="flex items-center gap-1 text-sm text-gray-700 hover:text-navy"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Globe className="h-4 w-4" />
@@ -207,7 +229,7 @@ export default function Header({ initialLogoUrl = null }: { initialLogoUrl?: str
             </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }

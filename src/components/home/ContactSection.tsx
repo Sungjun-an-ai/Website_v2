@@ -18,11 +18,12 @@ import { CheckCircle, AlertCircle } from 'lucide-react'
 
 type ContactInfo = { address: string; phone: string; fax: string; email: string; hours: string }
 
-export default function ContactSection({ contact }: { contact?: ContactInfo } = {}) {
+export default function ContactSection({ contact, productOptions = [] }: { contact?: ContactInfo; productOptions?: string[] } = {}) {
   const t = useTranslations('contact')
   const locale = useLocale()
   const isKo = locale === 'ko'
   const { toast, showToast, hideToast } = useToast()
+  const productChoices = Array.from(new Set(productOptions.filter(Boolean)))
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [agreed, setAgreed] = useState(false)
   const [showConsent, setShowConsent] = useState(false)
@@ -179,10 +180,9 @@ export default function ContactSection({ contact }: { contact?: ContactInfo } = 
                     <option value="">
                       {locale === 'ko' ? '제품 선택 (선택사항)' : 'Select Product (Optional)'}
                     </option>
-                    <option value="HS-100">HS-100 {locale === 'ko' ? '우레탄 접착제' : 'Urethane Adhesive'}</option>
-                    <option value="HS-200">HS-200 {locale === 'ko' ? '지수제' : 'Water-stop Agent'}</option>
-                    <option value="HS-300">HS-300 {locale === 'ko' ? '방수제' : 'Waterproofing'}</option>
-                    <option value="HS-400">HS-400 {locale === 'ko' ? '그라우트' : 'Grout'}</option>
+                    {productChoices.map((name) => (
+                      <option key={name} value={name}>{name}</option>
+                    ))}
                     <option value="other">{locale === 'ko' ? '기타' : 'Other'}</option>
                   </select>
                 </div>
