@@ -67,7 +67,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: '/admin/analytics', label: '트래픽 분석', icon: Activity },
       { href: '/admin/leads', label: '문의 관리', icon: MessageSquare },
-      { href: '/admin/site-settings', label: '연락처·푸터·카운터', icon: Phone },
+      { href: '/admin/site-settings', label: '문의 메일·연락처·푸터·카운터', icon: Phone },
       { href: '/admin/users', label: '사용자 관리', icon: Users },
     ],
   },

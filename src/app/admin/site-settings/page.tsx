@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin/AdminLayout'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Plus, Trash2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -26,6 +27,10 @@ const INQUIRY_KEYS = [
   ['inquiry_recipient_emails', '문의 수신 이메일'],
   ['inquiry_from_name', '자동답장 발신명'],
   ['inquiry_autoreply_enabled', '자동답장 사용 여부'],
+  ['inquiry_autoreply_subject_ko', '자동답장 제목 (한)'],
+  ['inquiry_autoreply_subject_en', '자동답장 제목 (영)'],
+  ['inquiry_autoreply_body_ko', '자동답장 본문 (한)'],
+  ['inquiry_autoreply_body_en', '자동답장 본문 (영)'],
 ] as const
 
 export default function AdminSiteSettingsPage() {
@@ -106,7 +111,10 @@ export default function AdminSiteSettingsPage() {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">문의 메일 설정</h2>
               <div className="grid grid-cols-2 gap-4">
                 {INQUIRY_KEYS.map(([key, label]) => (
-                  <div key={key} className={`space-y-1 ${key === 'inquiry_recipient_emails' ? 'col-span-2' : ''}`}>
+                  <div
+                    key={key}
+                    className={`space-y-1 ${key === 'inquiry_recipient_emails' || key.includes('body') ? 'col-span-2' : ''}`}
+                  >
                     <Label>{label}</Label>
                     {key === 'inquiry_autoreply_enabled' ? (
                       <select
@@ -117,6 +125,15 @@ export default function AdminSiteSettingsPage() {
                         <option value="true">사용</option>
                         <option value="false">미사용</option>
                       </select>
+                      ) : key.includes('body') ? (
+                      <Textarea
+                        value={values[key] ?? ''}
+                        onChange={e => setVal(key, e.target.value)}
+                        placeholder={key === 'inquiry_autoreply_body_ko'
+                          ? '문의해 주셔서 감사합니다.\n접수된 문의는 검토 후 빠른 시일 내에 답변 드리겠습니다.'
+                          : 'Thank you for contacting Hansung Urethane Co., Ltd.\nWe have received your inquiry and will respond as soon as possible.'}
+                        rows={5}
+                      />
                     ) : (
                       <Input
                         value={values[key] ?? ''}
@@ -129,6 +146,9 @@ export default function AdminSiteSettingsPage() {
               </div>
               <p className="text-xs text-gray-400 mt-3">
                 수신 이메일은 쉼표로 여러 개를 입력할 수 있습니다. 자동답장은 문의자 이메일로 먼저 발송됩니다.
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                본문은 줄바꿈을 그대로 반영합니다. 제목과 본문을 비워두면 기본 문구가 사용됩니다.
               </p>
             </section>
 

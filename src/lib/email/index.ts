@@ -141,8 +141,12 @@ export async function sendAutoReplyEmail(data: InquiryEmailData, settings?: Inqu
   if (settings && !settings.autoReplyEnabled) return null
   const fromName = settings?.fromName || 'Hansung Urethane'
   const subject = data.locale === 'ko'
-    ? '한성우레탄 문의가 접수되었습니다'
-    : 'Your inquiry has been received - Hansung Urethane'
+    ? settings?.autoReplySubjectKo || '한성우레탄 문의가 접수되었습니다'
+    : settings?.autoReplySubjectEn || 'Your inquiry has been received - Hansung Urethane'
+  const bodyText = data.locale === 'ko'
+    ? settings?.autoReplyBodyKo || '문의해 주셔서 감사합니다.\n접수된 문의는 검토 후 빠른 시일 내에 답변 드리겠습니다.'
+    : settings?.autoReplyBodyEn || 'Thank you for contacting Hansung Urethane Co., Ltd.\nWe have received your inquiry and will respond as soon as possible.'
+  const bodyHtml = escapeHtml(bodyText).replace(/\n/g, '<br>')
 
   const htmlBody = data.locale === 'ko' ? `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -152,8 +156,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData, settings?: Inqu
       </div>
       <div style="padding: 30px; border: 1px solid #eee; border-radius: 0 0 8px 8px;">
         <p>${escapeHtml(data.name)}님, 안녕하세요.</p>
-        <p>한성우레탄에 문의해 주셔서 감사합니다.<br>
-        접수된 문의는 검토 후 빠른 시일 내에 답변 드리겠습니다.</p>
+        <p>${bodyHtml}</p>
         <p style="color: #666;">
           ✉ info@hsurethane.co.kr<br>
           📞 031-943-8732<br>
@@ -170,8 +173,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData, settings?: Inqu
       </div>
       <div style="padding: 30px; border: 1px solid #eee; border-radius: 0 0 8px 8px;">
         <p>Dear ${escapeHtml(data.name)},</p>
-        <p>Thank you for contacting Hansung Urethane Co., Ltd.<br>
-        We have received your inquiry and will respond as soon as possible.</p>
+        <p>${bodyHtml}</p>
         <p style="color: #666;">
           ✉ info@hsurethane.co.kr<br>
           📞 +82-31-943-8732<br>
