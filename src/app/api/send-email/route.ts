@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     const resend = new Resend(resendKey)
 
     const { data, error } = await resend.emails.send({
-      from: 'Hansung Urethane <noreply@hsurethane.co.kr>',
+      from: 'Hansung Urethane <noreply@hsurethane.com>',
       to: [to],
       subject,
       html,

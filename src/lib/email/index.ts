@@ -76,7 +76,7 @@ export async function sendInquiryEmail(data: InquiryEmailData, settings?: Inquir
   `
 
   const { data: result, error } = await resend.emails.send({
-    from: `${fromName} Website <noreply@hsurethane.co.kr>`,
+    from: `${fromName} Website <noreply@hsurethane.com>`,
     to: adminEmails,
     replyTo: data.email,
     subject,
@@ -126,7 +126,7 @@ export async function sendCatalogEmail(data: CatalogRequestData) {
   `
 
   const { data: result, error } = await resend.emails.send({
-    from: 'Hansung Urethane Website <noreply@hsurethane.co.kr>',
+    from: 'Hansung Urethane Website <noreply@hsurethane.com>',
     to: [adminEmail],
     replyTo: data.email,
     subject: `[자료요청] ${data.name}님이 카탈로그를 다운로드했습니다`,
@@ -185,7 +185,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData, settings?: Inqu
   `
 
   const { data: result, error } = await resend.emails.send({
-    from: `${fromName} <noreply@hsurethane.co.kr>`,
+    from: `${fromName} <noreply@hsurethane.com>`,
     to: [data.email],
     subject,
     html: htmlBody,
