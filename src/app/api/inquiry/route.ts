@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseConfigured, isResendConfigured } from '@/lib/utils'
 import { getClientIp, isValidEmail, rateLimit, sanitizeString } from '@/lib/security'
+import { getInquiryMailSettings } from '@/lib/site/settings'
 
 export async function POST(request: Request) {
   try {
@@ -53,10 +54,15 @@ export async function POST(request: Request) {
     // Send email if Resend is configured
     if (isResendConfigured()) {
       const { sendInquiryEmail, sendAutoReplyEmail } = await import('@/lib/email')
-      await Promise.allSettled([
-        sendInquiryEmail({ name, company, email, phone, productInterest, message, locale }),
-        sendAutoReplyEmail({ name, company, email, phone, productInterest, message, locale }),
-      ])
+      const mailSettings = await getInquiryMailSettings()
+
+      if (mailSettings.autoReplyEnabled) {
+        await sendAutoReplyEmail({ name, company, email, phone, productInterest, message, locale }, mailSettings)
+          .catch((error) => console.error('Auto reply email failed:', error))
+      }
+
+      await sendInquiryEmail({ name, company, email, phone, productInterest, message, locale }, mailSettings)
+        .catch((error) => console.error('Admin inquiry email failed:', error))
     }
 
     return NextResponse.json({ success: true })

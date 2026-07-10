@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { escapeHtml } from '@/lib/security'
+import type { InquiryMailSettings } from '@/lib/site/settings'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -21,8 +22,11 @@ export interface CatalogRequestData {
   resourceTitle: string
 }
 
-export async function sendInquiryEmail(data: InquiryEmailData) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'info@hsurethane.co.kr'
+export async function sendInquiryEmail(data: InquiryEmailData, settings?: InquiryMailSettings) {
+  const adminEmails = settings?.recipientEmails?.length
+    ? settings.recipientEmails
+    : [(process.env.ADMIN_EMAIL || 'info@hsurethane.co.kr')]
+  const fromName = settings?.fromName || 'Hansung Urethane'
 
   const subject = data.locale === 'ko'
     ? `[문의] ${data.name}님으로부터 새 문의가 접수되었습니다`
@@ -72,8 +76,8 @@ export async function sendInquiryEmail(data: InquiryEmailData) {
   `
 
   const { data: result, error } = await resend.emails.send({
-    from: 'Hansung Urethane Website <noreply@hsurethane.co.kr>',
-    to: [adminEmail],
+    from: `${fromName} Website <noreply@hsurethane.co.kr>`,
+    to: adminEmails,
     replyTo: data.email,
     subject,
     html: htmlBody,
@@ -133,7 +137,9 @@ export async function sendCatalogEmail(data: CatalogRequestData) {
   return result
 }
 
-export async function sendAutoReplyEmail(data: InquiryEmailData) {
+export async function sendAutoReplyEmail(data: InquiryEmailData, settings?: InquiryMailSettings) {
+  if (settings && !settings.autoReplyEnabled) return null
+  const fromName = settings?.fromName || 'Hansung Urethane'
   const subject = data.locale === 'ko'
     ? '한성우레탄 문의가 접수되었습니다'
     : 'Your inquiry has been received - Hansung Urethane'
@@ -177,7 +183,7 @@ export async function sendAutoReplyEmail(data: InquiryEmailData) {
   `
 
   const { data: result, error } = await resend.emails.send({
-    from: 'Hansung Urethane <noreply@hsurethane.co.kr>',
+    from: `${fromName} <noreply@hsurethane.co.kr>`,
     to: [data.email],
     subject,
     html: htmlBody,

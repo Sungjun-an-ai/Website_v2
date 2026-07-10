@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { isValidEmail } from '@/lib/security'
 
 export type ContactInfo = {
   address: string
@@ -6,6 +7,12 @@ export type ContactInfo = {
   fax: string
   email: string
   hours: string
+}
+
+export type InquiryMailSettings = {
+  recipientEmails: string[]
+  autoReplyEnabled: boolean
+  fromName: string
 }
 
 export type TrackStat = { value: string; label_ko: string; label_en: string }
@@ -61,6 +68,31 @@ export function contactFromSettings(
 export async function getContactInfo(isKo: boolean): Promise<ContactInfo | null> {
   const settings = await getSiteSettings()
   return contactFromSettings(settings, isKo)
+}
+
+function parseEmailList(raw: string | undefined, fallback: string): string[] {
+  const values = (raw ?? fallback)
+    .split(',')
+    .map((value) => value.trim().toLowerCase())
+    .filter((value) => value && isValidEmail(value))
+  return Array.from(new Set(values))
+}
+
+function parseBoolean(raw: string | undefined, fallback: boolean): boolean {
+  if (raw === undefined || raw === null || raw === '') return fallback
+  return ['true', '1', 'yes', 'y', 'on'].includes(raw.toLowerCase())
+}
+
+export async function getInquiryMailSettings(): Promise<InquiryMailSettings> {
+  const settings = await getSiteSettings()
+  return {
+    recipientEmails: parseEmailList(
+      settings.inquiry_recipient_emails,
+      process.env.ADMIN_EMAIL || 'info@hsurethane.co.kr',
+    ),
+    autoReplyEnabled: parseBoolean(settings.inquiry_autoreply_enabled, true),
+    fromName: (settings.inquiry_from_name || 'Hansung Urethane').trim(),
+  }
 }
 
 export function statsFromSettings(settings: Record<string, string>): TrackStat[] {

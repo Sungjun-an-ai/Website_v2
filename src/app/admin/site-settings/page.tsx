@@ -22,6 +22,12 @@ const CONTACT_KEYS = [
   ['contact_hours_en', '운영시간 (영)'],
 ] as const
 
+const INQUIRY_KEYS = [
+  ['inquiry_recipient_emails', '문의 수신 이메일'],
+  ['inquiry_from_name', '자동답장 발신명'],
+  ['inquiry_autoreply_enabled', '자동답장 사용 여부'],
+] as const
+
 export default function AdminSiteSettingsPage() {
   const [values, setValues] = useState<Record<string, string>>({})
   const [stats, setStats] = useState<Stat[]>([])
@@ -57,6 +63,7 @@ export default function AdminSiteSettingsPage() {
     const supabase = createClient()
     const rows = [
       ...CONTACT_KEYS.map(([key]) => ({ key, value: values[key] ?? '' })),
+      ...INQUIRY_KEYS.map(([key]) => ({ key, value: values[key] ?? '' })),
       { key: 'track_record_stats', value: JSON.stringify(stats) },
     ]
     const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' })
@@ -70,8 +77,8 @@ export default function AdminSiteSettingsPage() {
       <div className="p-8 max-w-4xl">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">연락처 · 푸터 · 카운터 관리</h1>
-            <p className="text-sm text-gray-500 mt-1">푸터와 문의 섹션의 연락처 정보, 납품실적 카운터 수치를 관리합니다</p>
+            <h1 className="text-2xl font-bold text-gray-900">연락처 · 문의 메일 · 카운터 관리</h1>
+            <p className="text-sm text-gray-500 mt-1">푸터 연락처, 문의 메일 수신/자동답장 설정, 납품실적 카운터 수치를 관리합니다</p>
           </div>
           <div className="flex items-center gap-3">
             {savedAt && <span className="text-xs text-green-600">{savedAt} 저장됨</span>}
@@ -93,6 +100,36 @@ export default function AdminSiteSettingsPage() {
                   </div>
                 ))}
               </div>
+            </section>
+
+            <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">문의 메일 설정</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {INQUIRY_KEYS.map(([key, label]) => (
+                  <div key={key} className={`space-y-1 ${key === 'inquiry_recipient_emails' ? 'col-span-2' : ''}`}>
+                    <Label>{label}</Label>
+                    {key === 'inquiry_autoreply_enabled' ? (
+                      <select
+                        value={values[key] ?? 'true'}
+                        onChange={e => setVal(key, e.target.value)}
+                        className="mt-1 flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+                      >
+                        <option value="true">사용</option>
+                        <option value="false">미사용</option>
+                      </select>
+                    ) : (
+                      <Input
+                        value={values[key] ?? ''}
+                        onChange={e => setVal(key, e.target.value)}
+                        placeholder={key === 'inquiry_recipient_emails' ? 'info@hsurethane.co.kr, sales@hsurethane.co.kr' : 'Hansung Urethane'}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-400 mt-3">
+                수신 이메일은 쉼표로 여러 개를 입력할 수 있습니다. 자동답장은 문의자 이메일로 먼저 발송됩니다.
+              </p>
             </section>
 
             <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
