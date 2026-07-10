@@ -65,8 +65,12 @@ export default function AdminLeadsPage() {
     if (!selected) return
     setUpdatingStatus(true)
     const supabase = createClient()
-    await supabase.from('leads').update({ status }).eq('id', selected.id)
+    const { error } = await supabase.from('leads').update({ status }).eq('id', selected.id)
     setUpdatingStatus(false)
+    if (error) {
+      alert(`상태 변경 실패: ${error.message || JSON.stringify(error)}`)
+      return
+    }
     setSelected(prev => prev ? { ...prev, status } : null)
     fetchLeads()
   }
