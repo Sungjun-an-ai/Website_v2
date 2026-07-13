@@ -77,10 +77,11 @@ export default function ContactSection({ contact, productOptions = [] }: { conta
       className="relative h-screen w-full flex-shrink-0 snap-start overflow-y-auto flex flex-col justify-center bg-navy py-16"
     >
       {/* Background image — lazy-loaded so it doesn't block the initial page load
-          (this is the last section on the home page). */}
+          (this is the last section on the home page). Served locally from Vercel
+          (was a 5.8MB Supabase PNG driving heavy egress). */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="https://ansdfjxettdrggezibwh.supabase.co/storage/v1/object/public/media/1782203838277_A_cinematic_photorealistic_her_Nano_Banana_2_33024.png"
+        src="/assets/contact-hero.webp"
         alt=""
         loading="lazy"
         aria-hidden="true"
