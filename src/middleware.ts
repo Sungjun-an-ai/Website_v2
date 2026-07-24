@@ -10,10 +10,12 @@ export default function middleware(request: NextRequest) {
     request.headers.get('cf-ipcountry');
 
   // Keep international locale detection, but default KR traffic at root to /ko.
+  // Use 308 (permanent) so search engines (e.g. Naver's Yeti, which crawls from
+  // Korean IPs) follow and index it — 307 is treated as temporary and skipped.
   if (request.nextUrl.pathname === '/' && country?.toUpperCase() === 'KR') {
     const url = request.nextUrl.clone();
     url.pathname = '/ko';
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, 308);
   }
 
   return intlMiddleware(request);
