@@ -108,10 +108,10 @@ export default function AdminAnalyticsPage() {
           ) : (
             <div className="flex items-end gap-1 h-48">
               {daily.map(d => (
-                <div key={d.day} className="flex-1 flex flex-col items-center justify-end group relative">
+                <div key={d.day} className="flex-1 h-full flex flex-col items-center justify-end group relative">
                   <div
                     className="w-full bg-navy/80 hover:bg-navy rounded-t transition-all"
-                    style={{ height: `${(d.pv / maxPv) * 100}%` }}
+                    style={{ height: `${Math.max((d.pv / maxPv) * 100, d.pv > 0 ? 2 : 0)}%` }}
                   />
                   <div className="absolute bottom-full mb-1 hidden group-hover:block bg-gray-900 text-white text-[10px] rounded px-2 py-1 whitespace-nowrap z-10">
                     {d.day} · PV {d.pv} · UV {d.uv}
